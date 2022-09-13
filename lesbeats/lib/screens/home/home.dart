@@ -33,27 +33,21 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              "Les",
-              style: TextStyle(),
-            ),
-            Text(
-              "Beats",
-              style: TextStyle(),
-            ),
-          ],
-        ),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
-      ),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: AnimatedSwitcher(
+          transitionBuilder: (child, animation) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.ease;
+
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
           duration: const Duration(seconds: 1),
           child: destination(selectedIndex)),
       floatingActionButton: FloatingActionButton(

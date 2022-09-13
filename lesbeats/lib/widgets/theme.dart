@@ -16,3 +16,12 @@ ThemeData lightTheme = ThemeData(
         const FloatingActionButtonThemeData(backgroundColor: starCommandblue),
     primaryColor: starCommandblue,
     backgroundColor: babypowder);
+
+const LinearGradient backgroundGradient = LinearGradient(
+    begin: Alignment.bottomLeft,
+    end: Alignment.topRight,
+    colors: [Color(0xff0093E9), starCommandblue]);
+
+
+// background-color: #0093E9;
+// background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);

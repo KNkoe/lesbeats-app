@@ -9,28 +9,25 @@ class TrendingPage extends StatefulWidget {
 }
 
 class _TrendingPageState extends State<TrendingPage> {
+  List<String> artists = ["Mjo", "Funky", "Goodey", "Delicous", "Vicous"];
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 30),
+      padding: const EdgeInsets.only(left: 20),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Top Artists",
-                style: TextStyle(color: Colors.white60),
-              ),
-              SizedBox(
-                height: screenSize(context).height * 0.1,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [],
-                ),
-              ),
-            ],
-          )
+          const Text(
+            "Top Artists",
+          ),
+          SizedBox(
+            height: screenSize(context).height * 0.1,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: const [],
+            ),
+          ),
         ],
       ),
     );
