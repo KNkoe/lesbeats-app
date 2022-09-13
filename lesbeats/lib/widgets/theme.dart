@@ -15,7 +15,15 @@ ThemeData lightTheme = ThemeData(
     floatingActionButtonTheme:
         const FloatingActionButtonThemeData(backgroundColor: starCommandblue),
     primaryColor: starCommandblue,
-    backgroundColor: babypowder);
+    backgroundColor: babypowder,
+    textTheme: const TextTheme(
+      headline1: TextStyle(),
+      headline2: TextStyle(),
+      headline3: TextStyle(),
+      headline4: TextStyle(),
+      headline5: TextStyle(color: black),
+      headline6: TextStyle(),
+    ));
 
 const LinearGradient backgroundGradient = LinearGradient(
     begin: Alignment.bottomLeft,

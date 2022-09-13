@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   animated_bottom_navigation_bar: ^1.1.0
   google_fonts: ^3.0.1
+  iconify_flutter: ^0.0.4
 
 dev_dependencies:
   flutter_test:

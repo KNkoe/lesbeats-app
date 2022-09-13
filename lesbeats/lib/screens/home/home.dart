@@ -1,6 +1,7 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/screens/home/widgets/dashboard/dashboard.dart';
+import 'package:lesbeats/screens/home/widgets/profile/profile.dart';
 
 import 'widgets/drawer/list_tile.dart';
 
@@ -24,7 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         return const Center(child: Text("Favourites"));
       case 3:
-        return const Center(child: Text("person"));
+        return const MyProfilePage();
       default:
         return Container();
     }
@@ -77,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar(
         icons: const [
-          Icons.home,
+          Icons.home_filled,
           Icons.chat_bubble,
           Icons.favorite_rounded,
           Icons.person

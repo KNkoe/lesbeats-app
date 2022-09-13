@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lesbeats/screens/home/widgets/dashboard/trending.dart';
 import 'package:lesbeats/widgets/theme.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/jam.dart';
 
 class MyDashBoard extends StatefulWidget {
   const MyDashBoard({super.key});
@@ -34,7 +36,7 @@ class _MyDashBoardState extends State<MyDashBoard> {
       children: [
         Container(
           decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
           child: Column(
             children: [
               Container(
@@ -43,10 +45,13 @@ class _MyDashBoardState extends State<MyDashBoard> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
-                      Icons.menu,
-                      color: Theme.of(context).backgroundColor,
-                    ),
+                    IconButton(
+                        onPressed: () {},
+                        icon: Iconify(
+                          Jam.menu,
+                          size: 32,
+                          color: Theme.of(context).backgroundColor,
+                        )),
                     Row(
                       children: [
                         Transform.rotate(
@@ -72,17 +77,20 @@ class _MyDashBoardState extends State<MyDashBoard> {
                         ),
                       ],
                     ),
-                    Icon(
-                      Icons.notifications,
-                      color: Theme.of(context).backgroundColor,
-                    )
+                    IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.notifications,
+                          color: Theme.of(context).backgroundColor,
+                        ))
                   ],
                 ),
               ),
               const SizedBox(
                 height: 30,
               ),
-              SizedBox(
+              Container(
+                padding: const EdgeInsets.only(left: 10),
                 height: 70,
                 child: TextField(
                   decoration: InputDecoration(
