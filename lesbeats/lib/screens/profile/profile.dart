@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lesbeats/screens/home/widgets/profile/beats.dart';
+import 'package:lesbeats/screens/profile/beats.dart';
 import 'package:lesbeats/widgets/theme.dart';
 
 class MyProfilePage extends StatefulWidget {

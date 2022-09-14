@@ -39,6 +39,9 @@ dependencies:
   animated_bottom_navigation_bar: ^1.1.0
   google_fonts: ^3.0.1
   iconify_flutter: ^0.0.4
+  flutter_chat_ui: ^1.6.4
+  file_picker: ^5.0.1
+  image_picker: ^0.8.5+3
 
 dev_dependencies:
   flutter_test:

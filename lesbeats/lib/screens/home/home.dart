@@ -1,9 +1,10 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:lesbeats/screens/home/widgets/dashboard/dashboard.dart';
-import 'package:lesbeats/screens/home/widgets/profile/profile.dart';
+import 'package:lesbeats/screens/home/explore/explore.dart';
+import 'package:lesbeats/screens/home/widgets/upload_beat.dart';
+import 'package:lesbeats/screens/profile/profile.dart';
 
-import 'widgets/drawer/list_tile.dart';
+import 'drawer/list_tile.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -51,10 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           duration: const Duration(seconds: 1),
           child: destination(selectedIndex)),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.explore),
-      ),
       drawer: Drawer(
         backgroundColor: Theme.of(context).backgroundColor,
         child: ListView(
@@ -75,10 +72,32 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: PopupMenuButton(
+            itemBuilder: (contex) => [
+                  PopupMenuItem(
+                      child: ListTile(
+                    leading: const Icon(Icons.upload),
+                    title: const Text("Upload beat"),
+                    onTap: () {
+                      Navigator.pop(context);
+                      showUpload(context);
+                    },
+                  )),
+                  PopupMenuItem(
+                      child: ListTile(
+                    leading: const Icon(Icons.paste),
+                    title: const Text("Post Lyrics"),
+                    onTap: () {},
+                  ))
+                ],
+            icon: const Icon(Icons.add)),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar(
         icons: const [
-          Icons.home_filled,
+          Icons.explore,
           Icons.chat_bubble,
           Icons.favorite_rounded,
           Icons.person

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
-class MyBeats extends StatelessWidget {
+class MyBeats extends StatefulWidget {
   const MyBeats({super.key});
 
+  @override
+  State<MyBeats> createState() => _MyBeatsState();
+}
+
+class _MyBeatsState extends State<MyBeats> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -60,7 +65,7 @@ class MyBeats extends StatelessWidget {
                       const PopupMenuItem(
                           child: ListTile(
                         title: Text("Delete"),
-                        leading: Icon(Icons.logout_rounded),
+                        leading: Icon(Icons.delete),
                       ))
                     ])))
       ],

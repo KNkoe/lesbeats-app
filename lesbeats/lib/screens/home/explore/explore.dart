@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lesbeats/screens/home/widgets/dashboard/trending.dart';
+import 'package:lesbeats/screens/home/explore/trending.dart';
 import 'package:lesbeats/widgets/theme.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/jam.dart';
