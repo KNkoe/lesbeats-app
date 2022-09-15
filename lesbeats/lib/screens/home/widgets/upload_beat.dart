@@ -3,13 +3,19 @@ import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lesbeats/screens/home/player.dart';
 import 'package:lesbeats/widgets/decoration.dart';
+import 'package:lesbeats/widgets/responsive.dart';
+import 'package:lesbeats/widgets/theme.dart';
 
 showUpload(BuildContext context) => showDialog(
     context: context,
-    builder: (context) => BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-          child: const UploadBeat(),
+    builder: (context) => Scaffold(
+          backgroundColor: Colors.transparent,
+          body: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+            child: const UploadBeat(),
+          ),
         ));
 
 class UploadBeat extends StatefulWidget {
@@ -22,7 +28,7 @@ class UploadBeat extends StatefulWidget {
 }
 
 class _UploadBeatState extends State<UploadBeat> {
-  String filename = "";
+  PlatformFile? audio;
   String imagename = "";
 
   pickImage() async {
@@ -43,7 +49,7 @@ class _UploadBeatState extends State<UploadBeat> {
     if (result != null) {
       PlatformFile file = result.files.first;
       setState(() {
-        filename = file.name;
+        audio = file;
       });
     } else {
       // User canceled the picker
@@ -57,8 +63,9 @@ class _UploadBeatState extends State<UploadBeat> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text("Upload your beat"),
-          const SizedBox(
+          SizedBox(
             height: 30,
+            width: screenSize(context).width * 0.9,
           ),
           SizedBox(
             height: 50,
@@ -103,11 +110,14 @@ class _UploadBeatState extends State<UploadBeat> {
                 pickfile();
               },
               label: const Text("Select audio")),
-          if (filename != "")
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text(
-                filename,
+          if (audio != null)
+            OutlinedButton.icon(
+              icon: const Icon(Icons.play_circle),
+              onPressed: () {
+                showPlayer(context, audio!);
+              },
+              label: Text(
+                audio!.name,
                 style: const TextStyle(fontSize: 14, color: Colors.grey),
               ),
             ),
@@ -126,6 +136,7 @@ class _UploadBeatState extends State<UploadBeat> {
         ElevatedButton.icon(
             icon: const Icon(Icons.arrow_forward_ios),
             style: ElevatedButton.styleFrom(
+                backgroundColor: coquilicot,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20))),
             onPressed: () {},

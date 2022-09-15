@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: AnimatedSwitcher(
           transitionBuilder: (child, animation) {
-            const begin = Offset(1.0, 0.0);
+            const begin = Offset(0.02, 0.0);
             const end = Offset.zero;
             const curve = Curves.ease;
 

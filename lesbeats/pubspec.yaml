@@ -42,6 +42,7 @@ dependencies:
   flutter_chat_ui: ^1.6.4
   file_picker: ^5.0.1
   image_picker: ^0.8.5+3
+  just_audio: ^0.9.28
 
 dev_dependencies:
   flutter_test:
