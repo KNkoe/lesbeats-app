@@ -1,6 +1,6 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:lesbeats/screens/home/explore/explore.dart';
+import 'package:lesbeats/screens/home/dashboard/dashboard.dart';
 import 'package:lesbeats/screens/home/widgets/upload_beat.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 
@@ -36,22 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: AnimatedSwitcher(
-          transitionBuilder: (child, animation) {
-            const begin = Offset(0.02, 0.0);
-            const end = Offset.zero;
-            const curve = Curves.ease;
-
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: child,
-            );
-          },
-          duration: const Duration(seconds: 1),
-          child: destination(selectedIndex)),
+      body: destination(selectedIndex),
       drawer: Drawer(
         backgroundColor: Theme.of(context).backgroundColor,
         child: ListView(
@@ -97,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar(
         icons: const [
-          Icons.explore,
+          Icons.home_filled,
           Icons.chat_bubble,
           Icons.favorite_rounded,
           Icons.person

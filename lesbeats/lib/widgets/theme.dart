@@ -16,12 +16,13 @@ ThemeData lightTheme = ThemeData(
         const FloatingActionButtonThemeData(backgroundColor: starCommandblue),
     primaryColor: starCommandblue,
     backgroundColor: babypowder,
+    popupMenuTheme: const PopupMenuThemeData(elevation: 2),
     textTheme: const TextTheme(
       headline1: TextStyle(),
       headline2: TextStyle(),
       headline3: TextStyle(),
       headline4: TextStyle(),
-      headline5: TextStyle(color: black),
+      headline5: TextStyle(),
       headline6: TextStyle(),
     ));
 

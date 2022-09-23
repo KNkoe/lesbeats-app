@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lesbeats/screens/profile/beats.dart';
+import 'package:lesbeats/screens/profile/editprofile.dart';
 import 'package:lesbeats/widgets/theme.dart';
 
 class MyProfilePage extends StatefulWidget {
@@ -26,155 +27,205 @@ class _MyProfilePageState extends State<MyProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
       color: Theme.of(context).backgroundColor,
-      child: Column(
+      child: Stack(
         children: [
-          const SizedBox(
-            height: 50,
+          Container(
+            height: 180,
+            color: Theme.of(context).primaryColor,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Profile",
-                style: Theme.of(context).textTheme.headline5,
-              ),
-              PopupMenuButton(
-                  icon: const Icon(Icons.more_horiz),
-                  itemBuilder: ((context) => [
-                        const PopupMenuItem(
-                          child: ListTile(
-                            title: Text("Edit profile"),
-                            leading: Icon(Icons.edit_attributes),
-                          ),
-                        ),
-                        const PopupMenuItem(child: Divider()),
-                        const PopupMenuItem(
-                            child: ListTile(
-                          title: Text("Log out"),
-                          leading: Icon(Icons.logout_rounded),
-                        ))
-                      ]))
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: const [
-              CircleAvatar(
-                minRadius: 50,
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Katleho Nkoe",
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                      ),
-                      const Icon(
-                        Icons.verified,
-                        color: malachite,
-                      )
-                    ],
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10, bottom: 10),
-                    child: Text("@vicious_kadd"),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, bottom: 10),
-                        child: OutlinedButton(
-                          onPressed: () {},
-                          child: Row(
-                            children: const [
-                              Text(
-                                "3k",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(" Followers")
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, bottom: 10),
-                        child: OutlinedButton(
-                          onPressed: () {},
-                          child: Row(
-                            children: const [
-                              Text(
-                                "1k",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(" Following")
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const Divider(
-            thickness: 1,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          DefaultTabController(
-            length: 2,
-            child: TabBar(
-                onTap: (index) {
-                  setState(() {
-                    selectedIndex = index;
-                  });
-                },
-                indicatorColor: coquilicot,
-                tabs: [
-                  Tab(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          color: coquilicot,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      padding: const EdgeInsets.all(10),
-                      child: const Text("Beats"),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 50,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Profile",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5!
+                          .copyWith(color: Colors.white),
                     ),
-                  ),
-                  Tab(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          color: coquilicot,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      padding: const EdgeInsets.all(10),
-                      child: const Text("Albums"),
+                    PopupMenuButton(
+                        icon: const Icon(
+                          Icons.more_horiz,
+                          color: Colors.white,
+                        ),
+                        itemBuilder: ((context) => [
+                              PopupMenuItem(
+                                child: ListTile(
+                                  minLeadingWidth: 2,
+                                  onTap: () {
+                                    editprofile(context);
+                                  },
+                                  title: const Text("Edit profile"),
+                                  leading: const Icon(Icons.edit_attributes),
+                                ),
+                              ),
+                              const PopupMenuItem(child: Divider()),
+                              PopupMenuItem(
+                                  child: ListTile(
+                                onTap: () {
+                                  Future.delayed(const Duration(seconds: 2))
+                                      .then((value) => Navigator.of(context)
+                                          .popAndPushNamed('/login'));
+                                },
+                                minLeadingWidth: 2,
+                                title: const Text("Log out"),
+                                leading: const Icon(Icons.logout_rounded),
+                              ))
+                            ]))
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              width: 8,
+                              color: Theme.of(context).backgroundColor)),
+                      child: const CircleAvatar(
+                        minRadius: 50,
+                        backgroundImage: AssetImage("assets/images/rnb.jpg"),
+                      ),
                     ),
-                  )
-                ]),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Katleho Nkoe",
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
+                            ),
+                            const Icon(
+                              Icons.verified,
+                              color: malachite,
+                            )
+                          ],
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 10, bottom: 10),
+                          child: Text("@vicious_kadd"),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10, bottom: 10),
+                              child: OutlinedButton(
+                                onPressed: () {},
+                                child: Row(
+                                  children: const [
+                                    Text(
+                                      "3k",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(" Followers")
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10, bottom: 10),
+                              child: OutlinedButton(
+                                onPressed: () {},
+                                child: Row(
+                                  children: const [
+                                    Text(
+                                      "1k",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(" Following")
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const Divider(
+                  thickness: 1,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                DefaultTabController(
+                  length: 2,
+                  child: TabBar(
+                      onTap: (index) {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+                      },
+                      indicatorColor: coquilicot,
+                      tabs: [
+                        Tab(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                                color: coquilicot,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4))),
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text("Beats"),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                                color: coquilicot,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4))),
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text("Lyrics"),
+                              ],
+                            ),
+                          ),
+                        )
+                      ]),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                selectedTab(selectedIndex)
+              ],
+            ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          selectedTab(selectedIndex)
         ],
       ),
     );
