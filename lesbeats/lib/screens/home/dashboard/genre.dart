@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:lesbeats/models/genre.dart';
+import 'package:lesbeats/widgets/animation.dart';
 import 'package:lesbeats/widgets/theme.dart';
 
 class MyGenre extends StatefulWidget {
@@ -9,194 +12,52 @@ class MyGenre extends StatefulWidget {
 }
 
 class _MyGenreState extends State<MyGenre> {
+  List<Genre> genres = [
+    Genre(genre: "RNB", coverUrl: "assets/images/rnb.jpg"),
+    Genre(genre: "Amapiano", coverUrl: "assets/images/artist.jpg"),
+    Genre(genre: "Trap", coverUrl: "assets/images/rnb.jpg"),
+    Genre(genre: "Rock", coverUrl: "assets/images/rock.jpg"),
+    Genre(genre: "House", coverUrl: "assets/images/house.jpg"),
+    Genre(genre: "HipHop", coverUrl: "assets/images/hiphop.jpg"),
+    Genre(genre: "Afrobeat", coverUrl: "assets/images/genre.jpeg"),
+    Genre(genre: "Other", coverUrl: "assets/images/genre.jpeg")
+  ];
   @override
   Widget build(BuildContext context) {
     return GridView.count(
       crossAxisCount: 2,
-      children: [
-        InkWell(
-          onTap: () {},
-          child: Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                boxShadow: const [
-                  BoxShadow(
-                    offset: Offset(0, 3),
-                    spreadRadius: -2,
-                    blurRadius: 12,
-                    color: Color.fromRGBO(0, 0, 0, 0.9),
-                  )
-                ],
-                image: const DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage("assets/images/rnb.jpg")),
-                color: starCommandblue,
-                borderRadius: BorderRadius.circular(10)),
-            child: const Text(
-              "RnB",
-              style: TextStyle(fontSize: 24, color: Colors.white),
+      children: genres
+          .map(
+            (genre) => InkWell(
+              onTap: () {},
+              child: Animate(
+                effects: const [FadeEffect(), ShimmerEffect()],
+                delay: genreDelay(genres.indexOf(genre)),
+                child: Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(
+                          offset: Offset(0, 3),
+                          spreadRadius: -2,
+                          blurRadius: 12,
+                          color: Color.fromRGBO(0, 0, 0, 0.9),
+                        )
+                      ],
+                      image: DecorationImage(
+                          fit: BoxFit.cover, image: AssetImage(genre.coverUrl)),
+                      color: starCommandblue,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Text(
+                    genre.genre,
+                    style: const TextStyle(fontSize: 24, color: Colors.white),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(boxShadow: const [
-              BoxShadow(
-                offset: Offset(0, 3),
-                spreadRadius: -2,
-                blurRadius: 12,
-                color: Color.fromRGBO(0, 0, 0, 0.2),
-              )
-            ], color: coquilicot, borderRadius: BorderRadius.circular(10)),
-            child: const Text(
-              "Amapiano",
-              style: TextStyle(fontSize: 24, color: Colors.white),
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                boxShadow: const [
-                  BoxShadow(
-                    offset: Offset(0, 3),
-                    spreadRadius: -2,
-                    blurRadius: 12,
-                    color: Color.fromRGBO(0, 0, 0, 0.9),
-                  )
-                ],
-                image: const DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage("assets/images/artist.jpg")),
-                color: starCommandblue,
-                borderRadius: BorderRadius.circular(10)),
-            child: const Text(
-              "Trap",
-              style: TextStyle(fontSize: 24, color: Colors.white),
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                boxShadow: const [
-                  BoxShadow(
-                    offset: Offset(0, 3),
-                    spreadRadius: -2,
-                    blurRadius: 12,
-                    color: Color.fromRGBO(0, 0, 0, 0.9),
-                  )
-                ],
-                image: const DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage("assets/images/rock.jpg")),
-                color: starCommandblue,
-                borderRadius: BorderRadius.circular(10)),
-            child: const Text(
-              "Rock",
-              style: TextStyle(fontSize: 24, color: Colors.white),
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                boxShadow: const [
-                  BoxShadow(
-                    offset: Offset(0, 3),
-                    spreadRadius: -2,
-                    blurRadius: 12,
-                    color: Color.fromRGBO(0, 0, 0, 0.9),
-                  )
-                ],
-                image: const DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage("assets/images/house.jpg")),
-                color: starCommandblue,
-                borderRadius: BorderRadius.circular(10)),
-            child: const Text(
-              "House",
-              style: TextStyle(fontSize: 24, color: Colors.white),
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                boxShadow: const [
-                  BoxShadow(
-                    offset: Offset(0, 3),
-                    spreadRadius: -2,
-                    blurRadius: 12,
-                    color: Color.fromRGBO(0, 0, 0, 0.9),
-                  )
-                ],
-                image: const DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage("assets/images/hiphop.jpg")),
-                color: starCommandblue,
-                borderRadius: BorderRadius.circular(10)),
-            child: const Text(
-              "Hiphop",
-              style: TextStyle(fontSize: 24, color: Colors.white),
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(boxShadow: const [
-              BoxShadow(
-                offset: Offset(0, 3),
-                spreadRadius: -2,
-                blurRadius: 12,
-                color: Color.fromRGBO(0, 0, 0, 0.2),
-              )
-            ], color: coquilicot, borderRadius: BorderRadius.circular(10)),
-            child: const Text(
-              "Afro",
-              style: TextStyle(fontSize: 24, color: Colors.white),
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(boxShadow: const [
-              BoxShadow(
-                offset: Offset(0, 3),
-                spreadRadius: -2,
-                blurRadius: 12,
-                color: Color.fromRGBO(0, 0, 0, 0.2),
-              )
-            ], color: coquilicot, borderRadius: BorderRadius.circular(10)),
-            child: const Text(
-              "Other",
-              style: TextStyle(fontSize: 24, color: Colors.white),
-            ),
-          ),
-        ),
-      ],
+          )
+          .toList(),
     );
   }
 }

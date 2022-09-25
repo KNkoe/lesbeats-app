@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lesbeats/widgets/theme.dart';
 
+import '../../../widgets/animation.dart';
 import 'activityfeed.dart';
 import 'artists.dart';
 
@@ -79,39 +81,47 @@ class _TrendingPageState extends State<TrendingPage> {
                             const SizedBox(
                               width: 10,
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                      right: 10, left: 10),
-                                  height: 90,
-                                  width: 90,
-                                  decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: AssetImage(
-                                              'assets/images/artist.jpg'))),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: Text(artist),
-                                    ),
-                                    if (topArtists.indexOf(artist) == 0)
-                                      const Icon(
-                                        Icons.verified,
-                                        color: malachite,
-                                        size: 18,
-                                      )
-                                  ],
-                                ),
+                            Animate(
+                              effects: const [
+                                FadeEffect(),
+                                SlideEffect(
+                                    begin: Offset(1, 0), end: Offset(0, 0))
                               ],
+                              delay: delay(topArtists.indexOf(artist)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                        right: 10, left: 10),
+                                    height: 90,
+                                    width: 90,
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: AssetImage(
+                                                'assets/images/artist.jpg'))),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(artist),
+                                      ),
+                                      if (topArtists.indexOf(artist) == 0)
+                                        const Icon(
+                                          Icons.verified,
+                                          color: malachite,
+                                          size: 18,
+                                        )
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ))

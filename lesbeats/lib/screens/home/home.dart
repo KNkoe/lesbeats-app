@@ -1,5 +1,6 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:lesbeats/screens/chats/chats.dart';
 import 'package:lesbeats/screens/home/dashboard/dashboard.dart';
 import 'package:lesbeats/screens/home/widgets/upload_beat.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
@@ -22,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         return const MyDashBoard();
       case 1:
-        return const Center(child: Text("Chat"));
+        return const MyChatScreen();
       case 2:
         return const Center(child: Text("Favourites"));
       case 3:

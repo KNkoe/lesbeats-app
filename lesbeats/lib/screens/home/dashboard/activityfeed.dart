@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
+import 'package:lesbeats/widgets/animation.dart';
 
 class ActivityFeed extends StatefulWidget {
   const ActivityFeed({
