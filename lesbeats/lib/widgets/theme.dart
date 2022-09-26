@@ -10,6 +10,8 @@ const Color coquilicot = Color(0xffFC440F);
 const Color malachite = Color(0xff09E85E);
 
 ThemeData lightTheme = ThemeData(
+    appBarTheme:
+        const AppBarTheme(backgroundColor: starCommandblue, elevation: 0),
     bottomNavigationBarTheme:
         const BottomNavigationBarThemeData(selectedItemColor: background),
     floatingActionButtonTheme:

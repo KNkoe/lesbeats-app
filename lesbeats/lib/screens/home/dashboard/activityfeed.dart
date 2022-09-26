@@ -25,7 +25,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
     return ListView(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
-      scrollDirection: Axis.vertical,
+      physics: const BouncingScrollPhysics(),
       children: activities
           .map((e) => Column(
                 children: [
@@ -60,11 +60,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
                             SizedBox(
                               width: 6,
                             ),
-                            Text(
-                              "R",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            Text("250")
+                            Text("R250")
                           ],
                         )
                       ],

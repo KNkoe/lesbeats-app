@@ -1,37 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lesbeats/screens/home/dashboard/explore.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/jam.dart';
 import 'package:lesbeats/screens/home/dashboard/genre.dart';
 import 'package:lesbeats/screens/home/dashboard/lyrics.dart';
 import 'package:lesbeats/widgets/theme.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:iconify_flutter/icons/jam.dart';
+import 'package:iconify_flutter/icons/ion.dart';
+import 'package:iconify_flutter/icons/bx.dart';
+import 'package:iconify_flutter/icons/zondicons.dart';
+import 'package:iconify_flutter/icons/ic.dart';
+import 'package:iconify_flutter/icons/bxs.dart';
 
-class MyDashBoard extends StatefulWidget {
-  const MyDashBoard({super.key});
+import '../../../widgets/animation.dart';
+import 'activityfeed.dart';
+import 'artists.dart';
+
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
 
   @override
-  State<MyDashBoard> createState() => _MyDashBoardState();
+  State<Dashboard> createState() => _DashboardState();
 }
 
-class _MyDashBoardState extends State<MyDashBoard> {
-  int selectedTabIndex = 0;
-
-  Widget selectedTab(int index) {
-    switch (index) {
-      case 0:
-        return const TrendingPage();
-
-      case 1:
-        return const MyGenre();
-      case 2:
-        return const MyLyrcisScreen();
-      default:
-        return Container();
-    }
-  }
-
-  final List<String> artists = [
+class _DashboardState extends State<Dashboard> {
+  final List<String> topArtists = [
     "Mjo Konondo",
     "Funky Debelicous",
     "Goodey",
@@ -39,135 +33,311 @@ class _MyDashBoardState extends State<MyDashBoard> {
     "Vicous"
   ];
 
-  final List<String> activities = [
-    "Scandal",
-    "Love affairs",
-    "Soon",
-    "How about that",
-    "Vicious"
-  ];
-  final ScrollController _scrollController = ScrollController();
-  bool _isCollapsed = true;
+  bool _viewAllArtists = false;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      controller: _scrollController,
-      slivers: [
-        SliverAppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          centerTitle: true,
-          pinned: true,
-          elevation: 0,
-          leading: IconButton(
-              onPressed: () {},
-              icon: Iconify(
-                Jam.menu,
-                size: 32,
-                color: Theme.of(context).backgroundColor,
-              )),
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Transform.rotate(
-                  angle: 0,
-                  child: const Icon(
-                    Icons.music_note,
-                    color: yellow,
-                  )),
-              Text(
-                "Les",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontFamily: GoogleFonts.jura().fontFamily,
-                    color: Theme.of(context).backgroundColor),
-              ),
-              Text(
-                "beats",
-                style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    fontFamily: GoogleFonts.jura().fontFamily,
-                    color: Theme.of(context).backgroundColor),
-              ),
-            ],
-          ),
-          actions: [
-            IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.notifications,
-                  color: Theme.of(context).backgroundColor,
-                ))
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        centerTitle: true,
+        leading: IconButton(
+            onPressed: () {
+              _scaffoldKey.currentState!.openDrawer();
+            },
+            icon: Iconify(
+              Jam.menu,
+              size: 32,
+              color: Theme.of(context).backgroundColor,
+            )),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Transform.rotate(
+                angle: 0,
+                child: const Icon(
+                  Icons.music_note,
+                  color: yellow,
+                )),
+            Text(
+              "Les",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: GoogleFonts.jura().fontFamily,
+                  color: Theme.of(context).backgroundColor),
+            ),
+            Text(
+              "beats",
+              style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                  fontFamily: GoogleFonts.jura().fontFamily,
+                  color: Theme.of(context).backgroundColor),
+            ),
           ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(140),
-            child: Column(
-              children: [
-                DefaultTabController(
-                  length: 3,
-                  child: TabBar(
-                      onTap: (index) {
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.notifications,
+                color: Theme.of(context).backgroundColor,
+              ))
+        ],
+      ),
+      body: Container(
+        color: Theme.of(context).primaryColor,
+        height: Get.height,
+        width: Get.width,
+        child: Container(
+          margin: const EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(50), topRight: Radius.circular(50)),
+              color: Theme.of(context).backgroundColor),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Top Artists",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    InkWell(
+                      onTap: () {
                         setState(() {
-                          selectedTabIndex = index;
+                          _viewAllArtists = !_viewAllArtists;
                         });
                       },
-                      indicatorColor: yellow,
-                      tabs: const [
-                        Tab(
-                          child: Text("Explore"),
-                        ),
-                        Tab(
-                          child: Text("Genres"),
-                        ),
-                        Tab(
-                          child: Text("Lyrics"),
-                        )
-                      ]),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: _viewAllArtists
+                            ? Text(
+                                "View less",
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Theme.of(context).primaryColor),
+                              )
+                            : Text(
+                                "View more",
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Theme.of(context).primaryColor),
+                              ),
+                      ),
+                    )
+                  ],
                 ),
-                const SizedBox(
-                  height: 30,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                height: 140,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  children: topArtists
+                      .map((artist) => Row(
+                            children: [
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Animate(
+                                effects: const [
+                                  FadeEffect(),
+                                  SlideEffect(
+                                      begin: Offset(1, 0), end: Offset(0, 0))
+                                ],
+                                delay: delay(topArtists.indexOf(artist)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                          right: 10, left: 10),
+                                      height: 90,
+                                      width: 90,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: AssetImage(
+                                                  'assets/images/artist.jpg'))),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Text(artist),
+                                        ),
+                                        if (topArtists.indexOf(artist) == 0)
+                                          const Icon(
+                                            Icons.verified,
+                                            color: malachite,
+                                            size: 18,
+                                          )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ))
+                      .toList(),
                 ),
-                Container(
-                  height: 50,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _viewAllArtists ? "Artists" : "Activity Feed",
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                  child: _viewAllArtists
+                      ? const MyArtists()
+                      : const ActivityFeed()),
+            ],
+          ),
+        ),
+      ),
+      drawer: SafeArea(
+        child: Drawer(
+          elevation: 0,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 200,
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).backgroundColor,
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30))),
-                  child: AnimatedRotation(
-                    duration: const Duration(milliseconds: 400),
-                    turns: _isCollapsed ? 45 / 180 : -45 / 180,
-                    child: IconButton(
-                        onPressed: () {
-                          if (_isCollapsed) {
-                            _scrollController.animateTo(200,
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeIn);
-                          } else {
-                            _scrollController.animateTo(-200,
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeIn);
-                          }
-
-                          setState(() {
-                            _isCollapsed = !_isCollapsed;
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back_ios_new,
-                          color: Colors.black38,
-                          size: 20,
-                        )),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        height: 80,
+                        width: 100,
+                        decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: AssetImage("assets/images/rnb.jpg"))),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          "Katleho Nkoe",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          "@Vicious_kadd",
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                      ),
+                    ],
                   ),
+                ),
+                Expanded(
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      const Divider(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        leading: const Iconify(Ion.rocket),
+                        title: const Text("Trending"),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          Get.to(() => const MyGenre());
+                          _scaffoldKey.currentState!.closeDrawer();
+                        },
+                        leading: const Iconify(Bx.bxs_music),
+                        title: const Text("Genres"),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          Get.to(() => const MyLyricsScreen());
+                          _scaffoldKey.currentState!.closeDrawer();
+                        },
+                        leading: const Iconify(Zondicons.music_artist),
+                        title: const Text("Lyrics"),
+                      ),
+                      const ListTile(
+                        title: Text(
+                          "My Collection",
+                          style: TextStyle(color: Colors.black38),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        leading: const Iconify(Ic.outline_favorite),
+                        title: const Text("Favourites"),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        leading: const Iconify(Bxs.like),
+                        title: const Text("Following"),
+                      ),
+                    ],
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  leading: const Icon(Icons.settings),
+                  title: const Text("Settings"),
+                ),
+                ListTile(
+                  onTap: () {},
+                  leading: const Icon(Icons.share),
+                  title: const Text("Tell a friend"),
+                ),
+                ListTile(
+                  onTap: () {},
+                  leading: const Icon(Icons.help),
+                  title: const Text("Help and Feadback"),
                 )
               ],
             ),
           ),
         ),
-        SliverFillRemaining(child: selectedTab(selectedTabIndex)),
-      ],
+      ),
     );
   }
 }

@@ -28,7 +28,7 @@ class _MyArtistsState extends State<MyArtists> {
     return ListView(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
-      scrollDirection: Axis.vertical,
+      physics: const BouncingScrollPhysics(),
       children: artists
           .map((artist) => Padding(
                 padding: const EdgeInsets.all(10),

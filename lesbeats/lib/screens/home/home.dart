@@ -5,8 +5,6 @@ import 'package:lesbeats/screens/home/dashboard/dashboard.dart';
 import 'package:lesbeats/screens/home/widgets/upload_beat.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 
-import 'drawer/list_tile.dart';
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -21,7 +19,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget destination(index) {
     switch (index) {
       case 0:
-        return const MyDashBoard();
+        return const Dashboard();
       case 1:
         return const MyChatScreen();
       case 2:
@@ -38,26 +36,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: destination(selectedIndex),
-      drawer: Drawer(
-        backgroundColor: Theme.of(context).backgroundColor,
-        child: ListView(
-          children: [
-            const DrawerHeader(child: Text("Johnny")),
-            drawerListTile(
-              context,
-              icon: Icons.settings,
-              title: 'Settings',
-              onTap: () {},
-            ),
-            drawerListTile(
-              context,
-              icon: Icons.info,
-              title: 'About',
-              onTap: () {},
-            )
-          ],
-        ),
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: PopupMenuButton(
@@ -85,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
         icons: const [
           Icons.home_filled,
           Icons.chat_bubble,
-          Icons.favorite_rounded,
+          Icons.library_music,
           Icons.person
         ],
         inactiveColor: Colors.grey,
