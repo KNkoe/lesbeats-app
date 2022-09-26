@@ -36,7 +36,7 @@ class _MyLyrcisScreenState extends State<MyLyrcisScreen> {
   bool _viewAllArtists = false;
   final PageController _pageController = PageController();
 
-  bool _preview = false;
+  // bool _preview = false;
 
   @override
   Widget build(BuildContext context) {
