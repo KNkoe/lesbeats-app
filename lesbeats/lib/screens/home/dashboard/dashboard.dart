@@ -6,12 +6,14 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/jam.dart';
 import 'package:lesbeats/screens/home/dashboard/genre.dart';
 import 'package:lesbeats/screens/home/dashboard/lyrics.dart';
+import 'package:lesbeats/screens/home/dashboard/search.dart';
 import 'package:lesbeats/widgets/theme.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/bx.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
 import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/bxs.dart';
+import 'package:iconify_flutter/icons/teenyicons.dart';
 
 import '../../../widgets/animation.dart';
 import 'activityfeed.dart';
@@ -54,12 +56,12 @@ class _DashboardState extends State<Dashboard> {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Transform.rotate(
-                angle: 0,
-                child: const Icon(
-                  Icons.music_note,
-                  color: yellow,
-                )),
+            // Transform.rotate(
+            //     angle: 0,
+            //     child: const Icon(
+            //       Icons.music_note,
+            //       color: yellow,
+            //     )),
             Text(
               "Les",
               style: TextStyle(
@@ -79,10 +81,15 @@ class _DashboardState extends State<Dashboard> {
         ),
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.notifications,
-                color: Theme.of(context).backgroundColor,
+              onPressed: () {
+                showBottomSheet(
+                    context: context,
+                    builder: (context) => const MySearchScreen());
+              },
+              icon: const Iconify(
+                Teenyicons.search_solid,
+                color: Colors.white,
+                size: 22,
               ))
         ],
       ),

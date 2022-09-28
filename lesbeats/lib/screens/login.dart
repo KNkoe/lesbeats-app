@@ -43,10 +43,10 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   height: Get.height * 0.2,
                   width: double.infinity,
                   alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                      color: coquilicot,
-                      borderRadius:
-                          BorderRadius.only(bottomLeft: Radius.circular(100))),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(100))),
                   child: Image(
                       height: 400,
                       width: Get.width * 0.6,
@@ -68,10 +68,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Email"),
-                          const SizedBox(
-                            height: 10,
-                          ),
                           SizedBox(
                             height: 50,
                             child: TextFormField(
@@ -84,6 +80,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.never,
                                 enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.black12),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 label: Text("Enter your email"),
@@ -102,10 +100,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Password"),
-                          const SizedBox(
-                            height: 10,
-                          ),
                           SizedBox(
                             height: 50,
                             child: TextFormField(
@@ -127,6 +121,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.never,
                                 enabledBorder: const OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.black12),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 label: const Text("Enter your password"),
@@ -171,15 +167,13 @@ class _MyLoginPageState extends State<MyLoginPage> {
                       effects: const [FadeEffect(), SlideEffect()],
                       delay: 2000.ms,
                       child: ElevatedButton(
-                          style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
-                                  const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10)))),
-                              fixedSize: MaterialStateProperty.all(
-                                  const Size.fromHeight(50)),
-                              backgroundColor:
-                                  MaterialStateProperty.all(coquilicot)),
+                          style: ElevatedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              fixedSize: const Size.fromHeight(50),
+                              elevation: 0,
+                              backgroundColor: Theme.of(context).cardColor),
                           onPressed: () async {
                             Get.off(
                               (() => const MyHomePage()),
@@ -238,9 +232,9 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                             Radius.circular(10)))),
                               ),
                               onPressed: () {},
-                              child: const Iconify(
+                              child: Iconify(
                                 Bi.google,
-                                color: coquilicot,
+                                color: Theme.of(context).cardColor,
                               )),
                         ),
                         Animate(
@@ -256,9 +250,9 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                             Radius.circular(10)))),
                               ),
                               onPressed: () {},
-                              child: const Iconify(
+                              child: Iconify(
                                 Bi.facebook,
-                                color: coquilicot,
+                                color: Theme.of(context).cardColor,
                               )),
                         )
                       ],

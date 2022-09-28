@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/bi.dart';
-import 'package:lesbeats/widgets/theme.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 
 class MySignupPage extends StatefulWidget {
@@ -52,10 +51,6 @@ class _MySignupPageState extends State<MySignupPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Username"),
-                          const SizedBox(
-                            height: 10,
-                          ),
                           SizedBox(
                             height: 50,
                             child: TextFormField(
@@ -67,6 +62,8 @@ class _MySignupPageState extends State<MySignupPage> {
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.never,
                                 enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.black12),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 label: Text("Enter your username"),
@@ -81,10 +78,6 @@ class _MySignupPageState extends State<MySignupPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Email"),
-                          const SizedBox(
-                            height: 10,
-                          ),
                           SizedBox(
                             height: 50,
                             child: TextFormField(
@@ -97,6 +90,8 @@ class _MySignupPageState extends State<MySignupPage> {
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.never,
                                 enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.black12),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 label: Text("Enter your email"),
@@ -111,10 +106,6 @@ class _MySignupPageState extends State<MySignupPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Password"),
-                          const SizedBox(
-                            height: 10,
-                          ),
                           SizedBox(
                             height: 50,
                             child: TextFormField(
@@ -137,6 +128,8 @@ class _MySignupPageState extends State<MySignupPage> {
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.never,
                                 enabledBorder: const OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.black12),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 label: const Text("Enter your password"),
@@ -151,10 +144,6 @@ class _MySignupPageState extends State<MySignupPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Confirm"),
-                          const SizedBox(
-                            height: 10,
-                          ),
                           SizedBox(
                             height: 50,
                             child: TextFormField(
@@ -177,6 +166,8 @@ class _MySignupPageState extends State<MySignupPage> {
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.never,
                                 enabledBorder: const OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.black12),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 label: const Text("Confirm your password"),
@@ -189,16 +180,13 @@ class _MySignupPageState extends State<MySignupPage> {
                         height: 40,
                       ),
                       ElevatedButton(
-                          style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
-                                  const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10)))),
-                              fixedSize: MaterialStateProperty.all(
-                                const Size.fromHeight(50),
-                              ),
-                              backgroundColor:
-                                  MaterialStateProperty.all(coquilicot)),
+                          style: ElevatedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              fixedSize: const Size.fromHeight(50),
+                              elevation: 0,
+                              backgroundColor: Theme.of(context).cardColor),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               setState(() {
@@ -255,9 +243,9 @@ class _MySignupPageState extends State<MySignupPage> {
                                             Radius.circular(10)))),
                               ),
                               onPressed: () {},
-                              child: const Iconify(
+                              child: Iconify(
                                 Bi.google,
-                                color: coquilicot,
+                                color: Theme.of(context).cardColor,
                               )),
                           OutlinedButton(
                               style: ButtonStyle(
@@ -269,9 +257,9 @@ class _MySignupPageState extends State<MySignupPage> {
                                             Radius.circular(10)))),
                               ),
                               onPressed: () {},
-                              child: const Iconify(
+                              child: Iconify(
                                 Bi.facebook,
-                                color: coquilicot,
+                                color: Theme.of(context).cardColor,
                               ))
                         ],
                       ),

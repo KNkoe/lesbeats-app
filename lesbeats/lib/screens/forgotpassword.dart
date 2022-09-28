@@ -78,14 +78,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 height: 30,
               ),
               ElevatedButton(
-                  style: ButtonStyle(
-                      shape: MaterialStateProperty.all(
-                          const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)))),
-                      fixedSize:
-                          MaterialStateProperty.all(const Size.fromHeight(50)),
-                      backgroundColor: MaterialStateProperty.all(coquilicot)),
+                  style: ElevatedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      fixedSize: const Size.fromHeight(50),
+                      elevation: 0,
+                      backgroundColor: Theme.of(context).cardColor),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       setState(() {

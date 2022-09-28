@@ -11,14 +11,17 @@ const Color malachite = Color(0xff09E85E);
 
 ThemeData lightTheme = ThemeData(
     appBarTheme:
-        const AppBarTheme(backgroundColor: starCommandblue, elevation: 0),
+        const AppBarTheme(backgroundColor: Color(0xff2a9d8f), elevation: 0),
     bottomNavigationBarTheme:
         const BottomNavigationBarThemeData(selectedItemColor: background),
     floatingActionButtonTheme:
-        const FloatingActionButtonThemeData(backgroundColor: starCommandblue),
-    primaryColor: starCommandblue,
-    backgroundColor: babypowder,
-    popupMenuTheme: const PopupMenuThemeData(elevation: 2),
+        const FloatingActionButtonThemeData(backgroundColor: Color(0xffe76f51)),
+    primaryColor: const Color(0xff2a9d8f),
+    backgroundColor: const Color(0xffFCFFF7),
+    cardColor: const Color(0xffe76f51),
+    indicatorColor: const Color(0xffe76f51),
+    popupMenuTheme:
+        const PopupMenuThemeData(color: Color(0xffFCFFF7), elevation: 2),
     textTheme: const TextTheme(
       headline1: TextStyle(),
       headline2: TextStyle(),
@@ -33,6 +36,4 @@ const LinearGradient backgroundGradient = LinearGradient(
     end: Alignment.topRight,
     colors: [Color(0xff0093E9), starCommandblue]);
 
-
-// background-color: #0093E9;
-// background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+ThemeData darkTheme = ThemeData(backgroundColor: const Color(0xff264653));

@@ -34,63 +34,36 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
     "Vicous"
   ];
 
-  bool _viewAllArtists = false;
-  final PageController _pageController = PageController();
-
   // bool _preview = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).cardColor,
+      ),
       body: Container(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).cardColor,
         height: Get.height,
         width: Get.width,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Top Songwriters",
-                    style: TextStyle(color: Colors.white60),
-                  ),
-                  // InkWell(
-                  //   onTap: () {
-                  //     setState(() {
-                  //       _viewAllArtists = !_viewAllArtists;
-                  //     });
-                  //   },
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.all(8),
-                  //     child: _viewAllArtists
-                  //         ? Text(
-                  //             "View less",
-                  //             style: TextStyle(
-                  //                 decoration: TextDecoration.underline,
-                  //                 color: Colors.white54),
-                  //           )
-                  //         : Text(
-                  //             "View more",
-                  //             style: TextStyle(
-                  //                 decoration: TextDecoration.underline,
-                  //                 color: Colors.white54),
-                  //           ),
-                  //   ),
-                  // )
-                ],
+            const Padding(
+              padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+              child: Text(
+                "Top Songwriters",
+                style: TextStyle(color: Colors.white60),
               ),
             ),
             const SizedBox(
               height: 20,
             ),
             SizedBox(
-              height: 140,
+              height: Get.height * 0.2,
               child: ListView(
                 scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
                 children: topArtists
                     .map((artist) => Row(
                           children: [
@@ -150,11 +123,12 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
             ),
             Expanded(
               child: ListView.builder(
+                  physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Container(
                       padding: const EdgeInsets.all(30),
                       child: Card(
-                        elevation: 15,
+                        elevation: 20,
                         child: Padding(
                           padding: const EdgeInsets.all(14),
                           child: Column(
@@ -179,7 +153,9 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
                                         children: [
                                           const Text(
                                             "Sunshine",
-                                            style: TextStyle(fontSize: 18),
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.white),
                                           ),
                                           const SizedBox(
                                             height: 4,
@@ -187,7 +163,7 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
                                           Text(
                                             artists[index],
                                             style: const TextStyle(
-                                                color: Colors.black54),
+                                                color: Colors.white54),
                                           ),
                                         ],
                                       )
@@ -197,13 +173,13 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
                                     children: [
                                       Text(
                                         "Posted ${DateTime.now().toString().split(" ")[0]}",
-                                        style:
-                                            const TextStyle(color: Colors.grey),
+                                        style: const TextStyle(
+                                            color: Colors.white38),
                                       ),
                                       PopupMenuButton(
                                           icon: const Icon(
                                             Icons.more_vert,
-                                            color: Colors.black54,
+                                            color: Colors.white,
                                           ),
                                           itemBuilder: ((context) => [
                                                 PopupMenuItem(
@@ -278,7 +254,7 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
                                   "Verse 1\nEverything is soo different now\nI never thought I'd be the one to say that I'm in love\nI never caught myself obessing over one girl\nAnd I promise its the best feeling I ever had\nI spend most night just thinking about it\nGirl got me crazy I only hear this when I read about it\nIt's soo much like in pradise,\nI mean everytime I wake up next to her I can't believe my eyes,\nVerse 1\nEverything is soo different now\nI never thought I'd be the one to say that I'm in love\nI never caught myself obessing over one girl\nAnd I promise its the best feeling I ever had\nI spend most night just thinking about it\nGirl got me crazy I only hear this when I read about it\nIt's soo much like in pradise,\nI mean everytime I wake up next to her I can't believe my eyes",
                                   overflow: TextOverflow.fade,
                                   style: TextStyle(
-                                      color: Colors.black54, fontSize: 18),
+                                      color: Colors.white, fontSize: 18),
                                 ),
                               ),
                               Padding(
@@ -294,12 +270,13 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
                                             onPressed: () {},
                                             icon: const Icon(
                                               Icons.thumb_up,
-                                              color: Colors.black45,
+                                              color: Colors.white,
                                             ))
                                       ],
                                     ),
                                     OutlinedButton(
                                         style: OutlinedButton.styleFrom(
+                                            backgroundColor: Colors.white,
                                             fixedSize:
                                                 const Size.fromWidth(100),
                                             shape: RoundedRectangleBorder(
