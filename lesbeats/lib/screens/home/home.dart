@@ -1,8 +1,8 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/screens/chats/chats.dart';
-import 'package:lesbeats/screens/home/dashboard/dashboard.dart';
-import 'package:lesbeats/screens/home/widgets/upload_beat.dart';
+import 'package:lesbeats/screens/home/dashboard.dart';
+import 'package:lesbeats/screens/home/upload_beat.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 
 class MyHomePage extends StatefulWidget {
