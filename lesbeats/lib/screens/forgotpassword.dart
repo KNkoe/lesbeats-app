@@ -64,6 +64,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       decoration: const InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black12),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         label: Text("Enter your email"),

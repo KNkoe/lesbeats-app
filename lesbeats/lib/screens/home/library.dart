@@ -1,0 +1,339 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
+
+import 'package:lesbeats/widgets/theme.dart';
+
+import '../../widgets/animation.dart';
+
+class MyLibrary extends StatefulWidget {
+  const MyLibrary({super.key});
+
+  @override
+  State<MyLibrary> createState() => _MyLibraryState();
+}
+
+class _MyLibraryState extends State<MyLibrary> {
+  final List<String> followedArtists = [
+    "Mjo Konondo",
+    "Funky Debelicous",
+    "Goodey",
+    "Delicous",
+    "Vicous"
+  ];
+
+  bool _viewAllArtists = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Theme.of(context).backgroundColor,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Followed Artists",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _viewAllArtists = !_viewAllArtists;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: _viewAllArtists
+                          ? Text(
+                              "View less",
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Theme.of(context).primaryColor),
+                            )
+                          : Text(
+                              "View more",
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              height: 140,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                children: followedArtists
+                    .map((artist) => Row(
+                          children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Animate(
+                              effects: const [
+                                FadeEffect(),
+                                SlideEffect(
+                                    begin: Offset(1, 0), end: Offset(0, 0))
+                              ],
+                              delay: delay(followedArtists.indexOf(artist)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                        right: 10, left: 10),
+                                    height: 90,
+                                    width: 90,
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: AssetImage(
+                                                'assets/images/artist.jpg'))),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(artist),
+                                      ),
+                                      if (followedArtists.indexOf(artist) == 0)
+                                        const Icon(
+                                          Icons.verified,
+                                          color: malachite,
+                                          size: 18,
+                                        )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ))
+                    .toList(),
+              ),
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Recently played",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _viewAllArtists = !_viewAllArtists;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: _viewAllArtists
+                          ? Text(
+                              "View less",
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Theme.of(context).primaryColor),
+                            )
+                          : Text(
+                              "View more",
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              height: 180,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                children: followedArtists
+                    .map((artist) => Row(
+                          children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Animate(
+                              effects: const [
+                                FadeEffect(),
+                                SlideEffect(
+                                    begin: Offset(1, 0), end: Offset(0, 0))
+                              ],
+                              delay: delay(followedArtists.indexOf(artist)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                        right: 10, left: 10),
+                                    height: 120,
+                                    width: 120,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        image: const DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: AssetImage(
+                                                'assets/images/artist.jpg'))),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Text(
+                                      artist,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(
+                                          artist,
+                                          style: const TextStyle(
+                                              color: Colors.black54),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ))
+                    .toList(),
+              ),
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Favourites",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _viewAllArtists = !_viewAllArtists;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: _viewAllArtists
+                          ? Text(
+                              "View less",
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Theme.of(context).primaryColor),
+                            )
+                          : Text(
+                              "View more",
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              height: Get.height * 0.6,
+              child: ListView(
+                shrinkWrap: true,
+                children: followedArtists
+                    .map((artist) => Animate(
+                            effects: const [
+                              FadeEffect(),
+                              SlideEffect(
+                                  begin: Offset(1, 0), end: Offset(0, 0))
+                            ],
+                            delay: delay(followedArtists.indexOf(artist)),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.only(left: 10),
+                              minVerticalPadding: 30,
+                              leading: Container(
+                                height: 70,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    image: const DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/artist.jpg"))),
+                                child: IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(
+                                      Icons.play_circle,
+                                      color: Colors.white,
+                                    )),
+                              ),
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(artist),
+                                  Row(
+                                    children: const [
+                                      SizedBox(
+                                        width: 6,
+                                      ),
+                                      Text("R250")
+                                    ],
+                                  )
+                                ],
+                              ),
+                              subtitle: const Padding(
+                                padding: EdgeInsets.only(top: 6),
+                                child: Text("Artist | genre"),
+                              ),
+                            )))
+                    .toList(),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

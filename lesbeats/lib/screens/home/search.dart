@@ -19,26 +19,17 @@ class _MySearchScreenState extends State<MySearchScreen> {
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
                 height: 40,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Search",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      icon: const Icon(Icons.clear))
-                ],
+              Text(
+                "Search",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5!
+                    .copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 10,
@@ -60,35 +51,21 @@ class _MySearchScreenState extends State<MySearchScreen> {
                 height: 40,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: const [
-                      Icon(
-                        Icons.schedule,
+                children: const [
+                  Icon(
+                    Icons.schedule,
+                    color: Colors.black26,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "Recent searches",
+                    style: TextStyle(
                         color: Colors.black26,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Recent searches",
-                        style: TextStyle(
-                            color: Colors.black26,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                      )
-                    ],
-                  ),
-                  InkWell(
-                    onTap: () {},
-                    child: const Text(
-                      "See all",
-                      style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline),
-                    ),
-                  ),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  )
                 ],
               ),
               const SizedBox(
@@ -97,6 +74,7 @@ class _MySearchScreenState extends State<MySearchScreen> {
               Expanded(
                   child: ListView(
                 shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
                 children: const [Text("data")],
               ))
             ],

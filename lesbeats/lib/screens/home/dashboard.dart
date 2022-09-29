@@ -2,23 +2,15 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/jam.dart';
-import 'package:lesbeats/screens/home/genre.dart';
-import 'package:lesbeats/screens/home/lyrics.dart';
-import 'package:lesbeats/screens/home/search.dart';
+
 import 'package:lesbeats/widgets/theme.dart';
-import 'package:iconify_flutter/icons/ion.dart';
-import 'package:iconify_flutter/icons/bx.dart';
-import 'package:iconify_flutter/icons/zondicons.dart';
-import 'package:iconify_flutter/icons/ic.dart';
-import 'package:iconify_flutter/icons/bxs.dart';
-import 'package:iconify_flutter/icons/teenyicons.dart';
 
 import '../../widgets/animation.dart';
 import 'activityfeed.dart';
 import 'artists.dart';
+import 'drawer.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -54,32 +46,15 @@ class _DashboardState extends State<Dashboard> {
               size: 32,
               color: Theme.of(context).backgroundColor,
             )),
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "Les",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontFamily: GoogleFonts.jura().fontFamily,
-                  color: Theme.of(context).backgroundColor),
-            ),
-            Text(
-              "beats",
-              style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                  fontFamily: GoogleFonts.jura().fontFamily,
-                  color: Theme.of(context).backgroundColor),
-            ),
-          ],
-        ),
+        title: const Image(
+            height: 250,
+            width: 130,
+            image: AssetImage("assets/images/lesbeats.png")),
         actions: [
           IconButton(
               onPressed: () {
-                showBottomSheet(
-                    context: context,
-                    builder: (context) => const MySearchScreen());
+                showModalBottomSheet(
+                    context: context, builder: (context) => Container());
               },
               icon: Badge(
                   badgeColor: Theme.of(context).indicatorColor,
@@ -226,122 +201,7 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
       ),
-      drawer: SafeArea(
-        child: Drawer(
-          elevation: 0,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 200,
-                  width: double.infinity,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        height: 80,
-                        width: 100,
-                        decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage("assets/images/rnb.jpg"))),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          "Katleho Nkoe",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          "@Vicious_kadd",
-                          style: TextStyle(color: Colors.black54),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    children: [
-                      const Divider(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      ListTile(
-                        onTap: () {},
-                        leading: const Iconify(Ion.rocket),
-                        title: const Text("Trending"),
-                      ),
-                      ListTile(
-                        onTap: () {
-                          Get.to(() => const MyGenre());
-                          _scaffoldKey.currentState!.closeDrawer();
-                        },
-                        leading: const Iconify(Bx.bxs_music),
-                        title: const Text("Genres"),
-                      ),
-                      ListTile(
-                        onTap: () {
-                          Get.to(() => const MyLyricsScreen());
-                          _scaffoldKey.currentState!.closeDrawer();
-                        },
-                        leading: const Iconify(Zondicons.music_artist),
-                        title: const Text("Lyrics"),
-                      ),
-                      const ListTile(
-                        title: Text(
-                          "My Collection",
-                          style: TextStyle(color: Colors.black38),
-                        ),
-                      ),
-                      ListTile(
-                        onTap: () {},
-                        leading: const Iconify(Ic.outline_favorite),
-                        title: const Text("Favourites"),
-                      ),
-                      ListTile(
-                        onTap: () {},
-                        leading: const Iconify(Bxs.like),
-                        title: const Text("Following"),
-                      ),
-                    ],
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: const Icon(Icons.settings),
-                  title: const Text("Settings"),
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: const Icon(Icons.share),
-                  title: const Text("Tell a friend"),
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: const Icon(Icons.help),
-                  title: const Text("Help and Feadback"),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
     );
   }
 }

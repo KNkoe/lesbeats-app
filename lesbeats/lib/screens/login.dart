@@ -21,7 +21,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
   final _formKey = GlobalKey<FormState>();
 
-  bool _isLoggin = false;
+  final bool _isLoggin = false;
   bool _obscureText = true;
 
   @override
@@ -46,10 +46,14 @@ class _MyLoginPageState extends State<MyLoginPage> {
                       color: Theme.of(context).primaryColor,
                       borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(100))),
-                  child: Image(
-                      height: 400,
-                      width: Get.width * 0.6,
-                      image: const AssetImage("assets/images/lesbeats.png")),
+                  child: Animate(
+                    effects: const [ShimmerEffect(size: 24)],
+                    delay: 1000.ms,
+                    child: Image(
+                        height: 400,
+                        width: Get.width * 0.6,
+                        image: const AssetImage("assets/images/lesbeats.png")),
+                  ),
                 ),
               ),
               const SizedBox(

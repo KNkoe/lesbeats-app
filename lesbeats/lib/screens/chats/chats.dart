@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lesbeats/screens/chats/message.dart';
@@ -30,7 +31,6 @@ class _MyChatScreenState extends State<MyChatScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: const Text("Messages"),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
       ),
@@ -110,16 +110,21 @@ class _MyChatScreenState extends State<MyChatScreen> {
                                   Column(
                                     children: [
                                       Container(
-                                        margin: const EdgeInsets.all(10),
-                                        decoration: const BoxDecoration(
-                                            color: malachite,
-                                            shape: BoxShape.circle),
-                                        padding: const EdgeInsets.all(6),
-                                        child: const Text(
-                                          "1",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
+                                          margin: const EdgeInsets.all(10),
+                                          decoration: const BoxDecoration(
+                                              color: malachite,
+                                              shape: BoxShape.circle),
+                                          padding: const EdgeInsets.all(6),
+                                          child: Badge(
+                                            showBadge: false,
+                                            badgeColor: Theme.of(context)
+                                                .indicatorColor,
+                                            child: const Text(
+                                              "2",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          )),
                                       const Text("15:09")
                                     ],
                                   )

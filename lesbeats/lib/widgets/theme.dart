@@ -10,6 +10,7 @@ const Color coquilicot = Color(0xffFC440F);
 const Color malachite = Color(0xff09E85E);
 
 ThemeData lightTheme = ThemeData(
+    scaffoldBackgroundColor: const Color(0xffFCFFF7),
     appBarTheme:
         const AppBarTheme(backgroundColor: Color(0xff2a9d8f), elevation: 0),
     bottomNavigationBarTheme:
@@ -20,6 +21,9 @@ ThemeData lightTheme = ThemeData(
     backgroundColor: const Color(0xffFCFFF7),
     cardColor: const Color(0xff2a9d8f),
     indicatorColor: const Color(0xffe76f51),
+    inputDecorationTheme: const InputDecorationTheme(
+        focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Color(0xff2a9d8f)))),
     popupMenuTheme:
         const PopupMenuThemeData(color: Color(0xffFCFFF7), elevation: 2),
     textTheme: const TextTheme(
