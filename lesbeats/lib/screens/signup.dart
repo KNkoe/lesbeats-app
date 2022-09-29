@@ -186,7 +186,7 @@ class _MySignupPageState extends State<MySignupPage> {
                                       BorderRadius.all(Radius.circular(10))),
                               fixedSize: const Size.fromHeight(50),
                               elevation: 0,
-                              backgroundColor: Theme.of(context).cardColor),
+                              backgroundColor: Theme.of(context).primaryColor),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               setState(() {
@@ -245,7 +245,7 @@ class _MySignupPageState extends State<MySignupPage> {
                               onPressed: () {},
                               child: Iconify(
                                 Bi.google,
-                                color: Theme.of(context).cardColor,
+                                color: Theme.of(context).primaryColor,
                               )),
                           OutlinedButton(
                               style: ButtonStyle(
@@ -259,7 +259,7 @@ class _MySignupPageState extends State<MySignupPage> {
                               onPressed: () {},
                               child: Iconify(
                                 Bi.facebook,
-                                color: Theme.of(context).cardColor,
+                                color: Theme.of(context).primaryColor,
                               ))
                         ],
                       ),

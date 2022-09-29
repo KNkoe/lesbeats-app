@@ -191,14 +191,14 @@ class _MyProfilePageState extends State<MyProfilePage> {
                             selectedIndex = index;
                           });
                         },
-                        indicatorColor: coquilicot,
+                        indicatorColor: Theme.of(context).primaryColor,
                         tabs: [
                           Tab(
                             child: Container(
-                              decoration: const BoxDecoration(
-                                  color: coquilicot,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(4))),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(4))),
                               padding: const EdgeInsets.all(10),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -210,10 +210,10 @@ class _MyProfilePageState extends State<MyProfilePage> {
                           ),
                           Tab(
                             child: Container(
-                              decoration: const BoxDecoration(
-                                  color: coquilicot,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(4))),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(4))),
                               padding: const EdgeInsets.all(10),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

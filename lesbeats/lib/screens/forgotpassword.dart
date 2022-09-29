@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lesbeats/widgets/theme.dart';
-
 import 'package:wc_form_validators/wc_form_validators.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -83,7 +81,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       fixedSize: const Size.fromHeight(50),
                       elevation: 0,
-                      backgroundColor: Theme.of(context).cardColor),
+                      backgroundColor: Theme.of(context).primaryColor),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       setState(() {

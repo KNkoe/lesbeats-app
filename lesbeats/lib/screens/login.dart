@@ -6,7 +6,6 @@ import 'package:iconify_flutter/icons/bi.dart';
 import 'package:lesbeats/screens/forgotpassword.dart';
 import 'package:lesbeats/screens/home/home.dart';
 import 'package:lesbeats/screens/signup.dart';
-import 'package:lesbeats/widgets/theme.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 
 class MyLoginPage extends StatefulWidget {
@@ -44,7 +43,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   width: double.infinity,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
+                      color: Theme.of(context).primaryColor,
                       borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(100))),
                   child: Image(
@@ -173,7 +172,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                       BorderRadius.all(Radius.circular(10))),
                               fixedSize: const Size.fromHeight(50),
                               elevation: 0,
-                              backgroundColor: Theme.of(context).cardColor),
+                              backgroundColor: Theme.of(context).primaryColor),
                           onPressed: () async {
                             Get.off(
                               (() => const MyHomePage()),
@@ -234,7 +233,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                               onPressed: () {},
                               child: Iconify(
                                 Bi.google,
-                                color: Theme.of(context).cardColor,
+                                color: Theme.of(context).primaryColor,
                               )),
                         ),
                         Animate(
@@ -252,7 +251,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                               onPressed: () {},
                               child: Iconify(
                                 Bi.facebook,
-                                color: Theme.of(context).cardColor,
+                                color: Theme.of(context).primaryColor,
                               )),
                         )
                       ],

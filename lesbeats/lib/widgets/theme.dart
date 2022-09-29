@@ -15,10 +15,10 @@ ThemeData lightTheme = ThemeData(
     bottomNavigationBarTheme:
         const BottomNavigationBarThemeData(selectedItemColor: background),
     floatingActionButtonTheme:
-        const FloatingActionButtonThemeData(backgroundColor: Color(0xffe76f51)),
+        const FloatingActionButtonThemeData(backgroundColor: Color(0xff2a9d8f)),
     primaryColor: const Color(0xff2a9d8f),
     backgroundColor: const Color(0xffFCFFF7),
-    cardColor: const Color(0xffe76f51),
+    cardColor: const Color(0xff2a9d8f),
     indicatorColor: const Color(0xffe76f51),
     popupMenuTheme:
         const PopupMenuThemeData(color: Color(0xffFCFFF7), elevation: 2),
