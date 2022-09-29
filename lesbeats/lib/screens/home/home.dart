@@ -2,6 +2,7 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:lesbeats/screens/chats/chats.dart';
 import 'package:lesbeats/screens/home/dashboard.dart';
+import 'package:lesbeats/screens/home/search.dart';
 import 'package:lesbeats/screens/home/upload_beat.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 
@@ -21,7 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         return const Dashboard();
       case 1:
-        return const MyChatScreen();
+        return const MySearchScreen();
       case 2:
         return const Center(child: Text("Favourites"));
       case 3:
@@ -62,8 +63,8 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: AnimatedBottomNavigationBar(
         icons: const [
           Icons.home_filled,
-          Icons.chat_bubble,
-          Icons.library_music,
+          Icons.search_sharp,
+          Icons.library_music_outlined,
           Icons.person
         ],
         inactiveColor: Colors.grey,

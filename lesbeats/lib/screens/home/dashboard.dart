@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
@@ -80,11 +81,13 @@ class _DashboardState extends State<Dashboard> {
                     context: context,
                     builder: (context) => const MySearchScreen());
               },
-              icon: const Iconify(
-                Teenyicons.search_solid,
-                color: Colors.white,
-                size: 22,
-              ))
+              icon: Badge(
+                  badgeColor: Theme.of(context).indicatorColor,
+                  badgeContent: const Text(
+                    "4",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  child: const Icon(Icons.notifications)))
         ],
       ),
       body: Container(
