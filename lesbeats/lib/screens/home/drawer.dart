@@ -10,6 +10,7 @@ import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/bx.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
 import 'package:iconify_flutter/icons/ri.dart';
+import 'package:lesbeats/screens/home/settings.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
@@ -120,7 +121,10 @@ class CustomDrawer extends StatelessWidget {
                     ),
                     const Divider(),
                     ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        Get.to(() => const MySettings());
+                        _scaffoldKey.currentState!.closeDrawer();
+                      },
                       leading: const Icon(Icons.settings),
                       title: const Text("Settings"),
                     ),

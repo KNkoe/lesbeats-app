@@ -8,6 +8,7 @@ class Track {
   final int trackNO;
   final String path;
   final DateTime uploadedAt;
+  double price;
   Track({
     required this.id,
     this.albumId = "",
@@ -15,6 +16,7 @@ class Track {
     required this.title,
     required this.duration,
     this.trackNO = 0,
+    this.price = 0,
     required this.path,
     required this.uploadedAt,
   });

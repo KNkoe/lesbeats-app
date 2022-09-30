@@ -57,6 +57,26 @@ class _UploadBeatState extends State<UploadBeat> {
   }
 
   final PageController _pageController = PageController();
+  final TextEditingController _genreController = TextEditingController();
+
+  List<String> genres = [
+    "Amapiano",
+    "Afrobeat",
+    "Dance",
+    "Hiphop",
+    "Trap",
+    "House",
+    "Famo",
+    "Rock",
+    "Pop",
+    "Deep House",
+    "Other"
+  ];
+
+  String selectedGenre = "";
+  bool _isGenreFocused = false;
+  bool _isFree = false;
+  bool _agree = false;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +113,52 @@ class _UploadBeatState extends State<UploadBeat> {
               const SizedBox(
                 height: 20,
               ),
+              SizedBox(
+                height: 50,
+                child: TextField(
+                  controller: _genreController,
+                  onChanged: ((value) {
+                    setState(() {
+                      _isGenreFocused = true;
+                    });
+                    _genreController.clear();
+                  }),
+                  decoration: dialogInputdecoration.copyWith(
+                      prefix: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black26),
+                            borderRadius: BorderRadius.circular(6)),
+                        child: Text(selectedGenre),
+                      ),
+                      label: const Text("Genre")),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              if (_isGenreFocused)
+                Wrap(
+                  children: genres
+                      .map((genre) => Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: OutlinedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    selectedGenre = genre;
+                                    _isGenreFocused = false;
+                                  });
+                                },
+                                child: Text(genre)),
+                          ))
+                      .toList(),
+                ),
+              const SizedBox(
+                height: 20,
+              ),
               ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor),
                   icon: const Icon(Icons.photo),
                   onPressed: () {
                     pickImage();
@@ -111,6 +176,8 @@ class _UploadBeatState extends State<UploadBeat> {
                 height: 20,
               ),
               ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor),
                   icon: const Icon(Icons.audio_file),
                   onPressed: () {
                     pickfile();
@@ -157,8 +224,106 @@ class _UploadBeatState extends State<UploadBeat> {
         ),
         AlertDialog(
           title: Column(
-            children: const [],
+            children: [
+              const Text("Upload your beat"),
+              SizedBox(
+                height: 30,
+                width: screenSize(context).width * 0.9,
+              ),
+              SizedBox(
+                height: 50,
+                child: TextField(
+                  keyboardType: TextInputType.phone,
+                  enabled: !_isFree,
+                  decoration: dialogInputdecoration.copyWith(
+                      prefixText: 'R ', label: const Text("Price")),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Checkbox(
+                      shape: const CircleBorder(),
+                      value: _isFree,
+                      onChanged: (value) {
+                        setState(() {
+                          _isFree = value!;
+                        });
+                      }),
+                  const SizedBox(
+                    width: 4,
+                  ),
+                  const Text(
+                    "Free",
+                    style:
+                        TextStyle(fontWeight: FontWeight.normal, fontSize: 16),
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Checkbox(
+                      shape: const CircleBorder(),
+                      value: _agree,
+                      onChanged: (value) {
+                        setState(() {
+                          _agree = value!;
+                        });
+                      }),
+                  const SizedBox(
+                    width: 4,
+                  ),
+                  const Text(
+                    "Agree to the",
+                    style:
+                        TextStyle(fontWeight: FontWeight.normal, fontSize: 16),
+                  ),
+                  InkWell(
+                    onTap: () {},
+                    child: const Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: Text(
+                        "terms and conditions",
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: Colors.blue,
+                            fontSize: 16),
+                      ),
+                    ),
+                  )
+                ],
+              )
+            ],
           ),
+          actionsAlignment: MainAxisAlignment.spaceAround,
+          actions: [
+            OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20))),
+                onPressed: () {
+                  _pageController.previousPage(
+                      duration: const Duration(milliseconds: 750),
+                      curve: Curves.ease);
+                },
+                child: const Text("Back")),
+            ElevatedButton.icon(
+                icon: const Icon(Icons.file_upload_outlined),
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20))),
+                onPressed: () {
+                  _pageController.nextPage(
+                      duration: const Duration(milliseconds: 750),
+                      curve: Curves.ease);
+                },
+                label: const Text("upload"))
+          ],
         )
       ],
     );

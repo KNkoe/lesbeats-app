@@ -71,7 +71,7 @@ class _DashboardState extends State<Dashboard> {
         width: Get.width,
         child: Container(
           margin: const EdgeInsets.only(top: 10),
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(50), topRight: Radius.circular(50)),
