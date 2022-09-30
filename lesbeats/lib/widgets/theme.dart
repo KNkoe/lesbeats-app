@@ -21,6 +21,7 @@ ThemeData lightTheme = ThemeData(
     backgroundColor: const Color(0xffFCFFF7),
     cardColor: const Color(0xff2a9d8f),
     indicatorColor: const Color(0xffe76f51),
+    canvasColor: const Color(0xfff4a261),
     inputDecorationTheme: const InputDecorationTheme(
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Color(0xff2a9d8f)))),

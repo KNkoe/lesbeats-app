@@ -139,16 +139,29 @@ class _DashboardState extends State<Dashboard> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Container(
-                                      margin: const EdgeInsets.only(
-                                          right: 10, left: 10),
-                                      height: 90,
-                                      width: 90,
-                                      decoration: const BoxDecoration(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: AssetImage(
-                                                  'assets/images/artist.jpg'))),
+                                          gradient: LinearGradient(colors: [
+                                            Theme.of(context).canvasColor,
+                                            Theme.of(context).primaryColor
+                                          ])),
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                            right: 10, left: 10),
+                                        height: 90,
+                                        width: 90,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Theme.of(context)
+                                                    .backgroundColor,
+                                                width: 2),
+                                            shape: BoxShape.circle,
+                                            image: const DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: AssetImage(
+                                                    'assets/images/artist.jpg'))),
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 10,
