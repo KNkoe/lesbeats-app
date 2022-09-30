@@ -6,8 +6,11 @@ import 'package:lesbeats/screens/login.dart';
 import 'package:lesbeats/screens/signup.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   configLoading();
   runApp(const MyApp());
 }

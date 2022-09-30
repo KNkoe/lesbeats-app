@@ -14,6 +14,7 @@ class MySignupPage extends StatefulWidget {
 
 class _MySignupPageState extends State<MySignupPage> {
   final PageController pageController = PageController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
@@ -48,6 +49,33 @@ class _MySignupPageState extends State<MySignupPage> {
                   ),
                   Column(
                     children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 50,
+                            child: TextFormField(
+                              validator: (value) => value!.isEmpty
+                                  ? "Full name are required"
+                                  : null,
+                              controller: _nameController,
+                              decoration: const InputDecoration(
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.never,
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.black12),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                label: Text("Enter your full name"),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

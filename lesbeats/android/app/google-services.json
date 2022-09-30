@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "874256917447",
+    "project_id": "lesbeats-d6411",
+    "storage_bucket": "lesbeats-d6411.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874256917447:android:2a9889bc9122266b1d2fe2",
+        "android_client_info": {
+          "package_name": "com.mechintech.lesbeats"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "874256917447-7lob2dp03libs9fdc6f5f9r3f31ssl4i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDt6D8pWl8tJUlP9Bs-ylDh0W_zI6I4Lss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "874256917447-7lob2dp03libs9fdc6f5f9r3f31ssl4i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "874256917447-r7uqt53ganopqgjegjo5p9iv5786985p.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lesbeats"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

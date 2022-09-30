@@ -75,7 +75,7 @@ class _MySearchScreenState extends State<MySearchScreen> {
                   child: ListView(
                 shrinkWrap: true,
                 physics: const BouncingScrollPhysics(),
-                children: const [Text("data")],
+                children: const [],
               ))
             ],
           ),
