@@ -55,6 +55,7 @@ dependencies:
   badges: ^2.0.3
   firebase_core: ^1.24.0
   firebase_auth: ^3.11.0
+  smooth_page_indicator: ^1.0.0+2
 
 dev_dependencies:
   flutter_test:

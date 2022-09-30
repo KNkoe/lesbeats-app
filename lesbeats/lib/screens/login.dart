@@ -276,7 +276,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     InkWell(
                       onTap: () {
                         Get.to(() => const MySignupPage(),
-                            transition: Transition.rightToLeft,
+                            transition: Transition.downToUp,
                             duration: const Duration(seconds: 1));
                       },
                       child: const Padding(

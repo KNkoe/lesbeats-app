@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/bi.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 
 class MySignupPage extends StatefulWidget {
@@ -13,7 +14,7 @@ class MySignupPage extends StatefulWidget {
 }
 
 class _MySignupPageState extends State<MySignupPage> {
-  final PageController pageController = PageController();
+  final PageController _pageController = PageController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -21,304 +22,356 @@ class _MySignupPageState extends State<MySignupPage> {
 
   final _formKey = GlobalKey<FormState>();
 
-  bool _isRegistering = false;
+  final bool _isRegistering = false;
   bool _obscureText = true;
+
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentPage = 0;
+    _pageController.addListener(() {
+      setState(() {
+        _currentPage = _pageController.page!.toInt();
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  const Text(
-                    "Register",
-                    style: TextStyle(fontSize: 20, color: Colors.black54),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Column(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 50,
-                            child: TextFormField(
-                              validator: (value) => value!.isEmpty
-                                  ? "Full name are required"
-                                  : null,
-                              controller: _nameController,
-                              decoration: const InputDecoration(
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.black12),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                label: Text("Enter your full name"),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 50,
-                            child: TextFormField(
-                              validator: (value) => value!.isEmpty
-                                  ? "Username is required"
-                                  : null,
-                              controller: _usernameController,
-                              decoration: const InputDecoration(
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.black12),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                label: Text("Enter your username"),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 50,
-                            child: TextFormField(
-                              controller: _emailController,
-                              validator: Validators.compose([
-                                Validators.required('Email is required'),
-                                Validators.email('Invalid email address'),
-                              ]),
-                              decoration: const InputDecoration(
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.black12),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                label: Text("Enter your email"),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 50,
-                            child: TextFormField(
-                              validator: Validators.compose([
-                                Validators.required('Password is required'),
-                                Validators.minLength(6, "Password too short")
-                              ]),
-                              obscureText: _obscureText,
-                              controller: _passwordController,
-                              decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscureText = !_obscureText;
-                                      });
-                                    },
-                                    icon: Icon(_obscureText
-                                        ? Icons.remove_red_eye_rounded
-                                        : Icons.remove_red_eye_outlined)),
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                                enabledBorder: const OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.black12),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                label: const Text("Enter your password"),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 50,
-                            child: TextFormField(
-                              validator: Validators.compose([
-                                Validators.required('Password is required'),
-                                Validators.minLength(6, "Password too short")
-                              ]),
-                              obscureText: _obscureText,
-                              controller: _passwordController,
-                              decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscureText = !_obscureText;
-                                      });
-                                    },
-                                    icon: Icon(_obscureText
-                                        ? Icons.remove_red_eye_rounded
-                                        : Icons.remove_red_eye_outlined)),
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                                enabledBorder: const OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.black12),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                label: const Text("Confirm your password"),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              fixedSize: const Size.fromHeight(50),
-                              elevation: 0,
-                              backgroundColor: Theme.of(context).primaryColor),
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              setState(() {
-                                _isRegistering = true;
-                              });
-
-                              setState(() {
-                                _isRegistering = false;
-                              });
-                            }
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _isRegistering
-                                  ? const SizedBox(
-                                      height: 16,
-                                      width: 16,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          Colors.white,
-                                        ),
-                                      ),
-                                    )
-                                  : const Text(
-                                      "Sign up",
-                                      style: TextStyle(fontSize: 18),
-                                    )
-                            ],
-                          ))
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Column(
-                    children: [
-                      const Text("or register in using"),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          OutlinedButton(
-                              style: ButtonStyle(
-                                fixedSize: MaterialStateProperty.all(
-                                    const Size(100, 40)),
-                                shape: MaterialStateProperty.all(
-                                    const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)))),
-                              ),
-                              onPressed: () {},
-                              child: Iconify(
-                                Bi.google,
-                                color: Theme.of(context).primaryColor,
-                              )),
-                          OutlinedButton(
-                              style: ButtonStyle(
-                                fixedSize: MaterialStateProperty.all(
-                                    const Size(100, 40)),
-                                shape: MaterialStateProperty.all(
-                                    const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)))),
-                              ),
-                              onPressed: () {},
-                              child: Iconify(
-                                Bi.facebook,
-                                color: Theme.of(context).primaryColor,
-                              ))
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Already have an account? "),
-                      InkWell(
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: Colors.blue),
-                          ),
-                        ),
-                      )
-                    ],
-                  )
-                ],
+        body: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SmoothPageIndicator(
+                  controller: _pageController,
+                  count: 2,
+                  effect: SlideEffect(
+                      spacing: 8.0,
+                      radius: 4.0,
+                      dotWidth: 24.0,
+                      dotHeight: 16.0,
+                      paintStyle: PaintingStyle.stroke,
+                      strokeWidth: 1.5,
+                      dotColor: Colors.black12,
+                      activeDotColor: Theme.of(context).primaryColor)),
+              const SizedBox(
+                height: 30,
               ),
-            ),
+              const Text(
+                "Sign up for free!",
+                style: TextStyle(fontSize: 20, color: Colors.black54),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              SizedBox(
+                height: Get.height * 0.3,
+                child: PageView(
+                  controller: _pageController,
+                  allowImplicitScrolling: false,
+                  physics: const NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 50,
+                                child: TextFormField(
+                                  validator: (value) => value!.isEmpty
+                                      ? "Please enter your full name"
+                                      : null,
+                                  controller: _nameController,
+                                  decoration: const InputDecoration(
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.never,
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.black12),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    label: Text("Enter your full name"),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 50,
+                                child: TextFormField(
+                                  validator: (value) => value!.isEmpty
+                                      ? "Please enter your username"
+                                      : null,
+                                  controller: _usernameController,
+                                  decoration: const InputDecoration(
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.never,
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.black12),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    label: Text("Enter your username"),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 50,
+                                child: TextFormField(
+                                  controller: _emailController,
+                                  validator: Validators.compose([
+                                    Validators.required(
+                                        'Please enter your email'),
+                                    Validators.email('Invalid email address'),
+                                  ]),
+                                  decoration: const InputDecoration(
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.never,
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.black12),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    label: Text("Enter your email"),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        children: [
+                          Column(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 50,
+                                    child: TextFormField(
+                                      validator: Validators.compose([
+                                        Validators.required(
+                                            'Please enter your password'),
+                                        Validators.minLength(
+                                            6, "Password too short")
+                                      ]),
+                                      obscureText: _obscureText,
+                                      controller: _passwordController,
+                                      decoration: InputDecoration(
+                                        suffixIcon: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _obscureText = !_obscureText;
+                                              });
+                                            },
+                                            icon: Icon(_obscureText
+                                                ? Icons.remove_red_eye_rounded
+                                                : Icons
+                                                    .remove_red_eye_outlined)),
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                        enabledBorder: const OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.black12),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        label:
+                                            const Text("Enter your password"),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 50,
+                                    child: TextFormField(
+                                      validator: Validators.compose([
+                                        Validators.required(
+                                            'Please confirm your password'),
+                                        Validators.minLength(
+                                            6, "Password too short")
+                                      ]),
+                                      obscureText: _obscureText,
+                                      controller: _passwordController,
+                                      decoration: InputDecoration(
+                                        suffixIcon: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _obscureText = !_obscureText;
+                                              });
+                                            },
+                                            icon: Icon(_obscureText
+                                                ? Icons.remove_red_eye_rounded
+                                                : Icons
+                                                    .remove_red_eye_outlined)),
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                        enabledBorder: const OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.black12),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        label:
+                                            const Text("Confirm your password"),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            fixedSize: const Size.fromHeight(50),
+                            elevation: 0,
+                            backgroundColor: Theme.of(context).primaryColor),
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            if (_currentPage == 0) {
+                              _pageController.nextPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.ease);
+                            }
+                          }
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _isRegistering
+                                ? const SizedBox(
+                                    height: 16,
+                                    width: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    _currentPage == 0 ? "Continue" : "Register",
+                                    style: const TextStyle(fontSize: 18),
+                                  )
+                          ],
+                        )),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Column(
+                      children: [
+                        const Text("or register in using"),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            OutlinedButton(
+                                style: ButtonStyle(
+                                  fixedSize: MaterialStateProperty.all(
+                                      const Size(100, 40)),
+                                  shape: MaterialStateProperty.all(
+                                      const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)))),
+                                ),
+                                onPressed: () {},
+                                child: Iconify(
+                                  Bi.google,
+                                  color: Theme.of(context).primaryColor,
+                                )),
+                            OutlinedButton(
+                                style: ButtonStyle(
+                                  fixedSize: MaterialStateProperty.all(
+                                      const Size(100, 40)),
+                                  shape: MaterialStateProperty.all(
+                                      const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)))),
+                                ),
+                                onPressed: () {},
+                                child: Iconify(
+                                  Bi.facebook,
+                                  color: Theme.of(context).primaryColor,
+                                ))
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Already have an account? "),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              "Login",
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Colors.blue),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       ),
