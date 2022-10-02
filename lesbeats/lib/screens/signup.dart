@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -9,6 +8,8 @@ import 'package:iconify_flutter/icons/bi.dart';
 import 'package:lesbeats/screens/home/home.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
+
+import '../main.dart';
 
 class MySignupPage extends StatefulWidget {
   const MySignupPage({super.key});
@@ -54,8 +55,6 @@ class _MySignupPageState extends State<MySignupPage> {
     super.dispose();
   }
 
-  final db = FirebaseFirestore.instance;
-
   Future<String> register() async {
     setState(() {
       _isRegistering = true;
@@ -66,17 +65,21 @@ class _MySignupPageState extends State<MySignupPage> {
               email: _emailController.text, password: _passwordController.text);
 
       final userData = <String, dynamic>{
+        "uid": result.user!.uid,
         "full name": _nameController.text,
         "username": _usernameController.text,
         "email": _emailController.text,
+        "photoUrl": "gs://lesbeats-d6411.appspot.com/images/placeholder.png",
         "isVerified": false,
-        "isAdmin": false,
+        "created at": DateTime.now()
       };
 
       User? user = result.user;
 
       if (user != null) {
         user.updateDisplayName(_usernameController.text);
+        user.updatePhotoURL(
+            "gs://lesbeats-d6411.appspot.com/images/placeholder.png");
         db.collection("users").doc(user.uid).set(userData);
       }
 
@@ -156,6 +159,7 @@ class _MySignupPageState extends State<MySignupPage> {
                                   SizedBox(
                                     height: 50,
                                     child: TextFormField(
+                                      keyboardType: TextInputType.name,
                                       validator: (value) => value!.isEmpty
                                           ? "Please enter your full name"
                                           : null,
@@ -183,6 +187,7 @@ class _MySignupPageState extends State<MySignupPage> {
                                   SizedBox(
                                     height: 50,
                                     child: TextFormField(
+                                      keyboardType: TextInputType.name,
                                       validator: (value) => value!.isEmpty
                                           ? "Please enter your username"
                                           : null,
@@ -210,6 +215,7 @@ class _MySignupPageState extends State<MySignupPage> {
                                   SizedBox(
                                     height: 50,
                                     child: TextFormField(
+                                      keyboardType: TextInputType.emailAddress,
                                       controller: _emailController,
                                       validator: Validators.compose([
                                         Validators.required(
@@ -247,6 +253,8 @@ class _MySignupPageState extends State<MySignupPage> {
                                       SizedBox(
                                         height: 50,
                                         child: TextFormField(
+                                          keyboardType:
+                                              TextInputType.visiblePassword,
                                           validator: Validators.compose([
                                             Validators.required(
                                                 'Please enter your password'),
@@ -297,6 +305,8 @@ class _MySignupPageState extends State<MySignupPage> {
                                       SizedBox(
                                         height: 50,
                                         child: TextFormField(
+                                          keyboardType:
+                                              TextInputType.visiblePassword,
                                           validator: Validators.compose([
                                             ((value) => value !=
                                                     _passwordController.text

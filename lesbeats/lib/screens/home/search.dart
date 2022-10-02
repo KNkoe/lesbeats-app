@@ -14,6 +14,14 @@ class _MySearchScreenState extends State<MySearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text(
+          "Search",
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Theme.of(context).backgroundColor,
+      ),
       body: SizedBox(
         height: Get.height,
         child: Padding(
@@ -21,19 +29,6 @@ class _MySearchScreenState extends State<MySearchScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 40,
-              ),
-              Text(
-                "Search",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
               const Divider(),
               const SizedBox(
                 height: 20,

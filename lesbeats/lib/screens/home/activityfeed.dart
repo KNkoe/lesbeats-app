@@ -49,7 +49,12 @@ class _ActivityFeedState extends State<ActivityFeed> {
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(e),
+                        Text(
+                          e,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
                         Row(
                           children: const [
                             Iconify(
@@ -119,7 +124,13 @@ class _ActivityFeedState extends State<ActivityFeed> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text(
+                          DateTime.now().toString().split(" ")[0],
+                          style: const TextStyle(color: Colors.black45),
+                        ),
+                      ),
                       Row(
                         children: [
                           Row(

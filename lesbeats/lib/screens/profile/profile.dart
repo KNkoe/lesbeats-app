@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lesbeats/screens/profile/beats.dart';
 import 'package:lesbeats/screens/profile/editprofile.dart';
+import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/theme.dart';
 
 class MyProfilePage extends StatefulWidget {
@@ -192,6 +193,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
                           });
                         },
                         indicatorColor: Theme.of(context).primaryColor,
+                        indicator:
+                            DotIndicator(color: Theme.of(context).primaryColor),
                         tabs: [
                           Tab(
                             child: Container(

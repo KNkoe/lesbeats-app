@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -83,7 +81,7 @@ class _DashboardState extends State<Dashboard> {
                     topLeft: Radius.circular(50),
                     topRight: Radius.circular(50)),
                 color: Theme.of(context).backgroundColor),
-            child: isLoading
+            child: !isLoading
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -94,7 +92,9 @@ class _DashboardState extends State<Dashboard> {
                           children: [
                             const Text(
                               "Top Artists",
-                              style: TextStyle(color: Colors.grey),
+                              style: TextStyle(
+                                  color: Colors.black26,
+                                  fontWeight: FontWeight.bold),
                             ),
                             InkWell(
                               onTap: () {
@@ -189,7 +189,13 @@ class _DashboardState extends State<Dashboard> {
                                                 Padding(
                                                   padding:
                                                       const EdgeInsets.all(4.0),
-                                                  child: Text(artist),
+                                                  child: Text(
+                                                    artist,
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black54),
+                                                  ),
                                                 ),
                                                 if (topArtists
                                                         .indexOf(artist) ==
@@ -219,7 +225,9 @@ class _DashboardState extends State<Dashboard> {
                           children: [
                             Text(
                               _viewAllArtists ? "Artists" : "Activity Feed",
-                              style: const TextStyle(color: Colors.grey),
+                              style: const TextStyle(
+                                  color: Colors.black26,
+                                  fontWeight: FontWeight.bold),
                             ),
                             if (!_viewAllArtists)
                               IconButton(
@@ -244,15 +252,10 @@ class _DashboardState extends State<Dashboard> {
                   )
                 : const MyLoadingPage()),
       ),
-      drawer: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-          child: CustomDrawer(scaffoldKey: _scaffoldKey)),
-      endDrawer: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-        child: Drawer(
-          width: Get.width * 0.5,
-          elevation: 0,
-        ),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
+      endDrawer: Drawer(
+        width: Get.width * 0.5,
+        elevation: 0,
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:iconify_flutter/icons/bi.dart';
 import 'package:lesbeats/screens/forgotpassword.dart';
 import 'package:lesbeats/screens/home/home.dart';
 import 'package:lesbeats/screens/signup.dart';
+import 'package:lesbeats/widgets/responsive.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 
 class MyLoginPage extends StatefulWidget {
@@ -34,33 +35,35 @@ class _MyLoginPageState extends State<MyLoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Animate(
-                effects: const [FadeEffect(), SlideEffect()],
-                delay: 1000.ms,
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 30),
-                  height: Get.height * 0.2,
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(100))),
-                  child: Animate(
-                    effects: const [ShimmerEffect(size: 24)],
+              Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  Animate(
+                    effects: const [FadeEffect(), SlideEffect()],
                     delay: 1000.ms,
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 30),
+                      height: Get.height * 0.4,
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                          image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image:
+                                  AssetImage("assets/images/wave-haikei.png"))),
+                    ),
+                  ),
+                  Animate(
+                    effects: const [SlideEffect()],
+                    delay: 1300.ms,
                     child: Image(
-                        height: 400,
-                        width: Get.width * 0.6,
+                        height: 200,
+                        width: screenSize(context).width * 0.4,
                         image: const AssetImage("assets/images/lesbeats.png")),
                   ),
-                ),
-              ),
-              const SizedBox(
-                height: 30,
+                ],
               ),
               Padding(
-                padding: const EdgeInsets.all(30),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
                   children: [
                     Animate(

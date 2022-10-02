@@ -57,6 +57,8 @@ dependencies:
   firebase_auth: ^3.11.0
   smooth_page_indicator: ^1.0.0+2
   cloud_firestore: ^3.5.0
+  firebase_storage: ^10.3.10
+  provider: ^6.0.3
 
 dev_dependencies:
   flutter_test:
