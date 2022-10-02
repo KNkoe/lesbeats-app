@@ -29,15 +29,15 @@ class _MyLibraryState extends State<MyLibrary> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text("Library"),
+        title: const Text("My Library"),
       ),
       body: Container(
         color: Theme.of(context).primaryColor,
         height: Get.height,
         width: Get.width,
         child: Container(
+          clipBehavior: Clip.hardEdge,
           margin: const EdgeInsets.only(top: 10),
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(50), topRight: Radius.circular(50)),
@@ -48,14 +48,16 @@ class _MyLibraryState extends State<MyLibrary> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
                         "Followed Artists",
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black38),
                       ),
                       InkWell(
                         onTap: () {
@@ -170,7 +172,9 @@ class _MyLibraryState extends State<MyLibrary> {
                       const Text(
                         "Recently played",
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black38),
                       ),
                       InkWell(
                         onTap: () {
@@ -279,7 +283,9 @@ class _MyLibraryState extends State<MyLibrary> {
                       const Text(
                         "Favourites",
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black38),
                       ),
                       InkWell(
                         onTap: () {
@@ -311,7 +317,7 @@ class _MyLibraryState extends State<MyLibrary> {
                   height: 20,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 20),
+                  padding: const EdgeInsets.only(right: 20, left: 10),
                   child: SizedBox(
                     height: Get.height * 0.6,
                     child: ListView(

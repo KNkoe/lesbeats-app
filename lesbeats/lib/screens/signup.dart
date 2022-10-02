@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -45,6 +46,7 @@ class _MySignupPageState extends State<MySignupPage> {
   @override
   void dispose() {
     _confirmController.dispose();
+    _passwordController.dispose();
     _pageController.dispose();
     _nameController.dispose();
     _emailController.dispose();
@@ -52,13 +54,32 @@ class _MySignupPageState extends State<MySignupPage> {
     super.dispose();
   }
 
+  final db = FirebaseFirestore.instance;
+
   Future<String> register() async {
     setState(() {
       _isRegistering = true;
     });
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text, password: _passwordController.text);
+      UserCredential result = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _emailController.text, password: _passwordController.text);
+
+      final userData = <String, dynamic>{
+        "full name": _nameController.text,
+        "username": _usernameController.text,
+        "email": _emailController.text,
+        "isVerified": false,
+        "isAdmin": false,
+      };
+
+      User? user = result.user;
+
+      if (user != null) {
+        user.updateDisplayName(_usernameController.text);
+        db.collection("users").doc(user.uid).set(userData);
+      }
+
       setState(() {
         _isRegistering = false;
       });

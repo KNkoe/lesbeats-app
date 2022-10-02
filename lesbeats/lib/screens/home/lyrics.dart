@@ -128,6 +128,7 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
                     return Container(
                       padding: const EdgeInsets.all(30),
                       child: Card(
+                        color: Theme.of(context).backgroundColor,
                         elevation: 20,
                         child: Padding(
                           padding: const EdgeInsets.all(14),
@@ -154,8 +155,8 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
                                           const Text(
                                             "Sunshine",
                                             style: TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.white),
+                                              fontSize: 18,
+                                            ),
                                           ),
                                           const SizedBox(
                                             height: 4,
@@ -163,7 +164,7 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
                                           Text(
                                             artists[index],
                                             style: const TextStyle(
-                                                color: Colors.white54),
+                                                color: Colors.black54),
                                           ),
                                         ],
                                       )
@@ -174,12 +175,11 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
                                       Text(
                                         "Posted ${DateTime.now().toString().split(" ")[0]}",
                                         style: const TextStyle(
-                                            color: Colors.white38),
+                                            color: Colors.black38),
                                       ),
                                       PopupMenuButton(
                                           icon: const Icon(
                                             Icons.more_vert,
-                                            color: Colors.white,
                                           ),
                                           itemBuilder: ((context) => [
                                                 PopupMenuItem(
@@ -253,8 +253,7 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
                                 child: const Text(
                                   "Verse 1\nEverything is soo different now\nI never thought I'd be the one to say that I'm in love\nI never caught myself obessing over one girl\nAnd I promise its the best feeling I ever had\nI spend most night just thinking about it\nGirl got me crazy I only hear this when I read about it\nIt's soo much like in pradise,\nI mean everytime I wake up next to her I can't believe my eyes,\nVerse 1\nEverything is soo different now\nI never thought I'd be the one to say that I'm in love\nI never caught myself obessing over one girl\nAnd I promise its the best feeling I ever had\nI spend most night just thinking about it\nGirl got me crazy I only hear this when I read about it\nIt's soo much like in pradise,\nI mean everytime I wake up next to her I can't believe my eyes",
                                   overflow: TextOverflow.fade,
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
+                                  style: TextStyle(fontSize: 18),
                                 ),
                               ),
                               Padding(
@@ -270,13 +269,12 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
                                             onPressed: () {},
                                             icon: const Icon(
                                               Icons.thumb_up,
-                                              color: Colors.white,
+                                              color: Colors.black38,
                                             ))
                                       ],
                                     ),
                                     OutlinedButton(
                                         style: OutlinedButton.styleFrom(
-                                            backgroundColor: Colors.white,
                                             fixedSize:
                                                 const Size.fromWidth(100),
                                             shape: RoundedRectangleBorder(

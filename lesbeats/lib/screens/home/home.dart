@@ -50,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       showUpload(context);
                     },
                   )),
+                  const PopupMenuItem(height: 2, child: Divider()),
                   PopupMenuItem(
                       child: ListTile(
                     leading: const Icon(Icons.paste),
