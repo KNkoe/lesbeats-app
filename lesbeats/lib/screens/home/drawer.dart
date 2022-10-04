@@ -1,10 +1,13 @@
 import 'package:badges/badges.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/chats/chats.dart';
 import 'package:lesbeats/screens/home/genre.dart';
 import 'package:lesbeats/screens/home/lyrics.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:day_night_switcher/day_night_switcher.dart';
 
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/bx.dart';
@@ -12,7 +15,7 @@ import 'package:iconify_flutter/icons/zondicons.dart';
 import 'package:iconify_flutter/icons/ri.dart';
 import 'package:lesbeats/screens/home/settings.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
   const CustomDrawer({
     Key? key,
     required GlobalKey<ScaffoldState> scaffoldKey,
@@ -20,6 +23,16 @@ class CustomDrawer extends StatelessWidget {
         super(key: key);
 
   final GlobalKey<ScaffoldState> _scaffoldKey;
+
+  @override
+  State<CustomDrawer> createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
+  bool isDarkModeEnabled = false;
+
+  final Stream<DocumentSnapshot> _userStream =
+      db.collection("users").doc(auth.currentUser!.uid).snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -33,44 +46,92 @@ class CustomDrawer extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20),
               color: Theme.of(context).primaryColor,
               width: double.infinity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    height: 80,
-                    width: 100,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage("assets/images/rnb.jpg"))),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      "Katleho Nkoe",
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      "@Vicious_kadd",
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                  ),
-                ],
-              ),
+              child: StreamBuilder<DocumentSnapshot>(
+                  stream: _userStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Text("An error occured"),
+                      );
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      );
+                    } else if (snapshot.hasData) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            height: 80,
+                            width: 100,
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image:
+                                        AssetImage("assets/images/rnb.jpg"))),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: const [
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Katleho Nkoe",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "@Vicious_kadd",
+                                      style: TextStyle(color: Colors.white70),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 20),
+                                child: SizedBox(
+                                  height: 50,
+                                  width: 70,
+                                  child: DayNightSwitcher(
+                                    dayBackgroundColor:
+                                        Theme.of(context).backgroundColor,
+                                    sunColor: Theme.of(context).indicatorColor,
+                                    isDarkModeEnabled: isDarkModeEnabled,
+                                    onStateChanged: (isDarkModeEnabled) {
+                                      setState(() {
+                                        this.isDarkModeEnabled =
+                                            isDarkModeEnabled;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Container();
+                    }
+                  }),
             ),
             Expanded(
               child: Padding(
@@ -91,7 +152,7 @@ class CustomDrawer extends StatelessWidget {
                     ListTile(
                       onTap: () {
                         Get.to(() => const MyGenre());
-                        _scaffoldKey.currentState!.closeDrawer();
+                        widget._scaffoldKey.currentState!.closeDrawer();
                       },
                       leading: const Iconify(Bx.bxs_music),
                       title: const Text("Genres"),
@@ -99,7 +160,7 @@ class CustomDrawer extends StatelessWidget {
                     ListTile(
                       onTap: () {
                         Get.to(() => const MyLyricsScreen());
-                        _scaffoldKey.currentState!.closeDrawer();
+                        widget._scaffoldKey.currentState!.closeDrawer();
                       },
                       leading: const Iconify(Zondicons.music_artist),
                       title: const Text("Lyrics"),
@@ -108,7 +169,7 @@ class CustomDrawer extends StatelessWidget {
                     ListTile(
                       onTap: () {
                         Get.to(() => const MyChatScreen());
-                        _scaffoldKey.currentState!.closeDrawer();
+                        widget._scaffoldKey.currentState!.closeDrawer();
                       },
                       title: const Text("Messages"),
                       leading: Badge(
@@ -123,7 +184,7 @@ class CustomDrawer extends StatelessWidget {
                     ListTile(
                       onTap: () {
                         Get.to(() => const MySettings());
-                        _scaffoldKey.currentState!.closeDrawer();
+                        widget._scaffoldKey.currentState!.closeDrawer();
                       },
                       leading: const Icon(Icons.settings),
                       title: const Text("Settings"),

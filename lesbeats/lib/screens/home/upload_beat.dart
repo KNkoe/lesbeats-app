@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lesbeats/screens/player/player.dart';
 import 'package:lesbeats/widgets/decoration.dart';
@@ -52,7 +52,17 @@ class _UploadBeatState extends State<UploadBeat> {
         audio = file;
       });
     } else {
-      EasyLoading.showToast("Cancelled");
+      Get.showSnackbar(const GetSnackBar(
+        duration: Duration(seconds: 3),
+        backgroundColor: Color(0xff264653),
+        borderRadius: 30,
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        icon: Icon(
+          Icons.error_outline,
+          color: Colors.white,
+        ),
+        message: "Canceled",
+      ));
     }
   }
 
@@ -202,24 +212,19 @@ class _UploadBeatState extends State<UploadBeat> {
           actionsAlignment: MainAxisAlignment.spaceAround,
           actions: [
             OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20))),
+                style: cancelButtonStyle,
                 onPressed: () {
                   Navigator.pop(context);
                 },
                 child: const Text("Cancel")),
-            OutlinedButton.icon(
-                icon: const Icon(Icons.arrow_forward_ios),
-                style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20))),
+            OutlinedButton(
+                style: cancelButtonStyle,
                 onPressed: () {
                   _pageController.nextPage(
                       duration: const Duration(milliseconds: 750),
                       curve: Curves.ease);
                 },
-                label: const Text("Next"))
+                child: const Text("Next"))
           ],
         ),
         AlertDialog(
@@ -303,26 +308,21 @@ class _UploadBeatState extends State<UploadBeat> {
           actionsAlignment: MainAxisAlignment.spaceAround,
           actions: [
             OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20))),
+                style: cancelButtonStyle,
                 onPressed: () {
                   _pageController.previousPage(
                       duration: const Duration(milliseconds: 750),
                       curve: Curves.ease);
                 },
                 child: const Text("Back")),
-            ElevatedButton.icon(
-                icon: const Icon(Icons.file_upload_outlined),
-                style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20))),
+            ElevatedButton(
+                style: confirmButtonStyle,
                 onPressed: () {
                   _pageController.nextPage(
                       duration: const Duration(milliseconds: 750),
                       curve: Curves.ease);
                 },
-                label: const Text("upload"))
+                child: const Text("upload"))
           ],
         )
       ],

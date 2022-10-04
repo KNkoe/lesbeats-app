@@ -2,7 +2,6 @@
 import 'package:audio_session/audio_session.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lesbeats/screens/player/common.dart';
 import 'package:lesbeats/widgets/responsive.dart';
@@ -42,14 +41,14 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
     // Listen to errors during playback.
     _player.playbackEventStream.listen((event) {},
         onError: (Object e, StackTrace stackTrace) {
-      EasyLoading.showError('A stream error occurred: $e');
+      debugPrint(e.toString());
     });
     // Try to load audio from a source and catch any errors.
     if (widget.url != "") {
       try {
         await _player.setAudioSource(AudioSource.uri(Uri.parse(widget.url)));
       } catch (e) {
-        EasyLoading.showError("Error loading audio source: $e");
+        debugPrint(e.toString());
       }
     } else {
       _player.setFilePath(widget.audio.path!);

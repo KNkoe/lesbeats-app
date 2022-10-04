@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onTap: () {},
                   ))
                 ],
-            icon: const Icon(Icons.add)),
+            icon: const Icon(Icons.play_arrow)),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar(

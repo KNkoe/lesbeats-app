@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,8 @@ import 'package:lesbeats/screens/home/home.dart';
 import 'package:lesbeats/screens/signup.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
+
+import '../main.dart';
 
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key});
@@ -22,8 +25,76 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
   final _formKey = GlobalKey<FormState>();
 
-  final bool _isLoggin = false;
+  bool _isLoggin = false;
   bool _obscureText = true;
+
+  Future<String> login() async {
+    setState(() {
+      _isLoggin = true;
+    });
+    try {
+      await auth.signInWithEmailAndPassword(
+          email: _emailController.text, password: _passwordController.text);
+
+      setState(() {
+        _isLoggin = false;
+      });
+      return "Success";
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        Get.showSnackbar(const GetSnackBar(
+          backgroundColor: Color(0xff264653),
+          borderRadius: 30,
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          icon: Icon(
+            Icons.error_outline,
+            color: Colors.white,
+          ),
+          message: "There is no user corresponding this email",
+        ));
+      } else if (e.code == 'user-disabled') {
+        Get.showSnackbar(const GetSnackBar(
+          backgroundColor: Color(0xff264653),
+          borderRadius: 30,
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          icon: Icon(
+            Icons.error_outline,
+            color: Colors.white,
+          ),
+          message: "This account has been diabled. Please contact support.",
+        ));
+      } else if (e.code == 'wrong-password') {
+        Get.showSnackbar(const GetSnackBar(
+          duration: Duration(seconds: 3),
+          backgroundColor: Color(0xff264653),
+          borderRadius: 30,
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          icon: Icon(
+            Icons.error_outline,
+            color: Colors.white,
+          ),
+          message: "Wrong password",
+        ));
+      } else {
+        Get.showSnackbar(GetSnackBar(
+          duration: const Duration(seconds: 3),
+          backgroundColor: const Color(0xff264653),
+          borderRadius: 30,
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          icon: const Icon(
+            Icons.error_outline,
+            color: Colors.white,
+          ),
+          message: e.code,
+        ));
+      }
+      setState(() {
+        _isLoggin = false;
+      });
+    }
+
+    return "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +111,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
                 children: [
                   Animate(
                     effects: const [FadeEffect(), SlideEffect()],
-                    delay: 1000.ms,
                     child: Container(
                       margin: const EdgeInsets.only(bottom: 30),
                       height: Get.height * 0.4,
@@ -54,7 +124,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   ),
                   Animate(
                     effects: const [SlideEffect()],
-                    delay: 1300.ms,
+                    delay: 600.ms,
                     child: Image(
                         height: 200,
                         width: screenSize(context).width * 0.4,
@@ -70,7 +140,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                       effects: const [
                         FadeEffect(duration: Duration(seconds: 1)),
                       ],
-                      delay: 1300.ms,
+                      delay: 800.ms,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -102,7 +172,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     ),
                     Animate(
                       effects: const [FadeEffect(), SlideEffect()],
-                      delay: 1500.ms,
+                      delay: 1000.ms,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -143,7 +213,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     ),
                     Animate(
                       effects: const [FadeEffect()],
-                      delay: 1800.ms,
+                      delay: 1300.ms,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -171,7 +241,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     ),
                     Animate(
                       effects: const [FadeEffect(), SlideEffect()],
-                      delay: 2000.ms,
+                      delay: 1600.ms,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               shape: const RoundedRectangleBorder(
@@ -181,9 +251,28 @@ class _MyLoginPageState extends State<MyLoginPage> {
                               elevation: 0,
                               backgroundColor: Theme.of(context).primaryColor),
                           onPressed: () async {
-                            Get.off(
-                              (() => const MyHomePage()),
-                            );
+                            if (_formKey.currentState!.validate()) {
+                              login().then((value) {
+                                if (value == "Success") {
+                                  Get.off(
+                                    (() => const MyHomePage()),
+                                  );
+                                  Get.showSnackbar(const GetSnackBar(
+                                    snackPosition: SnackPosition.TOP,
+                                    duration: Duration(seconds: 3),
+                                    backgroundColor: Color(0xff264653),
+                                    borderRadius: 30,
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 30),
+                                    icon: Icon(
+                                      Icons.sentiment_satisfied_outlined,
+                                      color: Colors.white,
+                                    ),
+                                    message: "Welcome back",
+                                  ));
+                                }
+                              });
+                            }
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -215,7 +304,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
               ),
               Animate(
                 effects: const [FadeEffect()],
-                delay: 2300.ms,
+                delay: 2000.ms,
                 child: Column(
                   children: [
                     const Text("or login in using"),

@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lesbeats/main.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -15,6 +17,53 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   bool _isSubmitting = false;
 
+  Future<String> resetPassword() async {
+    setState(() {
+      _isSubmitting = true;
+    });
+    try {
+      await auth.sendPasswordResetEmail(email: _emailController.text);
+
+      setState(() {
+        _isSubmitting = false;
+      });
+
+      return "Success";
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        Get.showSnackbar(const GetSnackBar(
+          duration: Duration(seconds: 3),
+          backgroundColor: Color(0xff264653),
+          borderRadius: 30,
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          icon: Icon(
+            Icons.error_outline,
+            color: Colors.white,
+          ),
+          message: "There is no user corresponding this email",
+        ));
+      } else {
+        Get.showSnackbar(GetSnackBar(
+          duration: const Duration(seconds: 3),
+          backgroundColor: const Color(0xff264653),
+          borderRadius: 30,
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          icon: const Icon(
+            Icons.error_outline,
+            color: Colors.white,
+          ),
+          message: e.code,
+        ));
+      }
+
+      setState(() {
+        _isSubmitting = false;
+      });
+    }
+
+    return "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +73,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(
-            Icons.arrow_back_ios,
+            Icons.arrow_back,
             color: Colors.black54,
           ),
           onPressed: () {
@@ -85,12 +134,23 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       backgroundColor: Theme.of(context).primaryColor),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      setState(() {
-                        _isSubmitting = true;
-                      });
+                      resetPassword().then((value) {
+                        if (value == "Success") {
+                          debugPrint("Print fail");
 
-                      setState(() {
-                        _isSubmitting = false;
+                          Get.showSnackbar(const GetSnackBar(
+                            backgroundColor: Color(0xff264653),
+                            borderRadius: 30,
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 30),
+                            icon: Icon(
+                              Icons.check,
+                              color: Colors.white,
+                            ),
+                            title: "Password reset link sent",
+                            message: "Please check your email",
+                          ));
+                        }
                       });
                     }
                   },
