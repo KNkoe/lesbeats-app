@@ -73,8 +73,9 @@ class _MyLibraryState extends State<MyLibrary> {
                         selectedIndex = value;
                       });
                     },
-                    indicator:
-                        DotIndicator(color: Theme.of(context).primaryColor),
+                    indicator: DotIndicator(
+                      color: Theme.of(context).primaryColor,
+                    ),
                     tabs: [
                       Tab(
                         child: Container(

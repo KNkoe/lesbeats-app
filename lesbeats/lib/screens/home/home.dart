@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:lesbeats/screens/home/dashboard.dart';
 import 'package:lesbeats/screens/home/library.dart';
 import 'package:lesbeats/screens/home/search.dart';
-import 'package:lesbeats/screens/home/upload_beat.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -38,28 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: destination(selectedIndex),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: PopupMenuButton(
-            itemBuilder: (contex) => [
-                  PopupMenuItem(
-                      child: ListTile(
-                    leading: const Icon(Icons.upload),
-                    title: const Text("Upload beat"),
-                    onTap: () {
-                      Navigator.pop(context);
-                      showUpload(context);
-                    },
-                  )),
-                  const PopupMenuItem(height: 2, child: Divider()),
-                  PopupMenuItem(
-                      child: ListTile(
-                    leading: const Icon(Icons.paste),
-                    title: const Text("Post Lyrics"),
-                    onTap: () {},
-                  ))
-                ],
-            icon: const Icon(Icons.play_arrow)),
-      ),
+          onPressed: () {}, child: const Icon(Icons.play_arrow)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar(
         icons: const [
