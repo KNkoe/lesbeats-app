@@ -41,6 +41,10 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).cardColor,
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.add))
+        ],
       ),
       body: Container(
         color: Theme.of(context).cardColor,

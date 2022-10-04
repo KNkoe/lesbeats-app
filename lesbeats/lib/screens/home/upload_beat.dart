@@ -92,6 +92,7 @@ class _UploadBeatState extends State<UploadBeat> {
   Widget build(BuildContext context) {
     return PageView(
       scrollDirection: Axis.horizontal,
+      physics: const NeverScrollableScrollPhysics(),
       controller: _pageController,
       children: [
         AlertDialog(
@@ -317,11 +318,7 @@ class _UploadBeatState extends State<UploadBeat> {
                 child: const Text("Back")),
             ElevatedButton(
                 style: confirmButtonStyle,
-                onPressed: () {
-                  _pageController.nextPage(
-                      duration: const Duration(milliseconds: 750),
-                      curve: Curves.ease);
-                },
+                onPressed: () {},
                 child: const Text("upload"))
           ],
         )

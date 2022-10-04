@@ -183,6 +183,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     const Divider(),
                     ListTile(
                       onTap: () {
+                        widget._scaffoldKey.currentState!.closeDrawer();
+                      },
+                      leading: const Icon(
+                        Icons.monetization_on,
+                        color: Colors.black,
+                      ),
+                      title: const Text("Start selling"),
+                    ),
+                    const Divider(),
+                    ListTile(
+                      onTap: () {
                         Get.to(() => const MySettings());
                         widget._scaffoldKey.currentState!.closeDrawer();
                       },

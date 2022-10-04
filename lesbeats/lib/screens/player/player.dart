@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 // ignore: depend_on_referenced_packages
 import 'package:audio_session/audio_session.dart';
 import 'package:file_picker/file_picker.dart';
@@ -8,9 +9,11 @@ import 'package:lesbeats/widgets/responsive.dart';
 import 'package:rxdart/rxdart.dart';
 
 showPlayer(BuildContext context, PlatformFile audio) {
-  Scaffold.of(context).showBottomSheet((context) => MiniPlayer(
-        audio: audio,
-      ));
+  Scaffold.of(context).showBottomSheet(
+      (context) => MiniPlayer(
+            audio: audio,
+          ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)));
 }
 
 class MiniPlayer extends StatefulWidget {
@@ -83,112 +86,122 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
           (position, bufferedPosition, duration) => PositionData(
               position, bufferedPosition, duration ?? Duration.zero));
 
-  double _height = 180;
-  IconData _screenIcon = Icons.fullscreen;
-  bool _isFullScreen = false;
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
-      height: _height,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Colors.black,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.audio.name,
-                  style: const TextStyle(color: Colors.white),
-                ),
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _isFullScreen = !_isFullScreen;
-                        });
-
-                        _isFullScreen
-                            ? setState(() {
-                                _height = screenSize(context).height;
-                                _screenIcon = Icons.close_fullscreen;
-                              })
-                            : setState(() {
-                                _height = 180;
-                                _screenIcon = Icons.fullscreen;
-                              });
-                      },
-                      child: Icon(
-                        _screenIcon,
-                        color: Colors.white,
+    return OpenContainer(
+        closedBuilder: (context, fuction) => Container(
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
+              height: 115,
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(14, 0, 10, 0),
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                image: const DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image:
+                                        AssetImage("assets/images/rnb.jpg"))),
+                          ),
+                          SizedBox(
+                            width: screenSize(context).width * 0.7,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(2),
+                                  child: Text(
+                                    widget.audio.name,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.all(2),
+                                  child: Text(
+                                    "Artist",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(color: Colors.black54),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Icon(
-                        Icons.clear,
-                        color: Colors.white,
+                      StreamBuilder<PlayerState>(
+                        stream: _player.playerStateStream,
+                        builder: (context, snapshot) {
+                          final playerState = snapshot.data;
+                          final processingState = playerState?.processingState;
+                          final playing = playerState?.playing;
+                          if (processingState == ProcessingState.loading ||
+                              processingState == ProcessingState.buffering) {
+                            return const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: 30,
+                                height: 30,
+                                child: CircularProgressIndicator(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            );
+                          } else if (playing != true) {
+                            return IconButton(
+                              icon: const Icon(
+                                Icons.play_arrow,
+                                size: 36,
+                              ),
+                              onPressed: _player.play,
+                            );
+                          } else if (processingState !=
+                              ProcessingState.completed) {
+                            return IconButton(
+                              icon: const Icon(Icons.pause, size: 36),
+                              onPressed: _player.pause,
+                            );
+                          } else {
+                            return IconButton(
+                              icon: const Icon(
+                                Icons.replay,
+                                size: 36,
+                              ),
+                              onPressed: () => _player.seek(Duration.zero),
+                            );
+                          }
+                        },
                       ),
-                    ),
-                  ],
-                )
-              ],
+                    ],
+                  ),
+                  StreamBuilder<PositionData>(
+                    stream: _positionDataStream,
+                    builder: (context, snapshot) {
+                      final positionData = snapshot.data;
+                      return SeekBar(
+                        duration: positionData?.duration ?? Duration.zero,
+                        position: positionData?.position ?? Duration.zero,
+                        bufferedPosition:
+                            positionData?.bufferedPosition ?? Duration.zero,
+                        onChangeEnd: _player.seek,
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          const Spacer(),
-          if (_isFullScreen)
-            Container(
-              height: screenSize(context).height * 0.5,
-              width: screenSize(context).width * 0.9,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: const DecorationImage(
-                      fit: BoxFit.cover,
-                      image: AssetImage("assets/images/artist.jpg"))),
-            ),
-          const Spacer(),
-          // Display play/pause button and volume/speed sliders.
-          ControlButtons(_player),
-          // Display seek bar. Using StreamBuilder, this widget rebuilds
-          // each time the position, buffered position or duration changes.
-          StreamBuilder<PositionData>(
-            stream: _positionDataStream,
-            builder: (context, snapshot) {
-              final positionData = snapshot.data;
-              return SeekBar(
-                duration: positionData?.duration ?? Duration.zero,
-                position: positionData?.position ?? Duration.zero,
-                bufferedPosition:
-                    positionData?.bufferedPosition ?? Duration.zero,
-                onChangeEnd: _player.seek,
-              );
-            },
-          ),
-          const SizedBox(
-            height: 6,
-          ),
-          if (_isFullScreen)
-            SizedBox(
-              height: screenSize(context).height * 0.1,
-            )
-        ],
-      ),
-    );
+        openBuilder: (context, function) => Container());
   }
 }
 

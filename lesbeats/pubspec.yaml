@@ -55,6 +55,7 @@ dependencies:
   firebase_storage: ^10.3.10
   provider: ^6.0.3
   day_night_switcher: ^0.2.0+1
+  animations: ^2.0.5
 
 dev_dependencies:
   flutter_test:
