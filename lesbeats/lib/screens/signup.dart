@@ -54,31 +54,38 @@ class _MySignupPageState extends State<MySignupPage> {
     super.dispose();
   }
 
+  String? _photoUrl;
+
+  Future<String> getUrl() async {
+    return await storage.ref("/users/placeholder.jpg").getDownloadURL();
+  }
+
   Future<String> register() async {
     setState(() {
       _isRegistering = true;
     });
     try {
-      UserCredential result = await auth.createUserWithEmailAndPassword(
+      await auth.createUserWithEmailAndPassword(
           email: _emailController.text, password: _passwordController.text);
 
-      final userData = <String, dynamic>{
-        "uid": result.user!.uid,
-        "full name": _nameController.text,
-        "username": _usernameController.text,
-        "email": _emailController.text,
-        "photoUrl": "gs://lesbeats-d6411.appspot.com/images/placeholder.png",
-        "isVerified": false,
-        "created at": DateTime.now()
-      };
+      if (auth.currentUser != null) {
+        getUrl().then((value) {
+          auth.currentUser!.updatePhotoURL(value);
+          _photoUrl = value;
+        });
+        auth.currentUser!.updateDisplayName(_usernameController.text);
 
-      User? user = result.user;
+        final userData = <String, dynamic>{
+          "uid": auth.currentUser!.uid,
+          "full name": _nameController.text,
+          "username": _usernameController.text,
+          "email": _emailController.text,
+          "photoUrl": _photoUrl,
+          "isVerified": false,
+          "created at": DateTime.now()
+        };
 
-      if (user != null) {
-        user.updateDisplayName(_usernameController.text);
-        user.updatePhotoURL(
-            "gs://lesbeats-d6411.appspot.com/images/placeholder.png");
-        db.collection("users").doc(user.uid).set(userData);
+        db.collection("users").doc(auth.currentUser!.uid).set(userData);
       }
 
       setState(() {
@@ -398,17 +405,19 @@ class _MySignupPageState extends State<MySignupPage> {
                                 } else if (_currentPage == 1) {
                                   register().then((value) {
                                     if (value == "Success") {
-                                      Get.showSnackbar(const GetSnackBar(
-                                        duration: Duration(seconds: 3),
-                                        backgroundColor: Color(0xff264653),
+                                      Get.showSnackbar(GetSnackBar(
+                                        duration: const Duration(seconds: 3),
+                                        backgroundColor:
+                                            const Color(0xff264653),
                                         borderRadius: 30,
-                                        margin: EdgeInsets.symmetric(
+                                        margin: const EdgeInsets.symmetric(
                                             horizontal: 20, vertical: 30),
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.check,
                                           color: Colors.white,
                                         ),
-                                        message: "Welcome",
+                                        message:
+                                            "Welcome ${auth.currentUser!.displayName}",
                                       ));
                                       Get.to(() => const MyHomePage());
                                     }

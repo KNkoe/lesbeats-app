@@ -57,7 +57,10 @@ class _MyProfilePageState extends State<MyProfilePage> {
                         minLeadingWidth: 2,
                         onTap: () {
                           Navigator.pop(context);
-                          editprofile(context);
+                          showDialog(
+                                  context: context,
+                                  builder: ((context) => const EditProfile()))
+                              .then((_) => setState(() {}));
                         },
                         title: const Text("Edit profile"),
                         leading: const Icon(Icons.edit_attributes),
@@ -122,21 +125,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
       body: StreamBuilder<DocumentSnapshot>(
           stream: _usersStream,
           builder: (context, userSnapshot) {
-            if (userSnapshot.hasError) {
-              return Center(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.error_outline,
-                    color: Colors.black54,
-                  ),
-                  SizedBox(width: 10),
-                  Text('Something went wrong'),
-                ],
-              ));
-            } else if (userSnapshot.connectionState ==
-                ConnectionState.waiting) {
+            if (userSnapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 child: SizedBox(
                   height: 32,
@@ -182,10 +171,10 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                               .backgroundColor)),
                                   child: Animate(
                                     effects: const [ShimmerEffect()],
-                                    child: const CircleAvatar(
+                                    child: CircleAvatar(
                                       minRadius: 50,
-                                      backgroundImage:
-                                          AssetImage("assets/images/rnb.jpg"),
+                                      backgroundImage: NetworkImage(
+                                          auth.currentUser!.photoURL!),
                                     ),
                                   ),
                                 ),
@@ -338,7 +327,18 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 ),
               );
             } else {
-              return Container();
+              return Center(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(
+                    Icons.error_outline,
+                    color: Colors.black54,
+                  ),
+                  SizedBox(width: 10),
+                  Text('An error occured!'),
+                ],
+              ));
             }
           }),
     );

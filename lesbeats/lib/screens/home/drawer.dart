@@ -14,6 +14,8 @@ import 'package:iconify_flutter/icons/bx.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
 import 'package:iconify_flutter/icons/ri.dart';
 import 'package:lesbeats/screens/home/settings.dart';
+import 'package:lesbeats/screens/login.dart';
+import 'package:lesbeats/widgets/theme.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({
@@ -49,12 +51,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               child: StreamBuilder<DocumentSnapshot>(
                   stream: _userStream,
                   builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return const Center(
-                        child: Text("An error occured"),
-                      );
-                    } else if (snapshot.connectionState ==
-                        ConnectionState.waiting) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
                         child: CircularProgressIndicator(
                           color: Colors.white,
@@ -71,12 +68,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           Container(
                             height: 80,
                             width: 100,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
-                                    image:
-                                        AssetImage("assets/images/rnb.jpg"))),
+                                    image: NetworkImage(
+                                        auth.currentUser!.photoURL!))),
                           ),
                           const SizedBox(
                             height: 10,
@@ -85,22 +82,37 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Column(
-                                children: const [
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
                                   Padding(
-                                    padding: EdgeInsets.all(8.0),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(8, 8, 8, 0),
                                     child: Text(
-                                      "Katleho Nkoe",
-                                      style: TextStyle(
+                                      snapshot.data!["full name"],
+                                      style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white),
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "@Vicious_kadd",
-                                      style: TextStyle(color: Colors.white70),
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "@${snapshot.data!["username"]}",
+                                          style: const TextStyle(
+                                              color: Colors.white70),
+                                        ),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
+                                        if (snapshot.data!["isVerified"])
+                                          const Icon(
+                                            Icons.verified,
+                                            color: malachite,
+                                          )
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -129,7 +141,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ],
                       );
                     } else {
-                      return Container();
+                      return const Center(
+                        child: Text("An error occured"),
+                      );
                     }
                   }),
             ),
@@ -219,7 +233,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           image: AssetImage("assets/images/Logo.png")),
                       applicationVersion: "1.0",
                       child: Text("About"),
-                    )
+                    ),
+                    const Divider(),
+                    ListTile(
+                      onTap: () {
+                        auth.signOut();
+                        Get.to(() => const MyLoginPage());
+                      },
+                      leading: const Icon(Icons.logout),
+                      title: const Text("Sign out"),
+                    ),
                   ],
                 ),
               ),

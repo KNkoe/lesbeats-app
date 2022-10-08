@@ -44,6 +44,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
       if (e.code == 'user-not-found') {
         Get.showSnackbar(const GetSnackBar(
           backgroundColor: Color(0xff264653),
+          duration: Duration(seconds: 5),
           borderRadius: 30,
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
           icon: Icon(
@@ -257,19 +258,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                   Get.off(
                                     (() => const MyHomePage()),
                                   );
-                                  Get.showSnackbar(const GetSnackBar(
-                                    snackPosition: SnackPosition.TOP,
-                                    duration: Duration(seconds: 3),
-                                    backgroundColor: Color(0xff264653),
-                                    borderRadius: 30,
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 30),
-                                    icon: Icon(
-                                      Icons.sentiment_satisfied_outlined,
-                                      color: Colors.white,
-                                    ),
-                                    message: "Welcome back",
-                                  ));
                                 }
                               });
                             }

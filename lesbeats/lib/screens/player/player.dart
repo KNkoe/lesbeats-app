@@ -13,6 +13,7 @@ showPlayer(BuildContext context, PlatformFile audio) {
       (context) => MiniPlayer(
             audio: audio,
           ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)));
 }
 
