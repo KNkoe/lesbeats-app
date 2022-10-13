@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:get/get.dart';
 import 'package:lesbeats/models/genre.dart';
 import 'package:lesbeats/widgets/animation.dart';
+import 'package:lesbeats/widgets/responsive.dart';
 import 'package:lesbeats/widgets/theme.dart';
 
 class MyGenre extends StatefulWidget {
@@ -32,8 +32,8 @@ class _MyGenreState extends State<MyGenre> {
       ),
       body: Container(
         color: Theme.of(context).primaryColor,
-        height: Get.height,
-        width: Get.width,
+        height: screenSize(context).height,
+        width: screenSize(context).width,
         child: Container(
           margin: const EdgeInsets.only(top: 10),
           padding: const EdgeInsets.all(20),

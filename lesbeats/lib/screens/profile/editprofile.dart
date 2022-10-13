@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/widgets/decoration.dart';
+import 'package:lesbeats/widgets/responsive.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 
 class EditProfile extends StatefulWidget {
@@ -24,13 +25,16 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPassword = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   bool _isUsernameEnabled = false;
   bool _isnameEnabled = false;
   bool _ispasswordEnabled = false;
   bool _isImageChanged = false;
   bool _isSaving = false;
+  bool _obscurePassword = true;
+  bool _obscureConfirm = true;
 
   final Stream<DocumentSnapshot> _userStream =
       db.collection("users").doc(auth.currentUser!.uid).snapshots();
@@ -40,7 +44,7 @@ class _EditProfileState extends State<EditProfile> {
     _nameController.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
-    _confirmPassword.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -57,11 +61,23 @@ class _EditProfileState extends State<EditProfile> {
       _imageName = image.path;
       _imagePath = photo;
       debugPrint(image.path);
-    }
 
-    setState(() {
-      _isImageChanged = true;
-    });
+      setState(() {
+        _isImageChanged = true;
+      });
+    } else {
+      Get.showSnackbar(const GetSnackBar(
+        duration: Duration(seconds: 3),
+        backgroundColor: Color(0xff264653),
+        borderRadius: 30,
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        icon: Icon(
+          Icons.error_outline,
+          color: Colors.white,
+        ),
+        message: "Canceled",
+      ));
+    }
   }
 
   upload(String name, File path) async {
@@ -73,36 +89,64 @@ class _EditProfileState extends State<EditProfile> {
 
       final String url = await storage.ref(imagepath).getDownloadURL();
 
-      auth.currentUser!.updatePhotoURL(url);
+      await auth.currentUser!.updatePhotoURL(url);
+      db
+          .collection("users")
+          .doc(auth.currentUser!.uid)
+          .set({"photoUrl": url}, SetOptions(merge: true));
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
-  updateProfileInfo() {
+  Future<String?> updateProfileInfo() async {
     setState(() {
       _isSaving = true;
     });
-    if (_isnameEnabled && _nameController.text.isNotEmpty) {
-      db
-          .collection("users")
-          .doc(auth.currentUser!.uid)
-          .set({"full name": _nameController.text});
+
+    try {
+      if (_isnameEnabled && _nameController.text.isNotEmpty) {
+        db
+            .collection("users")
+            .doc(auth.currentUser!.uid)
+            .set({"full name": _nameController.text}, SetOptions(merge: true));
+      }
+      if (_isUsernameEnabled && _usernameController.text.isNotEmpty) {
+        await auth.currentUser!.updateDisplayName(_usernameController.text);
+        db.collection("users").doc(auth.currentUser!.uid).set(
+            {"username": _usernameController.text}, SetOptions(merge: true));
+      }
+      if (_ispasswordEnabled && _passwordController.text.isNotEmpty) {
+        await auth.currentUser!.updatePassword(_passwordController.text);
+      }
+      if (_imagePath != null) {
+        upload(_imageName!.split("/").last, _imagePath!);
+      }
+
+      setState(() {
+        _isSaving = false;
+      });
+
+      return "Success";
+    } catch (error) {
+      Get.showSnackbar(GetSnackBar(
+        isDismissible: true,
+        duration: const Duration(seconds: 5),
+        backgroundColor: const Color(0xff264653),
+        borderRadius: 30,
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        icon: const Icon(
+          Icons.error,
+          color: Colors.white,
+        ),
+        message: error.toString().split("]")[1],
+      ));
     }
-    if (_isUsernameEnabled && _usernameController.text.isNotEmpty) {
-      auth.currentUser!.updateDisplayName(_usernameController.text);
-      db
-          .collection("users")
-          .doc(auth.currentUser!.uid)
-          .set({"username": _usernameController.text});
-    }
-    if (_isnameEnabled && _passwordController.text.isNotEmpty) {
-      auth.currentUser!.updatePassword(_nameController.text);
-    }
-    upload(_imageName!.split("/").last, _imagePath!);
+
     setState(() {
       _isSaving = false;
     });
+    return null;
   }
 
   @override
@@ -135,11 +179,10 @@ class _EditProfileState extends State<EditProfile> {
                         _isImageChanged
                             ? GestureDetector(
                                 onTap: pickImage,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
+                                child: ClipOval(
                                   child: Image.file(
                                     _imagePath!,
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.fill,
                                     width: 100,
                                     height: 100,
                                   ),
@@ -166,7 +209,7 @@ class _EditProfileState extends State<EditProfile> {
                           height: 30,
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SizedBox(
                               height: 50,
@@ -205,7 +248,7 @@ class _EditProfileState extends State<EditProfile> {
                           height: 20,
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SizedBox(
                               height: 50,
@@ -258,22 +301,36 @@ class _EditProfileState extends State<EditProfile> {
                             children: [
                               SizedBox(
                                 height: 50,
-                                width: Get.width * 0.5,
+                                width: screenSize(context).width * 0.6,
                                 child: TextFormField(
-                                  enabled: _ispasswordEnabled,
-                                  keyboardType: TextInputType.name,
-                                  controller: _passwordController,
-                                  decoration: const InputDecoration(
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.never,
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.black12),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))),
-                                    label: Text("Change Password"),
-                                  ),
-                                ),
+                                    enabled: _ispasswordEnabled,
+                                    keyboardType: TextInputType.name,
+                                    controller: _passwordController,
+                                    obscureText: _obscurePassword,
+                                    decoration: InputDecoration(
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                        enabledBorder: const OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.black12),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        label: const Text("Change Password"),
+                                        hintText: "New Password",
+                                        suffix: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _obscurePassword =
+                                                    !_obscurePassword;
+                                              });
+                                            },
+                                            icon: Icon(
+                                              _obscurePassword
+                                                  ? Icons
+                                                      .remove_red_eye_outlined
+                                                  : Icons.remove_red_eye,
+                                              color: Colors.black38,
+                                            )))),
                               ),
                             ],
                           ),
@@ -293,21 +350,40 @@ class _EditProfileState extends State<EditProfile> {
                               children: [
                                 SizedBox(
                                   height: 50,
-                                  width: Get.width * 0.5,
+                                  width: screenSize(context).width * 0.6,
                                   child: TextFormField(
-                                    enabled: _ispasswordEnabled,
                                     keyboardType: TextInputType.name,
-                                    controller: _passwordController,
-                                    decoration: const InputDecoration(
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.never,
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.black12),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10))),
-                                      label: Text("Confirm Password"),
-                                    ),
+                                    controller: _confirmPasswordController,
+                                    obscureText: _obscureConfirm,
+                                    validator: Validators.compose([
+                                      (value) =>
+                                          value != _passwordController.text
+                                              ? "Passwords do not match"
+                                              : null
+                                    ]),
+                                    decoration: InputDecoration(
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                        enabledBorder: const OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.black12),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        label: const Text("Confirm Password"),
+                                        suffix: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _obscureConfirm =
+                                                    !_obscureConfirm;
+                                              });
+                                            },
+                                            icon: Icon(
+                                              _obscureConfirm
+                                                  ? Icons
+                                                      .remove_red_eye_outlined
+                                                  : Icons.remove_red_eye,
+                                              color: Colors.black38,
+                                            ))),
                                   ),
                                 ),
                               ],
@@ -330,20 +406,23 @@ class _EditProfileState extends State<EditProfile> {
                           style: confirmButtonStyle,
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              updateProfileInfo();
-                              Navigator.of(context).pop();
-                              Get.showSnackbar(const GetSnackBar(
-                                duration: Duration(seconds: 3),
-                                backgroundColor: Color(0xff264653),
-                                borderRadius: 30,
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 30),
-                                icon: Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                ),
-                                message: "Profile update successfully",
-                              ));
+                              updateProfileInfo().then((value) {
+                                if (value == "Success") {
+                                  Navigator.of(context).pop();
+                                  Get.showSnackbar(const GetSnackBar(
+                                    duration: Duration(seconds: 3),
+                                    backgroundColor: Color(0xff264653),
+                                    borderRadius: 30,
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 30),
+                                    icon: Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                    ),
+                                    message: "Profile updated successfully",
+                                  ));
+                                }
+                              });
                             }
                           },
                           child: _isSaving

@@ -5,6 +5,8 @@ import 'package:lesbeats/screens/home/library.dart';
 import 'package:lesbeats/screens/home/search.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 
+import '../../main.dart';
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -25,7 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         return const MyLibrary();
       case 3:
-        return const MyProfilePage();
+        return MyProfilePage(auth.currentUser!.uid);
       default:
         return Container();
     }
@@ -37,7 +39,10 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: destination(selectedIndex),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {}, child: const Icon(Icons.play_arrow)),
+          onPressed: () {
+            auth.signOut();
+          },
+          child: const Icon(Icons.play_arrow)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar(
         icons: const [

@@ -13,8 +13,8 @@ import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/bx.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
 import 'package:iconify_flutter/icons/ri.dart';
+import 'package:lesbeats/screens/home/sell/sales.dart';
 import 'package:lesbeats/screens/home/settings.dart';
-import 'package:lesbeats/screens/login.dart';
 import 'package:lesbeats/widgets/theme.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -197,6 +197,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     const Divider(),
                     ListTile(
                       onTap: () {
+                        Get.to(() => const MySales());
                         widget._scaffoldKey.currentState!.closeDrawer();
                       },
                       leading: const Icon(
@@ -233,15 +234,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           image: AssetImage("assets/images/Logo.png")),
                       applicationVersion: "1.0",
                       child: Text("About"),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      onTap: () {
-                        auth.signOut();
-                        Get.to(() => const MyLoginPage());
-                      },
-                      leading: const Icon(Icons.logout),
-                      title: const Text("Sign out"),
                     ),
                   ],
                 ),

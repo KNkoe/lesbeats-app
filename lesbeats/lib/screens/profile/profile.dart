@@ -10,7 +10,8 @@ import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/theme.dart';
 
 class MyProfilePage extends StatefulWidget {
-  const MyProfilePage({super.key});
+  const MyProfilePage(this.uid, {super.key});
+  final String uid;
 
   @override
   State<MyProfilePage> createState() => _MyProfilePageState();
@@ -30,96 +31,106 @@ class _MyProfilePageState extends State<MyProfilePage> {
     }
   }
 
-  final Stream<DocumentSnapshot> _usersStream =
-      db.collection('users').doc(auth.currentUser!.uid).snapshots();
+  late final Stream<DocumentSnapshot> _usersStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _usersStream = db.collection('users').doc(widget.uid).snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-          "Profile",
-          style: Theme.of(context)
-              .textTheme
-              .headline5!
-              .copyWith(color: Colors.white),
-        ),
+        automaticallyImplyLeading:
+            (widget.uid == auth.currentUser!.uid) ? false : true,
+        title: (widget.uid == auth.currentUser!.uid)
+            ? Text(
+                "Profile",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5!
+                    .copyWith(color: Colors.white),
+              )
+            : const Text(""),
         actions: [
-          PopupMenuButton(
-              icon: const Icon(
-                Icons.more_horiz,
-                color: Colors.white,
-              ),
-              itemBuilder: ((context) => [
-                    PopupMenuItem(
-                      child: ListTile(
-                        minLeadingWidth: 2,
-                        onTap: () {
+          if (widget.uid == auth.currentUser!.uid)
+            PopupMenuButton(
+                icon: const Icon(
+                  Icons.more_horiz,
+                  color: Colors.white,
+                ),
+                itemBuilder: ((context) => [
+                      PopupMenuItem(
+                        child: ListTile(
+                          minLeadingWidth: 2,
+                          onTap: () {
+                            Navigator.pop(context);
+                            showDialog(
+                                    context: context,
+                                    builder: ((context) => const EditProfile()))
+                                .then((_) => setState(() {}));
+                          },
+                          title: const Text("Edit profile"),
+                          leading: const Icon(Icons.edit_attributes),
+                        ),
+                      ),
+                      const PopupMenuItem(child: Divider()),
+                      PopupMenuItem(
+                          child: ListTile(
+                        onTap: () async {
                           Navigator.pop(context);
                           showDialog(
-                                  context: context,
-                                  builder: ((context) => const EditProfile()))
-                              .then((_) => setState(() {}));
-                        },
-                        title: const Text("Edit profile"),
-                        leading: const Icon(Icons.edit_attributes),
-                      ),
-                    ),
-                    const PopupMenuItem(child: Divider()),
-                    PopupMenuItem(
-                        child: ListTile(
-                      onTap: () async {
-                        Navigator.pop(context);
-                        showDialog(
-                            context: context,
-                            builder: (context) => BackdropFilter(
-                                  filter:
-                                      ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                                  child: AlertDialog(
-                                    title: Column(
-                                      children: const [
-                                        Text("Log out"),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-                                        Text(
-                                          "Are you sure you want to log out?",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.normal,
-                                              color: Colors.black54),
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
+                              context: context,
+                              builder: (context) => BackdropFilter(
+                                    filter:
+                                        ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                                    child: AlertDialog(
+                                      title: Column(
+                                        children: const [
+                                          Text("Log out"),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Text(
+                                            "Are you sure you want to log out?",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors.black54),
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                        ],
+                                      ),
+                                      actionsAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      actions: [
+                                        OutlinedButton(
+                                            style: cancelButtonStyle,
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("Cancel")),
+                                        ElevatedButton(
+                                            style: confirmButtonStyle,
+                                            onPressed: () async {
+                                              await auth.signOut().then(
+                                                  (value) => Navigator.of(
+                                                          context)
+                                                      .popAndPushNamed('/'));
+                                            },
+                                            child: const Text("Logout"))
                                       ],
                                     ),
-                                    actionsAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    actions: [
-                                      OutlinedButton(
-                                          style: cancelButtonStyle,
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text("Cancel")),
-                                      ElevatedButton(
-                                          style: confirmButtonStyle,
-                                          onPressed: () async {
-                                            await auth.signOut().then((value) =>
-                                                Navigator.of(context)
-                                                    .popAndPushNamed('/'));
-                                          },
-                                          child: const Text("Logout"))
-                                    ],
-                                  ),
-                                ));
-                      },
-                      minLeadingWidth: 2,
-                      title: const Text("Log out"),
-                      leading: const Icon(Icons.logout_rounded),
-                    ))
-                  ]))
+                                  ));
+                        },
+                        minLeadingWidth: 2,
+                        title: const Text("Log out"),
+                        leading: const Icon(Icons.logout_rounded),
+                      ))
+                    ]))
         ],
       ),
       body: StreamBuilder<DocumentSnapshot>(
@@ -172,6 +183,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                   child: Animate(
                                     effects: const [ShimmerEffect()],
                                     child: CircleAvatar(
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
                                       minRadius: 50,
                                       backgroundImage: NetworkImage(
                                           auth.currentUser!.photoURL!),

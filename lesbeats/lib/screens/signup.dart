@@ -28,7 +28,8 @@ class _MySignupPageState extends State<MySignupPage> {
   final _formKey = GlobalKey<FormState>();
 
   bool _isRegistering = false;
-  bool _obscureText = true;
+  bool _obscurePassword = true;
+  bool _obscureConfirm = true;
 
   int _currentPage = 0;
 
@@ -54,12 +55,6 @@ class _MySignupPageState extends State<MySignupPage> {
     super.dispose();
   }
 
-  String? _photoUrl;
-
-  Future<String> getUrl() async {
-    return await storage.ref("/users/placeholder.jpg").getDownloadURL();
-  }
-
   Future<String> register() async {
     setState(() {
       _isRegistering = true;
@@ -69,18 +64,18 @@ class _MySignupPageState extends State<MySignupPage> {
           email: _emailController.text, password: _passwordController.text);
 
       if (auth.currentUser != null) {
-        getUrl().then((value) {
-          auth.currentUser!.updatePhotoURL(value);
-          _photoUrl = value;
-        });
-        auth.currentUser!.updateDisplayName(_usernameController.text);
+        final String photoUrl =
+            await storage.ref("/users/placeholder.jpg").getDownloadURL();
+
+        await auth.currentUser!.updatePhotoURL(photoUrl);
+        await auth.currentUser!.updateDisplayName(_usernameController.text);
 
         final userData = <String, dynamic>{
           "uid": auth.currentUser!.uid,
           "full name": _nameController.text,
           "username": _usernameController.text,
           "email": _emailController.text,
-          "photoUrl": _photoUrl,
+          "photoUrl": photoUrl,
           "isVerified": false,
           "created at": DateTime.now()
         };
@@ -282,16 +277,17 @@ class _MySignupPageState extends State<MySignupPage> {
                                         Validators.minLength(
                                             6, "Password too short")
                                       ]),
-                                      obscureText: _obscureText,
+                                      obscureText: _obscurePassword,
                                       controller: _passwordController,
                                       decoration: InputDecoration(
                                         suffixIcon: IconButton(
                                             onPressed: () {
                                               setState(() {
-                                                _obscureText = !_obscureText;
+                                                _obscurePassword =
+                                                    !_obscurePassword;
                                               });
                                             },
-                                            icon: Icon(_obscureText
+                                            icon: Icon(_obscurePassword
                                                 ? Icons.remove_red_eye_rounded
                                                 : Icons
                                                     .remove_red_eye_outlined)),
@@ -325,16 +321,17 @@ class _MySignupPageState extends State<MySignupPage> {
                                         Validators.minLength(
                                             6, "Password too short")
                                       ]),
-                                      obscureText: _obscureText,
+                                      obscureText: _obscureConfirm,
                                       controller: _confirmController,
                                       decoration: InputDecoration(
                                         suffixIcon: IconButton(
                                             onPressed: () {
                                               setState(() {
-                                                _obscureText = !_obscureText;
+                                                _obscureConfirm =
+                                                    !_obscureConfirm;
                                               });
                                             },
-                                            icon: Icon(_obscureText
+                                            icon: Icon(_obscureConfirm
                                                 ? Icons.remove_red_eye_rounded
                                                 : Icons
                                                     .remove_red_eye_outlined)),
