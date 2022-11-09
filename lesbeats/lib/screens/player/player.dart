@@ -1,8 +1,13 @@
+import 'dart:ui';
+
 import 'package:animations/animations.dart';
 // ignore: depend_on_referenced_packages
 import 'package:audio_session/audio_session.dart';
+import 'package:audiotagger/audiotagger.dart';
+import 'package:audiotagger/models/tag.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lesbeats/screens/player/common.dart';
 import 'package:lesbeats/widgets/responsive.dart';
@@ -29,6 +34,14 @@ class MiniPlayer extends StatefulWidget {
 
 class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
   final _player = AudioPlayer();
+  final _tagger = Audiotagger();
+
+  bool _repeat = false;
+  bool _isFavourite = false;
+
+  String? _title;
+  String? _artist;
+  Uint8List? _artwork;
 
   @override
   void initState() {
@@ -57,6 +70,17 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
     } else {
       _player.setFilePath(widget.audio.path!);
     }
+
+    final String filePath = widget.audio.path!;
+
+    final Tag? tag = await _tagger.readTags(path: filePath);
+    final Uint8List? bytes = await _tagger.readArtwork(path: filePath);
+
+    setState(() {
+      _title = tag!.title;
+      _artist = tag.artist;
+      _artwork = bytes;
+    });
 
     _player.play();
   }
@@ -105,17 +129,40 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                     children: [
                       Row(
                         children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(14, 0, 10, 0),
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                image: const DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image:
-                                        AssetImage("assets/images/rnb.jpg"))),
-                          ),
+                          (_artwork == null)
+                              ? Container(
+                                  margin:
+                                      const EdgeInsets.fromLTRB(14, 0, 10, 0),
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(8),
+                                      image: const DecorationImage(
+                                          filterQuality: FilterQuality.low,
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                              "assets/images/disk.png"))),
+                                )
+                              : Row(
+                                  children: [
+                                    const SizedBox(
+                                      width: 14,
+                                    ),
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.memory(
+                                        _artwork!,
+                                        fit: BoxFit.cover,
+                                        height: 40,
+                                        width: 40,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                  ],
+                                ),
                           SizedBox(
                             width: screenSize(context).width * 0.7,
                             child: Column(
@@ -124,16 +171,21 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                 Padding(
                                   padding: const EdgeInsets.all(2),
                                   child: Text(
-                                    widget.audio.name,
+                                    (_title == null)
+                                        ? widget.audio.name
+                                        : _title!.isEmpty
+                                            ? widget.audio.name
+                                            : _title!,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                const Padding(
-                                  padding: EdgeInsets.all(2),
+                                Padding(
+                                  padding: const EdgeInsets.all(2),
                                   child: Text(
-                                    "Artist",
+                                    _artist == null ? "" : _artist!,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(color: Colors.black54),
+                                    style:
+                                        const TextStyle(color: Colors.black54),
                                   ),
                                 ),
                               ],
@@ -202,7 +254,212 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                 ],
               ),
             ),
-        openBuilder: (context, function) => Container());
+        openBuilder: (context, function) {
+          return StatefulBuilder(
+              builder: ((context, setState) => Stack(
+                    children: [
+                      (_artwork == null)
+                          ? Image(
+                              image: const AssetImage("assets/images/disk.png"),
+                              height: screenSize(context).height * 2,
+                              width: screenSize(context).width * 2,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.memory(
+                              _artwork!,
+                              height: screenSize(context).height * 2,
+                              width: screenSize(context).width * 2,
+                              fit: BoxFit.cover,
+                            ),
+                      BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    icon: const Icon(
+                                      Icons.arrow_back,
+                                      color: Colors.white,
+                                    )),
+                                const Text(
+                                  "Now Playing",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(
+                                      Icons.more_horiz,
+                                      color: Colors.white,
+                                    ))
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: const BoxDecoration(
+                                      color: Colors.white10,
+                                      shape: BoxShape.circle),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: const BoxDecoration(
+                                        color: Colors.white12,
+                                        shape: BoxShape.circle),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: const BoxDecoration(
+                                          color: Colors.white24,
+                                          shape: BoxShape.circle),
+                                      child: (_artwork == null)
+                                          ? Container(
+                                              height:
+                                                  screenSize(context).width *
+                                                      0.7,
+                                              width: screenSize(context).width *
+                                                  0.7,
+                                              decoration: const BoxDecoration(
+                                                  color: Colors.black,
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                      filterQuality:
+                                                          FilterQuality.low,
+                                                      fit: BoxFit.cover,
+                                                      image: AssetImage(
+                                                          "assets/images/disk.png"))),
+                                            )
+                                          : ClipOval(
+                                              child: Image.memory(
+                                                _artwork!,
+                                                fit: BoxFit.cover,
+                                                height:
+                                                    screenSize(context).width *
+                                                        0.7,
+                                                width:
+                                                    screenSize(context).width *
+                                                        0.7,
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 40,
+                                ),
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(2),
+                                      child: Text(
+                                        (_title == null)
+                                            ? widget.audio.name
+                                            : _title!.isEmpty
+                                                ? widget.audio.name
+                                                : _title!,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(2),
+                                      child: Text(
+                                        _artist == null ? "" : _artist!,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            color: Colors.white54),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                ControlButtons(_player),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                StreamBuilder<PositionData>(
+                                  stream: _positionDataStream,
+                                  builder: (context, snapshot) {
+                                    final positionData = snapshot.data;
+                                    return SeekBar(
+                                      duration: positionData?.duration ??
+                                          Duration.zero,
+                                      position: positionData?.position ??
+                                          Duration.zero,
+                                      bufferedPosition:
+                                          positionData?.bufferedPosition ??
+                                              Duration.zero,
+                                      onChangeEnd: _player.seek,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: const BoxDecoration(
+                                  color: Colors.black38,
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.elliptical(100, 20),
+                                      topLeft: Radius.elliptical(100, 20))),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _repeat = !_repeat;
+                                        });
+
+                                        if (_repeat) {
+                                          _player.setLoopMode(LoopMode.one);
+                                        }
+                                      },
+                                      icon: Icon(
+                                        _repeat
+                                            ? Icons.repeat_one
+                                            : Icons.repeat_rounded,
+                                        color: Colors.white54,
+                                      )),
+                                  IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _isFavourite = !_isFavourite;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.favorite_rounded,
+                                        color: _isFavourite
+                                            ? Colors.red
+                                            : Colors.white54,
+                                      ))
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  )));
+        });
   }
 }
 
@@ -219,7 +476,10 @@ class ControlButtons extends StatelessWidget {
       children: [
         // Opens volume slider dialog
         IconButton(
-          icon: const Icon(Icons.volume_up),
+          icon: const Icon(
+            Icons.volume_up,
+            color: Colors.white,
+          ),
           onPressed: () {
             showSliderDialog(
               context: context,
@@ -239,8 +499,8 @@ class ControlButtons extends StatelessWidget {
         /// loading/buffering/ready state. Depending on the state we show the
         /// appropriate button or loading indicator.
         Container(
-          decoration:
-              BoxDecoration(border: Border.all(), shape: BoxShape.circle),
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.white), shape: BoxShape.circle),
           child: StreamBuilder<PlayerState>(
             stream: player.playerStateStream,
             builder: (context, snapshot) {
@@ -257,19 +517,16 @@ class ControlButtons extends StatelessWidget {
                 );
               } else if (playing != true) {
                 return IconButton(
-                  icon: const Icon(
-                    Icons.play_arrow,
-                  ),
+                  icon: const Icon(Icons.play_arrow, color: Colors.white),
                   onPressed: player.play,
                 );
               } else if (processingState != ProcessingState.completed) {
                 return IconButton(
-                  icon: const Icon(Icons.pause),
-                  onPressed: player.pause,
-                );
+                    icon: const Icon(Icons.pause, color: Colors.white),
+                    onPressed: player.pause);
               } else {
                 return IconButton(
-                  icon: const Icon(Icons.replay),
+                  icon: const Icon(Icons.replay, color: Colors.white),
                   onPressed: () => player.seek(Duration.zero),
                 );
               }
@@ -281,7 +538,8 @@ class ControlButtons extends StatelessWidget {
           stream: player.speedStream,
           builder: (context, snapshot) => IconButton(
             icon: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.white)),
             onPressed: () {
               showSliderDialog(
                 context: context,

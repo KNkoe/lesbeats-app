@@ -48,7 +48,7 @@ class _MySalesState extends State<MySales> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text("Sales",
+                    const Text("Uploads",
                         style: TextStyle(
                             color: Colors.black26,
                             fontWeight: FontWeight.bold)),
@@ -62,6 +62,25 @@ class _MySalesState extends State<MySales> {
                 ),
                 const SizedBox(
                   height: 20,
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(
+                        Icons.sentiment_dissatisfied_rounded,
+                        color: Colors.black12,
+                        size: 34,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "No uploads",
+                        style: TextStyle(color: Colors.black38),
+                      )
+                    ],
+                  ),
                 )
               ],
             ),
