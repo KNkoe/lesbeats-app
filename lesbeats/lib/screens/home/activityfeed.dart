@@ -52,7 +52,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
                         Text(
                           e,
                           style: const TextStyle(
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w400,
                               color: Colors.black54),
                         ),
                         Row(

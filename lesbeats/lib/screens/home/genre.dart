@@ -20,8 +20,8 @@ class _MyGenreState extends State<MyGenre> {
     Genre(genre: "Rock", coverUrl: "assets/images/rock.jpg"),
     Genre(genre: "House", coverUrl: "assets/images/house.jpg"),
     Genre(genre: "HipHop", coverUrl: "assets/images/hiphop.jpg"),
-    Genre(genre: "Afrobeat", coverUrl: "assets/images/genre.jpeg"),
-    Genre(genre: "Other", coverUrl: "assets/images/genre.jpeg")
+    Genre(genre: "Afrobeat", coverUrl: "assets/images/artist.jpg"),
+    Genre(genre: "Other", coverUrl: "assets/images/artist.jpg")
   ];
   @override
   Widget build(BuildContext context) {
@@ -29,6 +29,7 @@ class _MyGenreState extends State<MyGenre> {
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         title: const Text("Genres"),
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
       ),
       body: Container(
         color: Theme.of(context).primaryColor,
@@ -42,6 +43,7 @@ class _MyGenreState extends State<MyGenre> {
                   topLeft: Radius.circular(50), topRight: Radius.circular(50)),
               color: Theme.of(context).backgroundColor),
           child: GridView.count(
+            physics: const BouncingScrollPhysics(),
             crossAxisCount: 2,
             children: genres
                 .map(

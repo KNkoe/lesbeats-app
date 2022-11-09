@@ -154,10 +154,14 @@ class _DashboardState extends State<Dashboard> {
                                               CrossAxisAlignment.center,
                                           children: [
                                             Container(
-                                              padding: const EdgeInsets.all(4),
+                                              padding: const EdgeInsets.all(1),
                                               decoration: BoxDecoration(
                                                   shape: BoxShape.circle,
                                                   gradient: LinearGradient(
+                                                      stops: const [
+                                                        0.7,
+                                                        0.3
+                                                      ],
                                                       colors: [
                                                         Theme.of(context)
                                                             .canvasColor,
@@ -193,7 +197,7 @@ class _DashboardState extends State<Dashboard> {
                                                     artist,
                                                     style: const TextStyle(
                                                         fontWeight:
-                                                            FontWeight.bold,
+                                                            FontWeight.w400,
                                                         color: Colors.black54),
                                                   ),
                                                 ),

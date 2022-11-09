@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lesbeats/main.dart';
 import 'package:lesbeats/widgets/theme.dart';
 
 class MyArtists extends StatefulWidget {
@@ -23,14 +25,26 @@ class _MyArtistsState extends State<MyArtists> {
   ];
   bool _isFollowing = false;
 
+  late final Stream<QuerySnapshot> _usersStream;
+
+  @override
+  void initState() {
+    _usersStream = db.collection('users').snapshots();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
-      children: artists
-          .map((artist) => Padding(
+    return StreamBuilder<QuerySnapshot>(
+        stream: _usersStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              itemCount: snapshot.data!.size,
+              itemBuilder: (context, index) => Padding(
                 padding: const EdgeInsets.all(10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -42,10 +56,10 @@ class _MyArtistsState extends State<MyArtists> {
                           width: 90,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              image: const DecorationImage(
+                              image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image:
-                                      AssetImage("assets/images/artist.jpg"))),
+                                  image: NetworkImage(
+                                      snapshot.data!.docs[index]["photoUrl"]))),
                         ),
                         const SizedBox(
                           width: 20,
@@ -55,8 +69,11 @@ class _MyArtistsState extends State<MyArtists> {
                           children: [
                             Row(
                               children: [
-                                Text(artist),
-                                if (artists.indexOf(artist) == 0)
+                                Text(snapshot.data!.docs[index]["username"]),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                if (snapshot.data!.docs[index]["isVerified"])
                                   const Icon(
                                     Icons.verified_sharp,
                                     size: 18,
@@ -98,8 +115,7 @@ class _MyArtistsState extends State<MyArtists> {
                         ),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: (_isFollowing &&
-                                        artists.indexOf(artist) == 0)
+                                backgroundColor: (_isFollowing && index == 0)
                                     ? Colors.grey
                                     : Theme.of(context).primaryColor),
                             onPressed: () {
@@ -107,16 +123,23 @@ class _MyArtistsState extends State<MyArtists> {
                                 _isFollowing = !_isFollowing;
                               });
                             },
-                            child: Text(
-                                (_isFollowing && artists.indexOf(artist) == 0)
-                                    ? "Following"
-                                    : "Follow")),
+                            child: Text((_isFollowing && index == 0)
+                                ? "Following"
+                                : "Follow")),
                       ],
                     )
                   ],
                 ),
-              ))
-          .toList(),
-    );
+              ),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+                child: CircularProgressIndicator(
+              color: Theme.of(context).primaryColor,
+            ));
+          }
+          return Container();
+        });
   }
 }
