@@ -115,8 +115,9 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return OpenContainer(
         closedBuilder: (context, fuction) => Container(
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+              ),
               height: 115,
               child: Column(
                 children: [
@@ -415,7 +416,7 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: const BoxDecoration(
-                                  color: Colors.black38,
+                                  color: Colors.white12,
                                   borderRadius: BorderRadius.only(
                                       topRight: Radius.elliptical(100, 20),
                                       topLeft: Radius.elliptical(100, 20))),

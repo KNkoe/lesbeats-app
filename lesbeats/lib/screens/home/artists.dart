@@ -11,18 +11,6 @@ class MyArtists extends StatefulWidget {
 }
 
 class _MyArtistsState extends State<MyArtists> {
-  final List<String> artists = [
-    "Mjo Konondo",
-    "Funky Debelicous",
-    "Goodey",
-    "Delicous",
-    "Vicous",
-    "Mjo Konondo",
-    "Funky Debelicous",
-    "Goodey",
-    "Delicous",
-    "Vicous"
-  ];
   bool _isFollowing = false;
 
   late final Stream<QuerySnapshot> _usersStream;
