@@ -187,7 +187,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                           Theme.of(context).primaryColor,
                                       minRadius: 50,
                                       backgroundImage: NetworkImage(
-                                          auth.currentUser!.photoURL!),
+                                          userSnapshot.data!["photoUrl"]),
                                     ),
                                   ),
                                 ),
