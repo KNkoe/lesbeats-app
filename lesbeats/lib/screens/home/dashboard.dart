@@ -26,14 +26,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  final List<String> topArtists = [
-    "Mjo Konondo",
-    "Funky Debelicous",
-    "Goodey",
-    "Delicous",
-    "Vicous"
-  ];
-
   late final Stream<QuerySnapshot> _usersStream;
 
   @override
@@ -69,7 +61,7 @@ class _DashboardState extends State<Dashboard> {
         actions: [
           IconButton(
               onPressed: () {
-                showModalBottomSheet(
+                showBottomSheet(
                     context: context, builder: (context) => Container());
               },
               icon: Badge(

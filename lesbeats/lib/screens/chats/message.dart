@@ -129,6 +129,23 @@ class _MyMessageScreenState extends State<MyMessageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(26),
+            child: Row(
+              children: [
+                IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                    ))
+              ],
+            )),
+      ),
       body: Chat(
         theme: DefaultChatTheme(
             primaryColor: Theme.of(context).primaryColor,
