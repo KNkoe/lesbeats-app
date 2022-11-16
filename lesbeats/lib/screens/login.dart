@@ -9,6 +9,7 @@ import 'package:lesbeats/screens/home/home.dart';
 import 'package:lesbeats/screens/signup.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../main.dart';
 
@@ -93,6 +94,49 @@ class _MyLoginPageState extends State<MyLoginPage> {
         _isLoggin = false;
       });
     }
+
+    return "";
+  }
+
+  Future<String> _googleSignin() async {
+    setState(() {
+      _isLoggin = true;
+    });
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    try {
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      setState(() {
+        _isLoggin = false;
+      });
+      return "Success";
+    } catch (e) {
+      Get.showSnackbar(GetSnackBar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xff264653),
+        borderRadius: 30,
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        icon: const Icon(
+          Icons.error_outline,
+          color: Colors.white,
+        ),
+        message: e.toString(),
+      ));
+    }
+
+    setState(() {
+      _isLoggin = false;
+    });
 
     return "";
   }
@@ -306,15 +350,19 @@ class _MyLoginPageState extends State<MyLoginPage> {
                           effects: const [FadeEffect()],
                           delay: const Duration(milliseconds: 1200),
                           child: OutlinedButton(
-                              style: ButtonStyle(
-                                fixedSize: MaterialStateProperty.all(
-                                    const Size(100, 40)),
-                                shape: MaterialStateProperty.all(
-                                    const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)))),
+                              style: OutlinedButton.styleFrom(
+                                fixedSize: const Size(100, 40),
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _googleSignin().then((value) {
+                                  if (value == "Success") {
+                                    Get.to(const MyHomePage());
+                                  }
+                                });
+                              },
                               child: Iconify(
                                 Bi.google,
                                 color: Theme.of(context).primaryColor,
@@ -324,13 +372,11 @@ class _MyLoginPageState extends State<MyLoginPage> {
                           effects: const [FadeEffect()],
                           delay: const Duration(milliseconds: 1200),
                           child: OutlinedButton(
-                              style: ButtonStyle(
-                                fixedSize: MaterialStateProperty.all(
-                                    const Size(100, 40)),
-                                shape: MaterialStateProperty.all(
-                                    const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)))),
+                              style: OutlinedButton.styleFrom(
+                                fixedSize: const Size(100, 40),
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
                               ),
                               onPressed: () {},
                               child: Iconify(
