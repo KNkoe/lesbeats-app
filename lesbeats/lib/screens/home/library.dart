@@ -54,7 +54,7 @@ class _MyLibraryState extends State<MyLibrary> {
         width: screenSize(context).width,
         decoration: const BoxDecoration(
             image: DecorationImage(
-                opacity: 0.1,
+                opacity: 0.2,
                 fit: BoxFit.contain,
                 image: AssetImage("assets/images/circle-scatter-haikei.png"))),
         child: Column(

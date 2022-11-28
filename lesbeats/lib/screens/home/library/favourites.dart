@@ -61,7 +61,7 @@ class MyFavourites extends StatelessWidget {
                               Text(
                                 e,
                                 style: const TextStyle(
-                                    fontSize: 18, color: Colors.black45),
+                                    fontSize: 16, color: Colors.black45),
                               )
                             ],
                           )

@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:animations/animations.dart';
 import 'package:audiotagger/models/tag.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -135,15 +137,30 @@ class _UploadBeatState extends State<UploadBeat> {
     "Other"
   ];
 
+  late final Stream<QuerySnapshot> _genreStream;
+
+  @override
+  void initState() {
+    _genreStream = db.collection('genres').snapshots();
+    super.initState();
+  }
+
   String selectedGenre = "";
   String label = "Genre";
   bool _isGenreFocused = false;
   bool _isFree = false;
   bool _agree = false;
 
-  upload(File audio, File image) {
-    String imagePath =
-        "/tracks/${auth.currentUser!.uid}/${_tracknameController.text}";
+// Upload the cover image to firebase storage
+  uploadImage(String name, File path) async {
+    String imagepath =
+        "/users/${auth.currentUser!.uid}/${_tracknameController.text}/cover.${name.split(".").last}";
+    try {
+      await storage.ref(imagepath).putFile(
+          path, SettableMetadata(contentType: "image/${name.split(".").last}"));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
@@ -201,53 +218,86 @@ class _UploadBeatState extends State<UploadBeat> {
                       const SizedBox(
                         height: 20,
                       ),
-                      SizedBox(
-                        height: 50,
-                        child: TextFormField(
-                          controller: _genreController,
-                          onChanged: ((value) {
-                            setState(() {
-                              _isGenreFocused = true;
-                            });
-                            FocusManager.instance.primaryFocus!.unfocus();
-                            _genreController.clear();
-                          }),
-                          validator: Validators.compose([
-                            (value) => selectedGenre.isEmpty
-                                ? "Please select a genre"
-                                : null
-                          ]),
-                          decoration: dialogInputdecoration.copyWith(
-                              prefix: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.black26),
-                                    borderRadius: BorderRadius.circular(6)),
-                                child: Text(selectedGenre),
-                              ),
-                              label: Text(label)),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
+                      Row(
+                        children: [
+                          const Text("Genre"),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          SizedBox(
+                            width: screenSize(context).width * 0.5,
+                            child: StreamBuilder<QuerySnapshot>(
+                                stream: _genreStream,
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Center(
+                                      child: SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                      ),
+                                    );
+                                  } else if (snapshot.hasData) {
+                                    return DropdownButtonFormField<String>(
+                                        validator: Validators.compose([
+                                          (value) => selectedGenre.isEmpty
+                                              ? "Please select a genre"
+                                              : null
+                                        ]),
+                                        value: snapshot.data!.docs[0]["title"],
+                                        items: snapshot.data!.docs
+                                            .map((genre) =>
+                                                DropdownMenuItem<String>(
+                                                    value: genre["title"],
+                                                    child:
+                                                        Text(genre["title"])))
+                                            .toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedGenre = value!;
+                                          });
+                                        });
+                                  }
+
+                                  return const SizedBox();
+                                }),
+                          ),
+                        ],
                       ),
                       if (_isGenreFocused)
-                        Wrap(
-                          children: genres
-                              .map((genre) => Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: OutlinedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            selectedGenre = genre;
-                                            label = selectedGenre;
-                                            _isGenreFocused = false;
-                                          });
-                                        },
-                                        child: Text(genre)),
-                                  ))
-                              .toList(),
-                        ),
+                        StreamBuilder<QuerySnapshot>(
+                            stream: _genreStream,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator(
+                                  color: Theme.of(context).primaryColor,
+                                );
+                              } else if (snapshot.hasData) {
+                                return Wrap(
+                                    children: snapshot.data!.docs
+                                        .map((genre) => Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: OutlinedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      selectedGenre =
+                                                          genre["title"];
+                                                      label = selectedGenre;
+                                                      _isGenreFocused = false;
+                                                    });
+                                                  },
+                                                  child: Text(genre['title'])),
+                                            ))
+                                        .toList());
+                              }
+
+                              return const SizedBox();
+                            }),
                       const SizedBox(
                         height: 20,
                       ),
@@ -262,15 +312,25 @@ class _UploadBeatState extends State<UploadBeat> {
                       if (_isImageChanged)
                         Padding(
                             padding: const EdgeInsets.all(10),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black12)),
-                              child: Image.file(
-                                _image!,
-                                fit: BoxFit.cover,
-                                height: 30,
-                                width: 30,
-                              ),
+                            child: OpenContainer(
+                              closedElevation: 0,
+                              openElevation: 0,
+                              closedBuilder: ((context, action) => Container(
+                                    decoration: BoxDecoration(
+                                        border:
+                                            Border.all(color: Colors.black12)),
+                                    child: Image.file(
+                                      _image!,
+                                      fit: BoxFit.cover,
+                                      height: 30,
+                                      width: 30,
+                                    ),
+                                  )),
+                              openBuilder: ((context, action) => Image.file(
+                                    _image!,
+                                    height: screenSize(context).height * 0.6,
+                                    width: screenSize(context).width,
+                                  )),
                             )),
                       const SizedBox(
                         height: 10,
