@@ -14,7 +14,6 @@ import 'package:lesbeats/screens/player/player.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:audiotagger/audiotagger.dart';
-import 'package:wc_form_validators/wc_form_validators.dart';
 
 showUpload(BuildContext context) => showDialog(
     context: context,
@@ -116,26 +115,11 @@ class _UploadBeatState extends State<UploadBeat> {
   }
 
   final PageController _pageController = PageController();
-  final TextEditingController _genreController = TextEditingController();
   final TextEditingController _tracknameController = TextEditingController();
   final TextEditingController _artistController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
 
   SettableMetadata? _metadata;
-
-  List<String> genres = [
-    "Amapiano",
-    "Afrobeat",
-    "Dance",
-    "Hiphop",
-    "Trap",
-    "House",
-    "Famo",
-    "Rock",
-    "Pop",
-    "Deep House",
-    "Other"
-  ];
 
   late final Stream<QuerySnapshot> _genreStream;
 
@@ -147,7 +131,6 @@ class _UploadBeatState extends State<UploadBeat> {
 
   String selectedGenre = "";
   String label = "Genre";
-  bool _isGenreFocused = false;
   bool _isFree = false;
   bool _agree = false;
 
@@ -186,34 +169,22 @@ class _UploadBeatState extends State<UploadBeat> {
                         height: 30,
                         width: screenSize(context).width * 0.9,
                       ),
-                      SizedBox(
-                        height: 50,
-                        child: TextFormField(
-                          validator: Validators.compose([
-                            (value) => value!.isEmpty
-                                ? "Please enter track name"
-                                : null
-                          ]),
-                          controller: _tracknameController,
-                          decoration: dialogInputdecoration.copyWith(
-                              label: const Text("Track name")),
-                        ),
+                      TextFormField(
+                        validator: (value) =>
+                            value!.isEmpty ? "Please enter track name" : null,
+                        controller: _tracknameController,
+                        decoration: dialogInputdecoration.copyWith(
+                            label: const Text("Track name")),
                       ),
                       const SizedBox(
                         height: 20,
                       ),
-                      SizedBox(
-                        height: 50,
-                        child: TextFormField(
-                          controller: _artistController,
-                          validator: Validators.compose([
-                            (value) => value!.isEmpty
-                                ? "Please enter artist name"
-                                : null
-                          ]),
-                          decoration: dialogInputdecoration.copyWith(
-                              label: const Text("Artist")),
-                        ),
+                      TextFormField(
+                        controller: _artistController,
+                        validator: (value) =>
+                            value!.isEmpty ? "Please enter artist name" : null,
+                        decoration: dialogInputdecoration.copyWith(
+                            label: const Text("Artist")),
                       ),
                       const SizedBox(
                         height: 20,
@@ -242,11 +213,10 @@ class _UploadBeatState extends State<UploadBeat> {
                                     );
                                   } else if (snapshot.hasData) {
                                     return DropdownButtonFormField<String>(
-                                        validator: Validators.compose([
-                                          (value) => selectedGenre.isEmpty
-                                              ? "Please select a genre"
-                                              : null
-                                        ]),
+                                        validator: (value) =>
+                                            selectedGenre.isEmpty
+                                                ? "Please select a genre"
+                                                : null,
                                         value: snapshot.data!.docs[0]["title"],
                                         items: snapshot.data!.docs
                                             .map((genre) =>
@@ -267,37 +237,6 @@ class _UploadBeatState extends State<UploadBeat> {
                           ),
                         ],
                       ),
-                      if (_isGenreFocused)
-                        StreamBuilder<QuerySnapshot>(
-                            stream: _genreStream,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return CircularProgressIndicator(
-                                  color: Theme.of(context).primaryColor,
-                                );
-                              } else if (snapshot.hasData) {
-                                return Wrap(
-                                    children: snapshot.data!.docs
-                                        .map((genre) => Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              child: OutlinedButton(
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      selectedGenre =
-                                                          genre["title"];
-                                                      label = selectedGenre;
-                                                      _isGenreFocused = false;
-                                                    });
-                                                  },
-                                                  child: Text(genre['title'])),
-                                            ))
-                                        .toList());
-                              }
-
-                              return const SizedBox();
-                            }),
                       const SizedBox(
                         height: 20,
                       ),
