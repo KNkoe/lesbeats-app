@@ -51,6 +51,7 @@ class _EditProfileState extends State<EditProfile> {
   String? _imageName;
   File? _imagePath;
 
+// pick file from device storage
   pickImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(
@@ -80,6 +81,7 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
+// Upload image to firebase storage
   upload(String name, File path) async {
     String imagepath =
         "/users/${auth.currentUser!.uid}/profilePicture.${name.split(".").last}";
@@ -99,6 +101,7 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
+// Update profile info in firebase database
   Future<String?> updateProfileInfo() async {
     setState(() {
       _isSaving = true;

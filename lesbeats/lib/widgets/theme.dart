@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 const Color starCommandblue = Color(0xff2D80B0);
 const Color grey = Color(0xffCBCBCB);
@@ -10,6 +11,7 @@ const Color coquilicot = Color(0xffFC440F);
 const Color malachite = Color(0xff09E85E);
 
 ThemeData lightTheme = ThemeData(
+    fontFamily: GoogleFonts.poppins().fontFamily,
     scaffoldBackgroundColor: const Color(0xffFCFFF7),
     appBarTheme:
         const AppBarTheme(backgroundColor: Color(0xff2a9d8f), elevation: 0),

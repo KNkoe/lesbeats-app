@@ -132,7 +132,10 @@ class _UploadBeatState extends State<UploadBeat> {
   String selectedGenre = "";
   String label = "Genre";
   bool _isFree = false;
+  bool _enableDownload = false;
   bool _agree = false;
+  String _url = "";
+  String _coverUrl = "";
 
 // Upload the cover image to firebase storage
   uploadImage(String name, File path) async {
@@ -141,9 +144,94 @@ class _UploadBeatState extends State<UploadBeat> {
     try {
       await storage.ref(imagepath).putFile(
           path, SettableMetadata(contentType: "image/${name.split(".").last}"));
+
+      _coverUrl = await storage.ref(imagepath).getDownloadURL();
+      setState(() {});
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  double _progress = 0;
+// Upload the audio file to firebase storage
+  uploadAudio(String name, File path) async {
+    String audioPath =
+        "/users/${auth.currentUser!.uid}/${_tracknameController.text}/${_tracknameController.text}.${name.split(".").last}";
+    try {
+      _metadata = SettableMetadata(customMetadata: {
+        "title": _tracknameController.text,
+        "artist": _artistController.text,
+        "genre": selectedGenre
+      });
+
+      storage
+          .ref(audioPath)
+          .putFile(path, _metadata)
+          .snapshotEvents
+          .listen((event) {
+        setState(() {
+          _progress =
+              ((event.bytesTransferred.toDouble() / event.totalBytes) * 100)
+                  .roundToDouble();
+        });
+      });
+
+      _url = await storage.ref(audioPath).getDownloadURL();
+
+      setState(() {});
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  bool _isUploading = false;
+// Upload the file information to firebase database
+  Future<String?> upload() async {
+    setState(() {
+      _isUploading = true;
+    });
+
+    try {
+      if (_image != null) {
+        uploadImage(_image!.path.split("/").last, _image!);
+      }
+
+      if (audio != null) {
+        uploadAudio(audio!.name, File(audio!.path!));
+      }
+
+      db.collection("/tracks").add({
+        "artistId": auth.currentUser!.uid,
+        "title": _tracknameController.text,
+        "path": _url,
+        "uploadedAt": DateTime.now(),
+        "price": _isFree ? 0 : _priceController.text,
+        "free": _isFree,
+        "download": _enableDownload,
+        "cover": _coverUrl
+      });
+
+      setState(() {
+        _isUploading = false;
+      });
+
+      return "Success";
+    } catch (error) {
+      Get.showSnackbar(GetSnackBar(
+        isDismissible: true,
+        duration: const Duration(seconds: 5),
+        backgroundColor: const Color(0xff264653),
+        borderRadius: 30,
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        icon: const Icon(
+          Icons.error,
+          color: Colors.white,
+        ),
+        message: error.toString().split("]")[1],
+      ));
+    }
+
+    return null;
   }
 
   @override
@@ -315,9 +403,25 @@ class _UploadBeatState extends State<UploadBeat> {
                         style: cancelButtonStyle,
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            _pageController.nextPage(
-                                duration: const Duration(milliseconds: 750),
-                                curve: Curves.ease);
+                            if (audio != null) {
+                              _pageController.nextPage(
+                                  duration: const Duration(milliseconds: 750),
+                                  curve: Curves.ease);
+                            } else {
+                              Get.showSnackbar(const GetSnackBar(
+                                duration: Duration(seconds: 3),
+                                backgroundColor: Color(0xff264653),
+                                borderRadius: 30,
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 30),
+                                icon: Icon(
+                                  Icons.error_outline,
+                                  color: Colors.white,
+                                ),
+                                message:
+                                    "No audio is selected, please select an audio(MP3) file",
+                              ));
+                            }
                           }
                         },
                         child: const Text("Next"))
@@ -331,18 +435,15 @@ class _UploadBeatState extends State<UploadBeat> {
                         height: 30,
                         width: screenSize(context).width * 0.9,
                       ),
-                      SizedBox(
-                        height: 50,
-                        child: TextFormField(
-                          controller: _priceController,
-                          validator: (value) => value!.isEmpty
-                              ? "Please enter the price or click FREE"
-                              : null,
-                          keyboardType: TextInputType.phone,
-                          enabled: !_isFree,
-                          decoration: dialogInputdecoration.copyWith(
-                              prefixText: 'R ', label: const Text("Price")),
-                        ),
+                      TextFormField(
+                        controller: _priceController,
+                        validator: (value) => value!.isEmpty
+                            ? "Please enter the price or click FREE"
+                            : null,
+                        keyboardType: TextInputType.phone,
+                        enabled: !_isFree,
+                        decoration: dialogInputdecoration.copyWith(
+                            prefixText: 'R ', label: const Text("Price")),
                       ),
                       const SizedBox(
                         height: 20,
@@ -367,8 +468,29 @@ class _UploadBeatState extends State<UploadBeat> {
                           )
                         ],
                       ),
+                      Row(
+                        children: [
+                          Checkbox(
+                              shape: const CircleBorder(),
+                              value: _enableDownload,
+                              onChanged: (value) {
+                                setState(() {
+                                  _enableDownload = value!;
+                                });
+                              }),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          const Text(
+                            "Enable download",
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal, fontSize: 16),
+                          )
+                        ],
+                      ),
                       const SizedBox(
                         height: 20,
+                        child: Divider(),
                       ),
                       Row(
                         children: [
@@ -433,7 +555,24 @@ class _UploadBeatState extends State<UploadBeat> {
                             ));
                           }
                           if (!_isFree) {
-                            if (_formKey.currentState!.validate()) {}
+                            if (_formKey.currentState!.validate()) {
+                              Navigator.pop(context);
+                              upload().then((value) {
+                                if (value != null) {
+                                  if(_isUploading){
+                                    showDialog(
+                                      context: context,
+                                      builder: ((context) => AlertDialog(
+                                            title: LinearProgressIndicator(
+                                              value: _progress,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                            ),
+                                          )));
+                                  }
+                                }
+                              });
+                            }
                           }
                         },
                         child: const Text("upload"))
