@@ -14,6 +14,8 @@ import 'package:lesbeats/screens/player/player.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:audiotagger/audiotagger.dart';
+import 'package:lottie/lottie.dart';
+import 'package:intl/intl.dart';
 
 showUpload(BuildContext context) => showDialog(
     context: context,
@@ -120,100 +122,118 @@ class _UploadBeatState extends State<UploadBeat> {
   final TextEditingController _priceController = TextEditingController();
 
   SettableMetadata? _metadata;
+  String? url;
 
   late final Stream<QuerySnapshot> _genreStream;
 
   @override
   void initState() {
+    _artistController.text = auth.currentUser!.displayName!;
     _genreStream = db.collection('genres').snapshots();
     super.initState();
   }
 
   String selectedGenre = "";
   String label = "Genre";
-  bool _isFree = false;
   bool _enableDownload = false;
   bool _agree = false;
-  String _url = "";
-  String _coverUrl = "";
 
 // Upload the cover image to firebase storage
-  uploadImage(String name, File path) async {
+  Future<String?> uploadImage(String name, File path) async {
     String imagepath =
-        "/users/${auth.currentUser!.uid}/${_tracknameController.text}/cover.${name.split(".").last}";
+        "/tracks/${auth.currentUser!.uid}/${_tracknameController.text}/cover.${name.split(".").last}";
     try {
       await storage.ref(imagepath).putFile(
           path, SettableMetadata(contentType: "image/${name.split(".").last}"));
 
-      _coverUrl = await storage.ref(imagepath).getDownloadURL();
-      setState(() {});
+      final String coverUrl = await storage.ref(imagepath).getDownloadURL();
+
+      return coverUrl;
     } catch (e) {
       debugPrint(e.toString());
     }
+
+    return null;
   }
 
   double _progress = 0;
 // Upload the audio file to firebase storage
   uploadAudio(String name, File path) async {
     String audioPath =
-        "/users/${auth.currentUser!.uid}/${_tracknameController.text}/${_tracknameController.text}.${name.split(".").last}";
-    try {
-      _metadata = SettableMetadata(customMetadata: {
-        "title": _tracknameController.text,
-        "artist": _artistController.text,
-        "genre": selectedGenre
-      });
+        "/tracks/${auth.currentUser!.uid}/${_tracknameController.text}/${_tracknameController.text}.${name.split(".").last}";
 
-      storage
-          .ref(audioPath)
-          .putFile(path, _metadata)
-          .snapshotEvents
-          .listen((event) {
-        setState(() {
-          _progress =
-              ((event.bytesTransferred.toDouble() / event.totalBytes) * 100)
-                  .roundToDouble();
+    _metadata = SettableMetadata(customMetadata: {
+      "title": _tracknameController.text,
+      "artist": _artistController.text,
+      "genre": selectedGenre
+    });
+
+    final UploadTask uploadTask =
+        storage.ref(audioPath).putFile(path, _metadata);
+
+    uploadTask.snapshotEvents.listen((event) {
+      setState(() {
+        _progress =
+            ((event.bytesTransferred.toDouble() / event.totalBytes.toDouble()) *
+                    100)
+                .roundToDouble();
+      });
+    });
+
+    await uploadTask.then((tasksnapshot) async {
+      if (tasksnapshot.state == TaskState.success) {
+        await storage.ref(audioPath).getDownloadURL().then((value) {
+          setState(() {
+            url = value;
+          });
         });
-      });
-
-      _url = await storage.ref(audioPath).getDownloadURL();
-
-      setState(() {});
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+      }
+    });
   }
 
   bool _isUploading = false;
 // Upload the file information to firebase database
   Future<String?> upload() async {
-    setState(() {
-      _isUploading = true;
-    });
-
     try {
-      if (_image != null) {
-        uploadImage(_image!.path.split("/").last, _image!);
-      }
-
       if (audio != null) {
-        uploadAudio(audio!.name, File(audio!.path!));
+        await uploadAudio(audio!.name, File(audio!.path!))
+            .whenComplete(() async {
+          final String cover =
+              await storage.ref("/tracks/cover.jpg").getDownloadURL();
+
+          var currency = NumberFormat("###.0#", "en_US");
+
+          db
+              .collection("/tracks")
+              .doc("${auth.currentUser!.uid}-${_tracknameController.text}")
+              .set({
+            "artistId": auth.currentUser!.uid,
+            "artist": _artistController.text,
+            "title": _tracknameController.text,
+            "genre": selectedGenre,
+            "path": url,
+            "cover": cover,
+            "uploadedAt": DateTime.now(),
+            "price": double.parse(
+                currency.format(double.parse(_priceController.text))),
+            "download": _enableDownload,
+          }, SetOptions(merge: true));
+        });
+
+        if (_image != null) {
+          await uploadImage(_image!.path.split("/").last, _image!)
+              .then((value) {
+            if (value != null) {
+              db
+                  .collection("/tracks")
+                  .doc("${auth.currentUser!.uid}-${_tracknameController.text}")
+                  .set({
+                "cover": value,
+              }, SetOptions(merge: true));
+            }
+          });
+        }
       }
-
-      db.collection("/tracks").add({
-        "artistId": auth.currentUser!.uid,
-        "title": _tracknameController.text,
-        "path": _url,
-        "uploadedAt": DateTime.now(),
-        "price": _isFree ? 0 : _priceController.text,
-        "free": _isFree,
-        "download": _enableDownload,
-        "cover": _coverUrl
-      });
-
-      setState(() {
-        _isUploading = false;
-      });
 
       return "Success";
     } catch (error) {
@@ -227,7 +247,7 @@ class _UploadBeatState extends State<UploadBeat> {
           Icons.error,
           color: Colors.white,
         ),
-        message: error.toString().split("]")[1],
+        message: error.toString(),
       ));
     }
 
@@ -272,7 +292,8 @@ class _UploadBeatState extends State<UploadBeat> {
                         validator: (value) =>
                             value!.isEmpty ? "Please enter artist name" : null,
                         decoration: dialogInputdecoration.copyWith(
-                            label: const Text("Artist")),
+                          label: const Text("Artist"),
+                        ),
                       ),
                       const SizedBox(
                         height: 20,
@@ -301,15 +322,17 @@ class _UploadBeatState extends State<UploadBeat> {
                                     );
                                   } else if (snapshot.hasData) {
                                     return DropdownButtonFormField<String>(
-                                        validator: (value) =>
-                                            selectedGenre.isEmpty
-                                                ? "Please select a genre"
-                                                : null,
+                                        validator: (value) => selectedGenre
+                                                .isEmpty
+                                            ? "Please select a genre"
+                                            : null,
                                         value: snapshot.data!.docs[0]["title"],
                                         items: snapshot.data!.docs
                                             .map((genre) =>
                                                 DropdownMenuItem<String>(
                                                     value: genre["title"],
+                                                    enabled: genre["title"] !=
+                                                        "None",
                                                     child:
                                                         Text(genre["title"])))
                                             .toList(),
@@ -428,155 +451,175 @@ class _UploadBeatState extends State<UploadBeat> {
                   ],
                 ),
                 AlertDialog(
-                  title: Column(
-                    children: [
-                      const Text("Upload your beat"),
-                      SizedBox(
-                        height: 30,
-                        width: screenSize(context).width * 0.9,
-                      ),
-                      TextFormField(
-                        controller: _priceController,
-                        validator: (value) => value!.isEmpty
-                            ? "Please enter the price or click FREE"
-                            : null,
-                        keyboardType: TextInputType.phone,
-                        enabled: !_isFree,
-                        decoration: dialogInputdecoration.copyWith(
-                            prefixText: 'R ', label: const Text("Price")),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: [
-                          Checkbox(
-                              shape: const CircleBorder(),
-                              value: _isFree,
-                              onChanged: (value) {
-                                setState(() {
-                                  _isFree = value!;
-                                });
-                              }),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          const Text(
-                            "Free",
-                            style: TextStyle(
-                                fontWeight: FontWeight.normal, fontSize: 16),
-                          )
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Checkbox(
-                              shape: const CircleBorder(),
-                              value: _enableDownload,
-                              onChanged: (value) {
-                                setState(() {
-                                  _enableDownload = value!;
-                                });
-                              }),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          const Text(
-                            "Enable download",
-                            style: TextStyle(
-                                fontWeight: FontWeight.normal, fontSize: 16),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                        child: Divider(),
-                      ),
-                      Row(
-                        children: [
-                          Checkbox(
-                              value: _agree,
-                              onChanged: (value) {
-                                setState(() {
-                                  _agree = value!;
-                                });
-                              }),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          const Text(
-                            "Agree to the",
-                            style: TextStyle(
-                                fontWeight: FontWeight.normal, fontSize: 16),
-                          ),
-                          InkWell(
-                            onTap: () {},
-                            child: const Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: Text(
-                                "terms and conditions",
+                  title: StatefulBuilder(builder: (context, snapshot) {
+                    return _isUploading
+                        ? Column(
+                            children: [
+                              if (_progress != 100)
+                                Lottie.network(
+                                    "https://assets2.lottiefiles.com/packages/lf20_p1lpeyhh.json"),
+                              if (_progress == 100)
+                                Lottie.network(
+                                    "https://assets10.lottiefiles.com/packages/lf20_qckmbbyi.json"),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "${_progress.toInt().toString()}%",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.blue,
-                                    fontSize: 16),
+                                    fontWeight: FontWeight.bold,
+                                    color: _progress != 100
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.green),
                               ),
-                            ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              LinearProgressIndicator(
+                                value: _progress * 0.01,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ],
                           )
-                        ],
-                      )
-                    ],
-                  ),
-                  actionsAlignment: MainAxisAlignment.spaceAround,
-                  actions: [
-                    OutlinedButton(
-                        style: cancelButtonStyle,
-                        onPressed: () {
-                          _pageController.previousPage(
-                              duration: const Duration(milliseconds: 750),
-                              curve: Curves.ease);
-                        },
-                        child: const Text("Back")),
-                    ElevatedButton(
-                        style: confirmButtonStyle,
-                        onPressed: () {
-                          if (!_agree) {
-                            Get.showSnackbar(const GetSnackBar(
-                              duration: Duration(seconds: 3),
-                              backgroundColor: Color(0xff264653),
-                              borderRadius: 30,
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 30),
-                              icon: Icon(
-                                Icons.error_outline,
-                                color: Colors.white,
+                        : Column(
+                            children: [
+                              const Text("Upload your beat"),
+                              SizedBox(
+                                height: 30,
+                                width: screenSize(context).width * 0.9,
                               ),
-                              message:
-                                  "You have to agree to our terms and conditions to continue",
-                            ));
-                          }
-                          if (!_isFree) {
-                            if (_formKey.currentState!.validate()) {
-                              Navigator.pop(context);
-                              upload().then((value) {
-                                if (value != null) {
-                                  if(_isUploading){
-                                    showDialog(
-                                      context: context,
-                                      builder: ((context) => AlertDialog(
-                                            title: LinearProgressIndicator(
-                                              value: _progress,
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                            ),
-                                          )));
+                              TextFormField(
+                                controller: _priceController,
+                                // ignore: body_might_complete_normally_nullable
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    _priceController.text = 0.toString();
                                   }
+                                },
+                                keyboardType: TextInputType.phone,
+                                decoration: dialogInputdecoration.copyWith(
+                                    prefixText: 'R ',
+                                    label: const Text("Price")),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _enableDownload = !_enableDownload;
+                                  });
+                                },
+                                child: Row(
+                                  children: [
+                                    Checkbox(
+                                        shape: const CircleBorder(),
+                                        value: _enableDownload,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _enableDownload = value!;
+                                          });
+                                        }),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
+                                    const Text(
+                                      "Enable download",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 16),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                                child: Divider(),
+                              ),
+                              Row(
+                                children: [
+                                  Checkbox(
+                                      value: _agree,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _agree = value!;
+                                        });
+                                      }),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  // const Text(
+                                  //   "Agree to the",
+                                  //   style: TextStyle(
+                                  //       fontWeight: FontWeight.normal, fontSize: 16),
+                                  // ),
+                                  InkWell(
+                                    onTap: () {},
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(4.0),
+                                      child: Text(
+                                        "terms and conditions",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            color: Colors.blue,
+                                            fontSize: 16),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          );
+                  }),
+                  actionsAlignment: MainAxisAlignment.spaceAround,
+                  actions: _isUploading
+                      ? [
+                          if (_progress == 100)
+                            OutlinedButton(
+                                style: cancelButtonStyle,
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("Close")),
+                        ]
+                      : [
+                          OutlinedButton(
+                              style: cancelButtonStyle,
+                              onPressed: () {
+                                _pageController.previousPage(
+                                    duration: const Duration(milliseconds: 750),
+                                    curve: Curves.ease);
+                              },
+                              child: const Text("Back")),
+                          ElevatedButton(
+                              style: confirmButtonStyle,
+                              onPressed: () {
+                                if (_agree) {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      _isUploading = true;
+                                    });
+
+                                    upload();
+                                  }
+                                } else {
+                                  Get.showSnackbar(const GetSnackBar(
+                                    duration: Duration(seconds: 3),
+                                    backgroundColor: Color(0xff264653),
+                                    borderRadius: 30,
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 30),
+                                    icon: Icon(
+                                      Icons.error_outline,
+                                      color: Colors.white,
+                                    ),
+                                    message:
+                                        "You have to agree to our terms and conditions to continue",
+                                  ));
                                 }
-                              });
-                            }
-                          }
-                        },
-                        child: const Text("upload"))
-                  ],
+                              },
+                              child: const Text("upload"))
+                        ],
                 )
               ],
             ),
