@@ -1,9 +1,12 @@
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/home/sell/upload.dart';
+import 'package:lesbeats/screens/player/player.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 
 class MySales extends StatefulWidget {
@@ -115,194 +118,219 @@ class _MySalesState extends State<MySales> {
                                 physics: const BouncingScrollPhysics(),
                                 itemCount: snapshot.data!.size,
                                 itemBuilder: ((context, index) {
-                                  final Timestamp date =
+                                  final date =
                                       snapshot.data!.docs[index]["uploadedAt"];
+                                  final cover =
+                                      snapshot.data!.docs[index]["cover"];
+                                  final path =
+                                      snapshot.data!.docs[index]["path"];
+                                  final title =
+                                      snapshot.data!.docs[index]["title"];
+                                  final price =
+                                      snapshot.data!.docs[index]["price"];
+                                  final artist =
+                                      snapshot.data!.docs[index]["artist"];
+                                  final genre =
+                                      snapshot.data!.docs[index]["genre"];
+                                  final artistId =
+                                      snapshot.data!.docs[index]["artistId"];
 
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: [
-                                        ListTile(
-                                          contentPadding:
-                                              const EdgeInsets.all(0),
-                                          minVerticalPadding: 30,
-                                          leading: Container(
-                                              height: 70,
-                                              width: 70,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
-                                              ),
-                                              child: FadeInImage.assetNetwork(
-                                                  fit: BoxFit.cover,
-                                                  placeholder:
-                                                      "assets/images/loading.gif",
-                                                  image: snapshot.data!
-                                                      .docs[index]["cover"])),
-                                          title: Row(
+                                  final Map<String, String> tags = {
+                                    "title": title,
+                                    "cover": cover,
+                                    "artist": artist,
+                                  };
+
+                                  if (artistId == auth.currentUser!.uid) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                            onTap: () {
+                                              playOnline(context, path, tags);
+                                            },
+                                            contentPadding:
+                                                const EdgeInsets.all(0),
+                                            minVerticalPadding: 30,
+                                            leading: Container(
+                                                height: 70,
+                                                width: 70,
+                                                decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: FadeInImage.assetNetwork(
+                                                    fit: BoxFit.cover,
+                                                    placeholder:
+                                                        "assets/images/loading.gif",
+                                                    image: cover)),
+                                            title: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  title,
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Colors.black54),
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    const Iconify(
+                                                      Wpf.shopping_bag,
+                                                      size: 20,
+                                                      color: Colors.blue,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 6,
+                                                    ),
+                                                    Text("R $price")
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                            subtitle: Padding(
+                                              padding:
+                                                  const EdgeInsets.only(top: 6),
+                                              child:
+                                                  Text("${artist} | ${genre}"),
+                                            ),
+                                            trailing: PopupMenuButton(
+                                                itemBuilder: ((context) => [
+                                                      PopupMenuItem(
+                                                          child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: const [
+                                                          Icon(Icons.download),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text("Download"),
+                                                        ],
+                                                      )),
+                                                      PopupMenuItem(
+                                                          child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: const [
+                                                          Icon(Icons
+                                                              .check_circle),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text("Buy"),
+                                                        ],
+                                                      )),
+                                                      const PopupMenuItem(
+                                                          height: 2,
+                                                          child: Divider()),
+                                                      PopupMenuItem(
+                                                          child: Row(
+                                                        children: const [
+                                                          Icon(Icons.share),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text("Share"),
+                                                        ],
+                                                      )),
+                                                      PopupMenuItem(
+                                                          child: Row(
+                                                        children: const [
+                                                          Icon(Icons.report),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text("Report"),
+                                                        ],
+                                                      )),
+                                                    ])),
+                                          ),
+                                          Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                snapshot.data!.docs[index]
-                                                    ["title"],
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.black54),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10),
+                                                child: Text(
+                                                  "${DateTime.now().difference(date.toDate()).inDays} days ago",
+                                                  style: const TextStyle(
+                                                      color: Colors.black45),
+                                                ),
                                               ),
                                               Row(
                                                 children: [
-                                                  const Iconify(
-                                                    Wpf.shopping_bag,
-                                                    size: 20,
-                                                    color: Colors.blue,
+                                                  Row(
+                                                    children: const [
+                                                      Icon(
+                                                        Icons.play_arrow,
+                                                        size: 18,
+                                                        color: Colors.grey,
+                                                      ),
+                                                      Text(
+                                                        "34",
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                        ),
+                                                      )
+                                                    ],
                                                   ),
                                                   const SizedBox(
-                                                    width: 6,
+                                                    width: 20,
                                                   ),
-                                                  Text(
-                                                      "R ${snapshot.data!.docs[index]["price"]}")
+                                                  Row(
+                                                    children: const [
+                                                      Icon(
+                                                        Icons.download_rounded,
+                                                        size: 18,
+                                                        color: Colors.grey,
+                                                      ),
+                                                      Text(
+                                                        "34",
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  Row(
+                                                    children: const [
+                                                      Icon(
+                                                        Icons.favorite,
+                                                        size: 18,
+                                                        color: Colors.grey,
+                                                      ),
+                                                      Text(
+                                                        "34",
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 20,
+                                                  ),
                                                 ],
                                               )
                                             ],
                                           ),
-                                          subtitle: Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 6),
-                                            child: Text(
-                                                "${snapshot.data!.docs[index]["artist"]} | ${snapshot.data!.docs[index]["genre"]}"),
-                                          ),
-                                          trailing: PopupMenuButton(
-                                              itemBuilder: ((context) => [
-                                                    PopupMenuItem(
-                                                        child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: const [
-                                                        Icon(Icons.download),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Text("Download"),
-                                                      ],
-                                                    )),
-                                                    PopupMenuItem(
-                                                        child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: const [
-                                                        Icon(
-                                                            Icons.check_circle),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Text("Buy"),
-                                                      ],
-                                                    )),
-                                                    const PopupMenuItem(
-                                                        height: 2,
-                                                        child: Divider()),
-                                                    PopupMenuItem(
-                                                        child: Row(
-                                                      children: const [
-                                                        Icon(Icons.share),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Text("Share"),
-                                                      ],
-                                                    )),
-                                                    PopupMenuItem(
-                                                        child: Row(
-                                                      children: const [
-                                                        Icon(Icons.report),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Text("Report"),
-                                                      ],
-                                                    )),
-                                                  ])),
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10),
-                                              child: Text(
-                                                "${DateTime.now().difference(date.toDate()).inDays} days ago",
-                                                style: const TextStyle(
-                                                    color: Colors.black45),
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                Row(
-                                                  children: const [
-                                                    Icon(
-                                                      Icons.play_arrow,
-                                                      size: 18,
-                                                      color: Colors.grey,
-                                                    ),
-                                                    Text(
-                                                      "34",
-                                                      style: TextStyle(
-                                                        color: Colors.grey,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Row(
-                                                  children: const [
-                                                    Icon(
-                                                      Icons.download_rounded,
-                                                      size: 18,
-                                                      color: Colors.grey,
-                                                    ),
-                                                    Text(
-                                                      "34",
-                                                      style: TextStyle(
-                                                        color: Colors.grey,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Row(
-                                                  children: const [
-                                                    Icon(
-                                                      Icons.favorite,
-                                                      size: 18,
-                                                      color: Colors.grey,
-                                                    ),
-                                                    Text(
-                                                      "34",
-                                                      style: TextStyle(
-                                                        color: Colors.grey,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  width: 20,
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                        const Divider()
-                                      ],
-                                    ),
-                                  );
+                                          const Divider()
+                                        ],
+                                      ),
+                                    );
+                                  } else {
+                                    return const SizedBox();
+                                  }
                                 })),
                           );
                         }

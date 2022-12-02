@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
+import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -13,9 +14,7 @@ import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/player/player.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/responsive.dart';
-import 'package:audiotagger/audiotagger.dart';
 import 'package:lottie/lottie.dart';
-import 'package:intl/intl.dart';
 
 showUpload(BuildContext context) => showDialog(
     context: context,
@@ -201,7 +200,8 @@ class _UploadBeatState extends State<UploadBeat> {
           final String cover =
               await storage.ref("/tracks/cover.jpg").getDownloadURL();
 
-          var currency = NumberFormat("###.0#", "en_US");
+          final double price = double.parse(
+              double.parse(_priceController.text).toStringAsFixed(2));
 
           db
               .collection("/tracks")
@@ -214,8 +214,7 @@ class _UploadBeatState extends State<UploadBeat> {
             "path": url,
             "cover": cover,
             "uploadedAt": DateTime.now(),
-            "price": double.parse(
-                currency.format(double.parse(_priceController.text))),
+            "price": price,
             "download": _enableDownload,
           }, SetOptions(merge: true));
         });
@@ -400,7 +399,7 @@ class _UploadBeatState extends State<UploadBeat> {
                         OutlinedButton.icon(
                           icon: const Icon(Icons.play_circle),
                           onPressed: () {
-                            showPlayer(context, audio!);
+                            playOffline(context, audio!);
                           },
                           label: Text(
                             title == null

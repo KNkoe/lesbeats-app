@@ -13,20 +13,29 @@ import 'package:lesbeats/screens/player/common.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:rxdart/rxdart.dart';
 
-showPlayer(BuildContext context, PlatformFile audio) {
+playOffline(BuildContext context, PlatformFile audio) {
+  Scaffold.of(context).showBottomSheet(
+    (context) => MiniPlayer(
+      audio: audio,
+    ),
+  );
+}
+
+playOnline(BuildContext context, String url, Map<String, String> tags) {
   Scaffold.of(context).showBottomSheet(
       (context) => MiniPlayer(
-            audio: audio,
+            url: url,
+            tags: tags,
           ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)));
+      enableDrag: true);
 }
 
 class MiniPlayer extends StatefulWidget {
-  const MiniPlayer({Key? key, required this.audio, this.url = ""})
+  const MiniPlayer({Key? key, this.audio, this.url, this.tags})
       : super(key: key);
-  final PlatformFile audio;
-  final String url;
+  final PlatformFile? audio;
+  final String? url;
+  final Map<String, String>? tags;
 
   @override
   MiniPlayerState createState() => MiniPlayerState();
@@ -61,26 +70,32 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
       debugPrint(e.toString());
     });
     // Try to load audio from a source and catch any errors.
-    if (widget.url != "") {
+    if (widget.url != null) {
       try {
-        await _player.setAudioSource(AudioSource.uri(Uri.parse(widget.url)));
+        await _player.setAudioSource(AudioSource.uri(Uri.parse(widget.url!)));
       } catch (e) {
         debugPrint(e.toString());
       }
     } else {
-      _player.setFilePath(widget.audio.path!);
+      _player.setFilePath(widget.audio!.path!);
     }
 
-    final String filePath = widget.audio.path!;
+    final String filePath;
 
-    final Tag? tag = await _tagger.readTags(path: filePath);
-    final Uint8List? bytes = await _tagger.readArtwork(path: filePath);
+    final Tag? tag;
+    final Uint8List? bytes;
 
-    setState(() {
-      _title = tag!.title;
-      _artist = tag.artist;
-      _artwork = bytes;
-    });
+    if (widget.audio != null) {
+      filePath = widget.audio!.path!;
+      tag = await _tagger.readTags(path: filePath);
+      bytes = await _tagger.readArtwork(path: filePath);
+
+      setState(() {
+        _title = tag!.title;
+        _artist = tag.artist;
+        _artwork = bytes;
+      });
+    }
 
     _player.play();
   }
@@ -130,40 +145,28 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                     children: [
                       Row(
                         children: [
-                          (_artwork == null)
-                              ? Container(
-                                  margin:
-                                      const EdgeInsets.fromLTRB(14, 0, 10, 0),
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
-                                      borderRadius: BorderRadius.circular(8),
-                                      image: const DecorationImage(
-                                          filterQuality: FilterQuality.low,
+                          Container(
+                              margin: const EdgeInsets.fromLTRB(14, 0, 10, 0),
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: (widget.audio != null)
+                                  ? (_artwork == null)
+                                      ? Image.asset(
+                                          "assets/images/cover.jpg",
                                           fit: BoxFit.cover,
-                                          image: AssetImage(
-                                              "assets/images/disk.png"))),
-                                )
-                              : Row(
-                                  children: [
-                                    const SizedBox(
-                                      width: 14,
-                                    ),
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.memory(
-                                        _artwork!,
-                                        fit: BoxFit.cover,
-                                        height: 40,
-                                        width: 40,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                  ],
-                                ),
+                                        )
+                                      : Image.memory(
+                                          _artwork!,
+                                          fit: BoxFit.cover,
+                                        )
+                                  : Image.network(
+                                      widget.tags!["cover"]!,
+                                      fit: BoxFit.cover,
+                                    )),
                           SizedBox(
                             width: screenSize(context).width * 0.7,
                             child: Column(
@@ -172,18 +175,24 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                 Padding(
                                   padding: const EdgeInsets.all(2),
                                   child: Text(
-                                    (_title == null)
-                                        ? widget.audio.name
-                                        : _title!.isEmpty
-                                            ? widget.audio.name
-                                            : _title!,
+                                    (widget.audio != null)
+                                        ? (_title == null)
+                                            ? widget.audio!.name
+                                            : _title!.isEmpty
+                                                ? widget.audio!.name
+                                                : _title!
+                                        : widget.tags!["title"]!,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(2),
                                   child: Text(
-                                    _artist == null ? "" : _artist!,
+                                    (widget.audio != null)
+                                        ? _artist == null
+                                            ? ""
+                                            : _artist!
+                                        : widget.tags!["artist"]!,
                                     overflow: TextOverflow.ellipsis,
                                     style:
                                         const TextStyle(color: Colors.black54),
@@ -202,13 +211,13 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                           final playing = playerState?.playing;
                           if (processingState == ProcessingState.loading ||
                               processingState == ProcessingState.buffering) {
-                            return const Padding(
-                              padding: EdgeInsets.all(8.0),
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
                               child: SizedBox(
-                                width: 30,
-                                height: 30,
+                                width: 20,
+                                height: 20,
                                 child: CircularProgressIndicator(
-                                  color: Colors.black,
+                                  color: Theme.of(context).primaryColor,
                                 ),
                               ),
                             );
@@ -259,15 +268,23 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
           return StatefulBuilder(
               builder: ((context, setState) => Stack(
                     children: [
-                      (_artwork == null)
-                          ? Image(
-                              image: const AssetImage("assets/images/disk.png"),
-                              height: screenSize(context).height * 2,
-                              width: screenSize(context).width * 2,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.memory(
-                              _artwork!,
+                      (widget.audio != null)
+                          ? (_artwork == null)
+                              ? Image(
+                                  image: const AssetImage(
+                                      "assets/images/cover.jpg"),
+                                  height: screenSize(context).height * 2,
+                                  width: screenSize(context).width * 2,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.memory(
+                                  _artwork!,
+                                  height: screenSize(context).height * 2,
+                                  width: screenSize(context).width * 2,
+                                  fit: BoxFit.cover,
+                                )
+                          : Image.network(
+                              widget.tags!["cover"]!,
                               height: screenSize(context).height * 2,
                               width: screenSize(context).width * 2,
                               fit: BoxFit.cover,
@@ -321,40 +338,34 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                         color: Colors.white12,
                                         shape: BoxShape.circle),
                                     child: Container(
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: const BoxDecoration(
-                                          color: Colors.white24,
-                                          shape: BoxShape.circle),
-                                      child: (_artwork == null)
-                                          ? Container(
-                                              height:
-                                                  screenSize(context).width *
-                                                      0.7,
-                                              width: screenSize(context).width *
-                                                  0.7,
-                                              decoration: const BoxDecoration(
-                                                  color: Colors.black,
-                                                  shape: BoxShape.circle,
-                                                  image: DecorationImage(
-                                                      filterQuality:
-                                                          FilterQuality.low,
-                                                      fit: BoxFit.cover,
-                                                      image: AssetImage(
-                                                          "assets/images/disk.png"))),
-                                            )
-                                          : ClipOval(
-                                              child: Image.memory(
-                                                _artwork!,
-                                                fit: BoxFit.cover,
-                                                height:
-                                                    screenSize(context).width *
-                                                        0.7,
-                                                width:
-                                                    screenSize(context).width *
-                                                        0.7,
-                                              ),
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: const BoxDecoration(
+                                            color: Colors.white24,
+                                            shape: BoxShape.circle),
+                                        child: Container(
+                                            clipBehavior: Clip.hardEdge,
+                                            height:
+                                                screenSize(context).width * 0.7,
+                                            width:
+                                                screenSize(context).width * 0.7,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.black,
+                                              shape: BoxShape.circle,
                                             ),
-                                    ),
+                                            child: (widget.audio != null)
+                                                ? (_artwork == null)
+                                                    ? Image.asset(
+                                                        "assets/images/cover.jpg",
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : Image.memory(
+                                                        _artwork!,
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                : Image.network(
+                                                    widget.tags!["cover"]!,
+                                                    fit: BoxFit.cover,
+                                                  ))),
                                   ),
                                 ),
                                 const SizedBox(
@@ -365,11 +376,13 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                     Padding(
                                       padding: const EdgeInsets.all(2),
                                       child: Text(
-                                        (_title == null)
-                                            ? widget.audio.name
-                                            : _title!.isEmpty
-                                                ? widget.audio.name
-                                                : _title!,
+                                        (widget.audio != null)
+                                            ? (_title == null)
+                                                ? widget.audio!.name
+                                                : _title!.isEmpty
+                                                    ? widget.audio!.name
+                                                    : _title!
+                                            : widget.tags!["title"]!,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                             color: Colors.white,
@@ -379,7 +392,11 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                     Padding(
                                       padding: const EdgeInsets.all(2),
                                       child: Text(
-                                        _artist == null ? "" : _artist!,
+                                        (widget.audio != null)
+                                            ? _artist == null
+                                                ? ""
+                                                : _artist!
+                                            : widget.tags!["artist"]!,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                             color: Colors.white54),
@@ -416,7 +433,7 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: const BoxDecoration(
-                                  color: Colors.white12,
+                                  color: Colors.black26,
                                   borderRadius: BorderRadius.only(
                                       topRight: Radius.elliptical(100, 20),
                                       topLeft: Radius.elliptical(100, 20))),
@@ -438,7 +455,7 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                         _repeat
                                             ? Icons.repeat_one
                                             : Icons.repeat_rounded,
-                                        color: Colors.white54,
+                                        color: Colors.white,
                                       )),
                                   IconButton(
                                       onPressed: () {
@@ -450,7 +467,7 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                         Icons.favorite_rounded,
                                         color: _isFavourite
                                             ? Colors.red
-                                            : Colors.white54,
+                                            : Colors.white,
                                       ))
                                 ],
                               ),

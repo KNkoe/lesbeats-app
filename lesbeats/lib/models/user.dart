@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
 import 'package:lesbeats/main.dart';
 
 DocumentSnapshot? getArtist(String id) {
