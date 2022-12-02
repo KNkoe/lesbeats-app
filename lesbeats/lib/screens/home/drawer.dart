@@ -13,7 +13,7 @@ import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/bx.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
 import 'package:iconify_flutter/icons/ri.dart';
-import 'package:lesbeats/screens/home/sell/sales.dart';
+import 'package:lesbeats/screens/home/upload/uploads.dart';
 import 'package:lesbeats/screens/home/settings.dart';
 import 'package:lesbeats/widgets/theme.dart';
 
@@ -201,10 +201,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         widget._scaffoldKey.currentState!.closeDrawer();
                       },
                       leading: const Icon(
-                        Icons.monetization_on,
+                        Icons.upload,
                         color: Colors.black,
                       ),
-                      title: const Text("Start selling"),
+                      title: const Text("Upload"),
                     ),
                     const Divider(),
                     ListTile(

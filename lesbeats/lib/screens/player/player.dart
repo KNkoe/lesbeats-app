@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lesbeats/screens/player/common.dart';
+import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/widgets/responsive.dart';
+import 'package:lottie/lottie.dart';
 import 'package:rxdart/rxdart.dart';
 
 playOffline(BuildContext context, PlatformFile audio) {
@@ -187,16 +189,26 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(2),
-                                  child: Text(
-                                    (widget.audio != null)
-                                        ? _artist == null
-                                            ? ""
-                                            : _artist!
-                                        : widget.tags!["artist"]!,
-                                    overflow: TextOverflow.ellipsis,
-                                    style:
-                                        const TextStyle(color: Colors.black54),
-                                  ),
+                                  child: (widget.audio != null)
+                                      ? Text(
+                                          _artist == null ? "" : _artist!,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              color: Colors.black54),
+                                        )
+                                      : OpenContainer(
+                                          closedElevation: 0,
+                                          closedBuilder: ((context, action) =>
+                                              Text(
+                                                widget.tags!["artist"]!,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                    color: Colors.black54),
+                                              )),
+                                          openBuilder: (context, action) =>
+                                              MyProfilePage(
+                                                  widget.tags!["artistId"]!),
+                                        ),
                                 ),
                               ],
                             ),
@@ -237,9 +249,10 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                             );
                           } else {
                             return IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.replay,
-                                size: 36,
+                                size: 30,
+                                color: Theme.of(context).primaryColor,
                               ),
                               onPressed: () => _player.seek(Duration.zero),
                             );
@@ -391,16 +404,27 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(2),
-                                      child: Text(
-                                        (widget.audio != null)
-                                            ? _artist == null
-                                                ? ""
-                                                : _artist!
-                                            : widget.tags!["artist"]!,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                            color: Colors.white54),
-                                      ),
+                                      child: (widget.audio != null)
+                                          ? Text(
+                                              _artist == null ? "" : _artist!,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                  color: Colors.black54),
+                                            )
+                                          : OpenContainer(
+                                              closedElevation: 0,
+                                              closedColor: Colors.transparent,
+                                              closedBuilder: ((context,
+                                                      action) =>
+                                                  Text(
+                                                    widget.tags!["artist"]!,
+                                                    style: const TextStyle(
+                                                        color: Colors.black54),
+                                                  )),
+                                              openBuilder: (context, action) =>
+                                                  MyProfilePage(widget
+                                                      .tags!["artistId"]!),
+                                            ),
                                     ),
                                   ],
                                 ),
@@ -430,48 +454,71 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                               ],
                             ),
                             const Spacer(),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
-                                  color: Colors.black26,
-                                  borderRadius: BorderRadius.only(
-                                      topRight: Radius.elliptical(100, 20),
-                                      topLeft: Radius.elliptical(100, 20))),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _repeat = !_repeat;
-                                        });
+                            StreamBuilder<PlayerState>(
+                                stream: _player.playerStateStream,
+                                builder: (context, snapshot) {
+                                  final playerState = snapshot.data;
+                                  final processingState =
+                                      playerState?.processingState;
 
-                                        if (_repeat) {
-                                          _player.setLoopMode(LoopMode.one);
-                                        }
-                                      },
-                                      icon: Icon(
-                                        _repeat
-                                            ? Icons.repeat_one
-                                            : Icons.repeat_rounded,
-                                        color: Colors.white,
-                                      )),
-                                  IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _isFavourite = !_isFavourite;
-                                        });
-                                      },
-                                      icon: Icon(
-                                        Icons.favorite_rounded,
-                                        color: _isFavourite
-                                            ? Colors.red
-                                            : Colors.white,
-                                      ))
-                                ],
-                              ),
-                            )
+                                  final playing = playerState?.playing;
+                                  return Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                        color: Colors.black26,
+                                        image: DecorationImage(
+                                            opacity: 0.2,
+                                            fit: BoxFit.cover,
+                                            image: (playing == true &&
+                                                    processingState !=
+                                                        ProcessingState
+                                                            .completed)
+                                                ? const AssetImage(
+                                                    "assets/images/bars.gif")
+                                                : const AssetImage(
+                                                    "assets/images/bars.jpg")),
+                                        borderRadius: const BorderRadius.only(
+                                            topRight:
+                                                Radius.elliptical(100, 20),
+                                            topLeft:
+                                                Radius.elliptical(100, 20))),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _repeat = !_repeat;
+                                              });
+
+                                              if (_repeat) {
+                                                _player
+                                                    .setLoopMode(LoopMode.one);
+                                              }
+                                            },
+                                            icon: Icon(
+                                              _repeat
+                                                  ? Icons.repeat_one
+                                                  : Icons.repeat_rounded,
+                                              color: Colors.white,
+                                            )),
+                                        IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _isFavourite = !_isFavourite;
+                                              });
+                                            },
+                                            icon: Icon(
+                                              Icons.favorite_rounded,
+                                              color: _isFavourite
+                                                  ? Colors.red
+                                                  : Colors.white,
+                                            ))
+                                      ],
+                                    ),
+                                  );
+                                })
                           ],
                         ),
                       )

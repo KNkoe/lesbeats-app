@@ -117,7 +117,7 @@ class _UploadBeatState extends State<UploadBeat> {
 
   final PageController _pageController = PageController();
   final TextEditingController _tracknameController = TextEditingController();
-  final TextEditingController _artistController = TextEditingController();
+  final TextEditingController _featureController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
 
   SettableMetadata? _metadata;
@@ -127,7 +127,6 @@ class _UploadBeatState extends State<UploadBeat> {
 
   @override
   void initState() {
-    _artistController.text = auth.currentUser!.displayName!;
     _genreStream = db.collection('genres').snapshots();
     super.initState();
   }
@@ -163,7 +162,7 @@ class _UploadBeatState extends State<UploadBeat> {
 
     _metadata = SettableMetadata(customMetadata: {
       "title": _tracknameController.text,
-      "artist": _artistController.text,
+      "artist": _featureController.text,
       "genre": selectedGenre
     });
 
@@ -203,12 +202,16 @@ class _UploadBeatState extends State<UploadBeat> {
           final double price = double.parse(
               double.parse(_priceController.text).toStringAsFixed(2));
 
+          final String artist = (_featureController.text.isNotEmpty)
+              ? "${auth.currentUser!.displayName} ft ${_featureController.text}"
+              : auth.currentUser!.displayName!;
+
           db
               .collection("/tracks")
               .doc("${auth.currentUser!.uid}-${_tracknameController.text}")
               .set({
             "artistId": auth.currentUser!.uid,
-            "artist": _artistController.text,
+            "artist": artist,
             "title": _tracknameController.text,
             "genre": selectedGenre,
             "path": url,
@@ -287,11 +290,9 @@ class _UploadBeatState extends State<UploadBeat> {
                         height: 20,
                       ),
                       TextFormField(
-                        controller: _artistController,
-                        validator: (value) =>
-                            value!.isEmpty ? "Please enter artist name" : null,
+                        controller: _featureController,
                         decoration: dialogInputdecoration.copyWith(
-                          label: const Text("Artist"),
+                          label: const Text("Feature"),
                         ),
                       ),
                       const SizedBox(
