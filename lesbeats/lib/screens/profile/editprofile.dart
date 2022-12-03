@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/responsive.dart';
-import 'package:wc_form_validators/wc_form_validators.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({
@@ -259,11 +258,6 @@ class _EditProfileState extends State<EditProfile> {
                               child: TextFormField(
                                 enabled: _isUsernameEnabled,
                                 keyboardType: TextInputType.name,
-                                validator: Validators.compose([
-                                  (value) => value!.contains(" ")
-                                      ? "User name must not contain spaces"
-                                      : null
-                                ]),
                                 controller: _usernameController,
                                 decoration: InputDecoration(
                                   floatingLabelBehavior:
@@ -358,12 +352,10 @@ class _EditProfileState extends State<EditProfile> {
                                     keyboardType: TextInputType.name,
                                     controller: _confirmPasswordController,
                                     obscureText: _obscureConfirm,
-                                    validator: Validators.compose([
-                                      (value) =>
-                                          value != _passwordController.text
-                                              ? "Passwords do not match"
-                                              : null
-                                    ]),
+                                    validator: (value) =>
+                                        value != _passwordController.text
+                                            ? "Passwords do not match"
+                                            : null,
                                     decoration: InputDecoration(
                                         floatingLabelBehavior:
                                             FloatingLabelBehavior.never,

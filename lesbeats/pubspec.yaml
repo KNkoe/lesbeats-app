@@ -59,6 +59,7 @@ dependencies:
   audiotagger: ^2.2.1
   google_sign_in: ^5.4.2
   lottie: ^2.0.0
+  multiple_stream_builder: ^3.0.2
 
 dev_dependencies:
   flutter_test:

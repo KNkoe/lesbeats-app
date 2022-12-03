@@ -51,17 +51,18 @@ class _MyArtistsState extends State<MyArtists> {
                                     children: [
                                       Row(
                                         children: [
-                                          Container(
-                                            height: 70,
-                                            width: 70,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                image: DecorationImage(
-                                                    fit: BoxFit.cover,
-                                                    image: NetworkImage(snapshot
-                                                            .data!.docs[index]
-                                                        ["photoUrl"]))),
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: FadeInImage(
+                                                height: 70,
+                                                width: 70,
+                                                fit: BoxFit.cover,
+                                                placeholder: const AssetImage(
+                                                    "assets/images/loading.gif"),
+                                                image: NetworkImage(snapshot
+                                                    .data!
+                                                    .docs[index]["photoUrl"])),
                                           ),
                                           const SizedBox(
                                             width: 20,

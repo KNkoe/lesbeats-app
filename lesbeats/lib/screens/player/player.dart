@@ -12,7 +12,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:lesbeats/screens/player/common.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/widgets/responsive.dart';
-import 'package:lottie/lottie.dart';
 import 'package:rxdart/rxdart.dart';
 
 playOffline(BuildContext context, PlatformFile audio) {

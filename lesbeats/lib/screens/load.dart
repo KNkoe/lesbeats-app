@@ -27,7 +27,7 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: 50,
+                height: 30,
                 width: 50,
                 decoration: const BoxDecoration(
                     color: Colors.black12, shape: BoxShape.circle),
@@ -36,7 +36,7 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
                 width: 20,
               ),
               Container(
-                height: 50,
+                height: 30,
                 width: Get.width * 0.6,
                 decoration: BoxDecoration(
                     color: Colors.black12,
@@ -51,7 +51,7 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: 40,
+                height: 30,
                 width: 40,
                 decoration: const BoxDecoration(
                     color: Colors.black12, shape: BoxShape.rectangle),
@@ -60,7 +60,7 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
                 width: 20,
               ),
               Container(
-                height: 40,
+                height: 30,
                 width: Get.width * 0.6,
                 decoration: BoxDecoration(
                     color: Colors.black12,
@@ -75,7 +75,7 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: 40,
+                height: 30,
                 width: 40,
                 decoration: const BoxDecoration(
                     color: Colors.black12, shape: BoxShape.circle),
@@ -84,7 +84,7 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
                 width: 20,
               ),
               Container(
-                height: 40,
+                height: 30,
                 width: Get.width * 0.6,
                 decoration: BoxDecoration(
                     color: Colors.black12,
@@ -99,7 +99,7 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: 40,
+                height: 30,
                 width: 40,
                 decoration: const BoxDecoration(
                     color: Colors.black12, shape: BoxShape.circle),
@@ -108,7 +108,7 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
                 width: 20,
               ),
               Container(
-                height: 40,
+                height: 30,
                 width: Get.width * 0.6,
                 decoration: BoxDecoration(
                     color: Colors.black12,
@@ -123,7 +123,7 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: 40,
+                height: 30,
                 width: 40,
                 decoration: const BoxDecoration(
                     color: Colors.black12, shape: BoxShape.circle),
@@ -132,7 +132,7 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
                 width: 20,
               ),
               Container(
-                height: 40,
+                height: 30,
                 width: Get.width * 0.6,
                 decoration: BoxDecoration(
                     color: Colors.black12,
@@ -147,7 +147,7 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: 40,
+                height: 30,
                 width: 40,
                 decoration: const BoxDecoration(
                     color: Colors.black12, shape: BoxShape.circle),
@@ -156,7 +156,7 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
                 width: 20,
               ),
               Container(
-                height: 40,
+                height: 30,
                 width: Get.width * 0.6,
                 decoration: BoxDecoration(
                     color: Colors.black12,
@@ -166,6 +166,27 @@ class _MyLoadingPageState extends State<MyLoadingPage> {
           ),
           const SizedBox(
             height: 40,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 30,
+                width: 40,
+                decoration: const BoxDecoration(
+                    color: Colors.black12, shape: BoxShape.circle),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+              Container(
+                height: 30,
+                width: Get.width * 0.6,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(20)),
+              )
+            ],
           ),
         ],
       ),
