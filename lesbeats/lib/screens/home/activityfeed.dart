@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
 
-import '../../widgets/track_stream.dart';
+import '../../services/streams.dart';
 
 class ActivityFeed extends StatefulWidget {
   const ActivityFeed({
@@ -20,7 +20,10 @@ class _ActivityFeedState extends State<ActivityFeed> {
   @override
   void initState() {
     super.initState();
-    _audioStream = db.collection("tracks").orderBy("uploadedAt").snapshots();
+    _audioStream = db
+        .collection("tracks")
+        .orderBy("uploadedAt", descending: true)
+        .snapshots();
     _interactionStream = db.collection("interactions").snapshots();
   }
 
