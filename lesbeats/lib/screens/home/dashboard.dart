@@ -2,7 +2,6 @@ import 'package:animations/animations.dart';
 import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/jam.dart';
@@ -13,7 +12,6 @@ import 'package:lesbeats/widgets/responsive.dart';
 
 import 'package:lesbeats/widgets/theme.dart';
 
-import '../../widgets/animation.dart';
 import 'activityfeed.dart';
 import 'artists.dart';
 import 'drawer.dart';

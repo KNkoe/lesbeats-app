@@ -13,11 +13,9 @@ StreamBuilder2<QuerySnapshot, QuerySnapshot> getStream(stream1, stream2) {
       streams: StreamTuple2(stream1, stream2),
       builder: (context, snapshot) {
         if (snapshot.snapshot1.connectionState == ConnectionState.waiting) {
-          return Expanded(
-            child: Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-              ),
+          return Center(
+            child: CircularProgressIndicator(
+              color: Theme.of(context).primaryColor,
             ),
           );
         }
