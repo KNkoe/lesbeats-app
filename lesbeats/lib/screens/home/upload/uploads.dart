@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/home/upload/upload.dart';
 import 'package:lesbeats/widgets/responsive.dart';
-import 'package:lesbeats/services/streams.dart';
+import 'package:lesbeats/services/streams/audio.dart';
 
 class MySales extends StatefulWidget {
   const MySales({super.key});

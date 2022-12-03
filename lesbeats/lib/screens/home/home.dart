@@ -39,10 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: destination(selectedIndex),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            auth.signOut();
-          },
-          child: const Icon(Icons.play_arrow)),
+          onPressed: () {}, child: const Icon(Icons.play_arrow)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar(
         icons: const [

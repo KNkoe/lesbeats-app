@@ -5,8 +5,8 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 
-import '../screens/player/player.dart';
-import '../screens/profile/profile.dart';
+import '../player/player.dart';
+import '../../screens/profile/profile.dart';
 
 StreamBuilder2<QuerySnapshot, QuerySnapshot> getStream(stream1, stream2) {
   return StreamBuilder2<QuerySnapshot, QuerySnapshot>(

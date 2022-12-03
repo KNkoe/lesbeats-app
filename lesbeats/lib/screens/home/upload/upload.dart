@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lesbeats/main.dart';
-import 'package:lesbeats/screens/player/player.dart';
+import 'package:lesbeats/services/player/player.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:lottie/lottie.dart';

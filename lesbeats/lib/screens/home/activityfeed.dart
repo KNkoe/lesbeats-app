@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
 
-import '../../services/streams.dart';
+import '../../services/streams/audio.dart';
 
 class ActivityFeed extends StatefulWidget {
   const ActivityFeed({
