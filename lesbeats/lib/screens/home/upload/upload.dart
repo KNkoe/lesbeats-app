@@ -210,6 +210,7 @@ class _UploadBeatState extends State<UploadBeat> {
               .collection("/tracks")
               .doc("${auth.currentUser!.uid}-${_tracknameController.text}")
               .set({
+            "id": "${auth.currentUser!.uid}-${_tracknameController.text}",
             "artistId": auth.currentUser!.uid,
             "artist": artist,
             "title": _tracknameController.text,
@@ -239,6 +240,10 @@ class _UploadBeatState extends State<UploadBeat> {
 
       return "Success";
     } catch (error) {
+      db
+          .collection("/tracks")
+          .doc("${auth.currentUser!.uid}-${_tracknameController.text}")
+          .set({"success": false});
       Get.showSnackbar(GetSnackBar(
         isDismissible: true,
         duration: const Duration(seconds: 5),

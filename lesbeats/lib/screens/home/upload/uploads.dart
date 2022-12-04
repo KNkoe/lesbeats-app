@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/home/upload/upload.dart';
 import 'package:lesbeats/widgets/responsive.dart';
-import 'package:lesbeats/services/streams/audio.dart';
+import 'package:lesbeats/services/streams/audio_stream.dart';
 
 class MySales extends StatefulWidget {
   const MySales({super.key});
@@ -14,7 +14,6 @@ class MySales extends StatefulWidget {
 
 class _MySalesState extends State<MySales> {
   late final Stream<QuerySnapshot> _audioStream;
-  late final Stream<QuerySnapshot> _interactionStream;
 
   @override
   void initState() {
@@ -24,8 +23,6 @@ class _MySalesState extends State<MySales> {
         .where("artistId", isEqualTo: auth.currentUser!.uid)
         .orderBy("uploadedAt", descending: true)
         .snapshots();
-
-    _interactionStream = db.collection("interactions").snapshots();
   }
 
   @override
@@ -80,7 +77,7 @@ class _MySalesState extends State<MySales> {
                 const SizedBox(
                   height: 10,
                 ),
-                Expanded(child: getStream(_audioStream, _interactionStream))
+                Expanded(child: getStream(_audioStream))
               ],
             ),
           )),

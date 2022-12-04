@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/jam.dart';
 import 'package:lesbeats/main.dart';
-import 'package:lesbeats/screens/load.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -306,7 +305,9 @@ class _DashboardState extends State<Dashboard> {
                     );
                   } else if (snapshot.connectionState ==
                       ConnectionState.waiting) {
-                    return const MyLoadingPage();
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
 
                   return const Center(
