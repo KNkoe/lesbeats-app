@@ -131,9 +131,13 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return OpenContainer(
         closedBuilder: (context, fuction) => Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-              ),
+              decoration: const BoxDecoration(color: Colors.white, boxShadow: [
+                BoxShadow(
+                    offset: Offset(0, -4),
+                    blurRadius: 5,
+                    spreadRadius: 2,
+                    color: Colors.black12)
+              ]),
               height: 115,
               child: Column(
                 children: [
@@ -414,18 +418,17 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                               _artist == null ? "" : _artist!,
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
-                                                  color: Colors.black54),
+                                                  color: Colors.grey),
                                             )
                                           : OpenContainer(
                                               closedElevation: 0,
                                               closedColor: Colors.transparent,
-                                              closedBuilder: ((context,
-                                                      action) =>
-                                                  Text(
-                                                    widget.tags!["artist"]!,
-                                                    style: const TextStyle(
-                                                        color: Colors.black54),
-                                                  )),
+                                              closedBuilder:
+                                                  ((context, action) => Text(
+                                                        widget.tags!["artist"]!,
+                                                        style: const TextStyle(
+                                                            color: Colors.grey),
+                                                      )),
                                               openBuilder: (context, action) =>
                                                   MyProfilePage(widget
                                                       .tags!["artistId"]!),

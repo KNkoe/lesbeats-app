@@ -4,11 +4,9 @@ import 'package:lesbeats/screens/home/dashboard.dart';
 import 'package:lesbeats/screens/home/library.dart';
 import 'package:lesbeats/screens/home/search.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
-import 'package:iconify_flutter/icons/iconoir.dart';
 import 'package:iconify_flutter/icons/bx.dart';
 import 'package:iconify_flutter/icons/fluent.dart';
 import 'package:iconify_flutter/icons/ph.dart';
-import 'package:iconify_flutter/icons/majesticons.dart';
 
 import '../../main.dart';
 

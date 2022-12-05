@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lesbeats/services/streams/audio_stream.dart';
 
 class MyBeats extends StatefulWidget {
-  const MyBeats({super.key});
+  const MyBeats({super.key, required this.uid, required this.stream});
+  final String uid;
+  final Stream<QuerySnapshot> stream;
 
   @override
   State<MyBeats> createState() => _MyBeatsState();
@@ -9,138 +13,12 @@ class MyBeats extends StatefulWidget {
 
 class _MyBeatsState extends State<MyBeats> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: ListView(
-            physics: const BouncingScrollPhysics(),
-            shrinkWrap: true,
-            children: [
-          Column(
-            children: [
-              ListTile(
-                contentPadding: const EdgeInsets.only(left: 10),
-                minVerticalPadding: 30,
-                leading: Container(
-                  height: 70,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      image: const DecorationImage(
-                          image: AssetImage("assets/images/artist.jpg"))),
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.play_circle,
-                        color: Colors.white,
-                      )),
-                ),
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Just in mind"),
-                    Row(
-                      children: const [Text("R250")],
-                    )
-                  ],
-                ),
-                subtitle: const Padding(
-                  padding: EdgeInsets.only(top: 6),
-                  child: Text("Artist | genre"),
-                ),
-                trailing: PopupMenuButton(
-                    icon: const Icon(Icons.more_vert),
-                    itemBuilder: ((context) => [
-                          PopupMenuItem(
-                              child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
-                              Icon(Icons.edit),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text("Edit"),
-                            ],
-                          )),
-                          PopupMenuItem(
-                              child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
-                              Icon(Icons.delete),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text("Delete"),
-                            ],
-                          )),
-                        ])),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Spacer(),
-                  Row(
-                    children: [
-                      Row(
-                        children: const [
-                          Icon(
-                            Icons.play_arrow,
-                            size: 18,
-                            color: Colors.grey,
-                          ),
-                          Text(
-                            "34",
-                            style: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Row(
-                        children: const [
-                          Icon(
-                            Icons.download_rounded,
-                            size: 18,
-                            color: Colors.grey,
-                          ),
-                          Text(
-                            "34",
-                            style: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Row(
-                        children: const [
-                          Icon(
-                            Icons.favorite,
-                            size: 18,
-                            color: Colors.grey,
-                          ),
-                          Text(
-                            "34",
-                            style: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              const Divider()
-            ],
-          )
-        ]));
+    return Expanded(child: getStream(widget.stream));
   }
 }

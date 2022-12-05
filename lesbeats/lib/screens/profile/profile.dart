@@ -8,6 +8,7 @@ import 'package:lesbeats/screens/profile/beats.dart';
 import 'package:lesbeats/screens/profile/editprofile.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/theme.dart';
+import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 
 class MyProfilePage extends StatefulWidget {
   const MyProfilePage(this.uid, {super.key});
@@ -23,7 +24,10 @@ class _MyProfilePageState extends State<MyProfilePage> {
   Widget selectedTab(int index) {
     switch (index) {
       case 0:
-        return const MyBeats();
+        return MyBeats(
+          uid: widget.uid,
+          stream: _audioStream,
+        );
       case 1:
         return const Text("Albums");
       default:
@@ -32,34 +36,45 @@ class _MyProfilePageState extends State<MyProfilePage> {
   }
 
   late final Stream<DocumentSnapshot> _usersStream;
+  late final Stream<QuerySnapshot> _audioStream;
 
   @override
   void initState() {
     super.initState();
     _usersStream = db.collection('users').doc(widget.uid).snapshots();
+    _audioStream = db
+        .collection("tracks")
+        .where("artistId", isEqualTo: widget.uid)
+        .orderBy("uploadedAt", descending: true)
+        .snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading:
-            (widget.uid == auth.currentUser!.uid) ? false : true,
+        backgroundColor: Colors.white,
+        elevation: 1,
+        automaticallyImplyLeading: false,
         title: (widget.uid == auth.currentUser!.uid)
             ? Text(
                 "Profile",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5!
-                    .copyWith(color: Colors.white),
+                style: Theme.of(context).textTheme.headline6!,
               )
-            : const Text(""),
+            : IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Theme.of(context).textTheme.headline6!.color,
+                )),
         actions: [
           if (widget.uid == auth.currentUser!.uid)
             PopupMenuButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.more_horiz,
-                  color: Colors.white,
+                  color: Theme.of(context).textTheme.headline1!.color,
                 ),
                 itemBuilder: ((context) => [
                       PopupMenuItem(
@@ -133,30 +148,28 @@ class _MyProfilePageState extends State<MyProfilePage> {
                     ]))
         ],
       ),
-      body: StreamBuilder<DocumentSnapshot>(
-          stream: _usersStream,
-          builder: (context, userSnapshot) {
-            if (userSnapshot.connectionState == ConnectionState.waiting) {
+      body: StreamBuilder2<DocumentSnapshot, QuerySnapshot>(
+          streams: StreamTuple2(_usersStream, _audioStream),
+          builder: (context, snapshot) {
+            if (snapshot.snapshot1.connectionState == ConnectionState.waiting) {
               return Center(
                 child: SizedBox(
                   height: 32,
                   width: 32,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).primaryColor,
-                    ),
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
               );
-            } else if (userSnapshot.hasData) {
+            } else if (snapshot.snapshot1.hasData) {
               return Container(
                 color: Theme.of(context).backgroundColor,
                 child: Stack(
                   children: [
                     Container(
                       height: 100,
-                      color: Theme.of(context).primaryColor,
+                      color: Colors.white,
                     ),
                     Animate(
                       effects: const [FadeEffect()],
@@ -184,10 +197,74 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                           Theme.of(context).primaryColor,
                                       minRadius: 50,
                                       backgroundImage: NetworkImage(
-                                          userSnapshot.data!["photoUrl"]),
+                                          snapshot.snapshot1.data!["photoUrl"]),
                                     ),
                                   ),
                                 ),
+                                if (snapshot.snapshot2.hasData)
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              snapshot.snapshot2.data!.size
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                            ),
+                                            Text(" Uploads",
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .primaryColor))
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "3k",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                            ),
+                                            Text(" Followers",
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .primaryColor))
+                                          ],
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                "1k",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                              ),
+                                              Text(
+                                                " Following",
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                               ],
                             ),
                             Row(
@@ -201,14 +278,16 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
-                                            userSnapshot.data!["full name"]
+                                            snapshot
+                                                .snapshot1.data!["full name"]
                                                 .toString(),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headline6,
                                           ),
                                         ),
-                                        if (userSnapshot.data!["isVerified"])
+                                        if (snapshot
+                                            .snapshot1.data!["isVerified"])
                                           const Icon(
                                             Icons.verified,
                                             color: malachite,
@@ -219,50 +298,10 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                       padding: const EdgeInsets.only(
                                           left: 10, bottom: 10),
                                       child: Text(
-                                          "@${userSnapshot.data!["username"]}"),
+                                          "@${snapshot.snapshot1.data!["username"]}"),
                                     ),
                                     const SizedBox(
                                       height: 10,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 10, bottom: 10),
-                                          child: OutlinedButton(
-                                            onPressed: () {},
-                                            child: Row(
-                                              children: const [
-                                                Text(
-                                                  "3k",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(" Followers")
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 10, bottom: 10),
-                                          child: OutlinedButton(
-                                            onPressed: () {},
-                                            child: Row(
-                                              children: const [
-                                                Text(
-                                                  "1k",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(" Following")
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
                                     ),
                                   ],
                                 ),

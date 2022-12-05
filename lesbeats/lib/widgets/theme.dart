@@ -32,12 +32,24 @@ ThemeData lightTheme = ThemeData(
     popupMenuTheme:
         const PopupMenuThemeData(color: Color(0xffFCFFF7), elevation: 2),
     textTheme: const TextTheme(
-      headline1: TextStyle(),
-      headline2: TextStyle(),
-      headline3: TextStyle(),
-      headline4: TextStyle(),
-      headline5: TextStyle(),
-      headline6: TextStyle(),
+      headline1: TextStyle(
+        color: Color(0xff264653),
+      ),
+      headline2: TextStyle(
+        color: Color(0xff264653),
+      ),
+      headline3: TextStyle(
+        color: Color(0xff264653),
+      ),
+      headline4: TextStyle(
+        color: Color(0xff264653),
+      ),
+      headline5: TextStyle(
+        color: Color(0xff264653),
+      ),
+      headline6: TextStyle(
+        color: Color(0xff264653),
+      ),
     ));
 
 const LinearGradient backgroundGradient = LinearGradient(

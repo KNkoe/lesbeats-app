@@ -18,6 +18,7 @@ StreamBuilder<QuerySnapshot> getStream(stream) {
           return Center(
             child: CircularProgressIndicator(
               color: Theme.of(context).primaryColor,
+              strokeWidth: 2,
             ),
           );
         }
@@ -177,9 +178,10 @@ StreamBuilder<QuerySnapshot> getStream(stream) {
                                   leading: Container(
                                       height: 70,
                                       width: 70,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                      ),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      clipBehavior: Clip.hardEdge,
                                       child: FadeInImage.assetNetwork(
                                           fit: BoxFit.cover,
                                           placeholder:

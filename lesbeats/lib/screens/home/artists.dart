@@ -156,6 +156,7 @@ class _MyArtistsState extends State<MyArtists> {
             return Center(
                 child: CircularProgressIndicator(
               color: Theme.of(context).primaryColor,
+              strokeWidth: 2,
             ));
           }
           return Container();
