@@ -225,25 +225,31 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: SizedBox(
-                                width: 20,
-                                height: 20,
+                                width: 25,
+                                height: 25,
                                 child: CircularProgressIndicator(
                                   color: Theme.of(context).primaryColor,
+                                  strokeWidth: 2,
                                 ),
                               ),
                             );
                           } else if (playing != true) {
                             return IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.play_arrow,
                                 size: 36,
+                                color: Theme.of(context).primaryColor,
                               ),
                               onPressed: _player.play,
                             );
                           } else if (processingState !=
                               ProcessingState.completed) {
                             return IconButton(
-                              icon: const Icon(Icons.pause, size: 36),
+                              icon: Icon(
+                                Icons.pause,
+                                size: 36,
+                                color: Theme.of(context).primaryColor,
+                              ),
                               onPressed: _player.pause,
                             );
                           } else {

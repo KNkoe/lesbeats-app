@@ -154,12 +154,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 color: Theme.of(context).backgroundColor,
                 child: Stack(
                   children: [
-                    Animate(
-                      effects: const [SlideEffect()],
-                      child: Container(
-                        height: 100,
-                        color: Theme.of(context).primaryColor,
-                      ),
+                    Container(
+                      height: 100,
+                      color: Theme.of(context).primaryColor,
                     ),
                     Animate(
                       effects: const [FadeEffect()],

@@ -98,7 +98,7 @@ class _UploadBeatState extends State<UploadBeat> {
       setState(() {
         audio = file;
       });
-      //Get AUDIO tags**title,artist,genre etc
+      //Get AUDIO tags**title,feature,genre etc
       getTags();
     } else {
       Get.showSnackbar(const GetSnackBar(
@@ -162,7 +162,7 @@ class _UploadBeatState extends State<UploadBeat> {
 
     _metadata = SettableMetadata(customMetadata: {
       "title": _tracknameController.text,
-      "artist": _featureController.text,
+      "feature": _featureController.text,
       "genre": selectedGenre
     });
 
@@ -202,17 +202,13 @@ class _UploadBeatState extends State<UploadBeat> {
           final double price = double.parse(
               double.parse(_priceController.text).toStringAsFixed(2));
 
-          final String artist = (_featureController.text.isNotEmpty)
-              ? "${auth.currentUser!.displayName} ft ${_featureController.text}"
-              : auth.currentUser!.displayName!;
-
           db
               .collection("/tracks")
               .doc("${auth.currentUser!.uid}-${_tracknameController.text}")
               .set({
             "id": "${auth.currentUser!.uid}-${_tracknameController.text}",
             "artistId": auth.currentUser!.uid,
-            "artist": artist,
+            "feature": _featureController.text,
             "title": _tracknameController.text,
             "genre": selectedGenre,
             "path": url,

@@ -216,6 +216,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       title: const Text("Purchased"),
                     ),
+                    ListTile(
+                      onTap: () {
+                        widget._scaffoldKey.currentState!.closeDrawer();
+                      },
+                      leading: const Icon(
+                        Icons.download,
+                        color: Colors.black,
+                      ),
+                      title: const Text("Downloads"),
+                    ),
                     const Divider(),
                     ListTile(
                       onTap: () {

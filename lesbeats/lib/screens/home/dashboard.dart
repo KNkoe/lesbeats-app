@@ -8,11 +8,9 @@ import 'package:iconify_flutter/icons/jam.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/widgets/responsive.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:lesbeats/widgets/theme.dart';
 
-import '../../widgets/animation.dart';
 import 'activityfeed.dart';
 import 'artists.dart';
 import 'drawer.dart';
@@ -144,125 +142,115 @@ class _DashboardState extends State<Dashboard> {
                                   if (snapshot.data!.docs[index]["uid"] !=
                                       auth.currentUser!.uid) {
                                     if (index <= 10) {
-                                      return Animate(
-                                        effects: const [
-                                          SlideEffect(
-                                            begin: Offset(1, 0),
-                                          )
-                                        ],
-                                        delay: delay(index),
-                                        child: OpenContainer(
-                                            openElevation: 0,
-                                            closedElevation: 0,
-                                            closedColor: Colors.transparent,
-                                            transitionDuration: const Duration(
-                                                milliseconds: 100),
-                                            closedBuilder:
-                                                ((context, action) => Row(
-                                                      children: [
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Container(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(1),
-                                                              decoration: BoxDecoration(
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                  gradient: LinearGradient(
-                                                                      stops: const [
-                                                                        0.7,
-                                                                        0.3
-                                                                      ],
-                                                                      colors: [
-                                                                        Theme.of(context)
-                                                                            .canvasColor,
-                                                                        Theme.of(context)
-                                                                            .primaryColor
-                                                                      ])),
-                                                              child: Container(
-                                                                margin:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        right:
-                                                                            10,
-                                                                        left:
-                                                                            10),
-                                                                height: 90,
-                                                                width: 90,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: Theme.of(
+                                      return OpenContainer(
+                                          openElevation: 0,
+                                          closedElevation: 0,
+                                          closedColor: Colors.transparent,
+                                          transitionDuration:
+                                              const Duration(milliseconds: 100),
+                                          closedBuilder: ((context, action) =>
+                                              Row(
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(1),
+                                                        decoration: BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            gradient:
+                                                                LinearGradient(
+                                                                    stops: const [
+                                                                  0.7,
+                                                                  0.3
+                                                                ],
+                                                                    colors: [
+                                                                  Theme.of(
                                                                           context)
-                                                                      .backgroundColor,
-                                                                  border: Border.all(
-                                                                      color: Theme.of(
-                                                                              context)
-                                                                          .backgroundColor,
-                                                                      width: 2),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                                child: ClipOval(
-                                                                  child: FadeInImage.assetNetwork(
-                                                                      fit: BoxFit
-                                                                          .cover,
-                                                                      placeholder:
-                                                                          "assets/images/placeholder.jpg",
-                                                                      image: snapshot
-                                                                          .data!
-                                                                          .docs[index]["photoUrl"]),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .all(
-                                                                          4.0),
-                                                                  child: Text(
-                                                                    snapshot.data!
-                                                                            .docs[index]
-                                                                        [
-                                                                        "username"],
-                                                                    style: const TextStyle(
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .w400,
-                                                                        color: Colors
-                                                                            .black54),
-                                                                  ),
-                                                                ),
-                                                                if (snapshot
+                                                                      .canvasColor,
+                                                                  Theme.of(
+                                                                          context)
+                                                                      .primaryColor
+                                                                ])),
+                                                        child: Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 10,
+                                                                  left: 10),
+                                                          height: 90,
+                                                          width: 90,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .backgroundColor,
+                                                            border: Border.all(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .backgroundColor,
+                                                                width: 2),
+                                                            shape:
+                                                                BoxShape.circle,
+                                                          ),
+                                                          child: ClipOval(
+                                                            child: FadeInImage.assetNetwork(
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                placeholder:
+                                                                    "assets/images/placeholder.jpg",
+                                                                image: snapshot
                                                                         .data!
                                                                         .docs[index]
                                                                     [
-                                                                    "isVerified"])
-                                                                  const Icon(
-                                                                    Icons
-                                                                        .verified,
-                                                                    color:
-                                                                        malachite,
-                                                                    size: 18,
-                                                                  )
-                                                              ],
-                                                            ),
-                                                          ],
+                                                                    "photoUrl"]),
+                                                          ),
                                                         ),
-                                                      ],
-                                                    )),
-                                            openBuilder: ((context, action) =>
-                                                MyProfilePage(snapshot.data!
-                                                    .docs[index]["uid"]))),
-                                      );
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(4.0),
+                                                            child: Text(
+                                                              snapshot.data!
+                                                                          .docs[
+                                                                      index]
+                                                                  ["username"],
+                                                              style: const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  color: Colors
+                                                                      .black54),
+                                                            ),
+                                                          ),
+                                                          if (snapshot.data!
+                                                                  .docs[index]
+                                                              ["isVerified"])
+                                                            const Icon(
+                                                              Icons.verified,
+                                                              color: malachite,
+                                                              size: 18,
+                                                            )
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )),
+                                          openBuilder: ((context, action) =>
+                                              MyProfilePage(snapshot
+                                                  .data!.docs[index]["uid"])));
                                     }
                                   }
                                   return const SizedBox();

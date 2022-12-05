@@ -56,44 +56,54 @@ StreamBuilder<QuerySnapshot> getStream(stream) {
                   final path = snapshot.data!.docs[index]["path"];
                   final title = snapshot.data!.docs[index]["title"];
                   final price = snapshot.data!.docs[index]["price"];
-                  final artist = snapshot.data!.docs[index]["artist"];
+                  final feature = snapshot.data!.docs[index]["feature"];
                   final genre = snapshot.data!.docs[index]["genre"];
                   final artistId = snapshot.data!.docs[index]["artistId"];
                   final id = snapshot.data!.docs[index]["id"];
 
-                  final Map<String, String> tags = {
-                    "title": title,
-                    "cover": cover,
-                    "artist": artist,
-                    "artistId": artistId
-                  };
-
                   final Stream<QuerySnapshot> downloadStream = db
                       .collection("interactions")
-                      .where("songId", isEqualTo: id)
-                      .where("download", isEqualTo: true)
+                      .doc(id)
+                      .collection("downloads")
                       .snapshots();
                   final Stream<QuerySnapshot> playStream = db
                       .collection("interactions")
-                      .where("songId", isEqualTo: id)
-                      .where("play", isEqualTo: true)
+                      .doc(id)
+                      .collection("plays")
                       .snapshots();
-                  final Stream<QuerySnapshot> soldStream = db
+                  final Stream<QuerySnapshot> salesStream = db
                       .collection("interactions")
-                      .where("songId", isEqualTo: id)
-                      .where("sold", isEqualTo: true)
+                      .doc(id)
+                      .collection("sales")
                       .snapshots();
                   final Stream<QuerySnapshot> likeStream = db
                       .collection("interactions")
-                      .where("songId", isEqualTo: id)
-                      .where("like", isEqualTo: true)
+                      .doc(id)
+                      .collection("likes")
                       .snapshots();
+                  final Stream<DocumentSnapshot> artistStream =
+                      db.collection("users").doc(artistId).snapshots();
 
-                  return StreamBuilder4<QuerySnapshot, QuerySnapshot,
-                          QuerySnapshot, QuerySnapshot>(
-                      streams: StreamTuple4(
-                          soldStream, playStream, downloadStream, likeStream),
+                  return StreamBuilder5<QuerySnapshot, QuerySnapshot,
+                          QuerySnapshot, QuerySnapshot, DocumentSnapshot>(
+                      streams: StreamTuple5(salesStream, playStream,
+                          downloadStream, likeStream, artistStream),
                       builder: (context, snapshot) {
+                        Map<String, dynamic> play = {
+                          "uid": auth.currentUser!.uid,
+                          "timestamp": DateTime.now()
+                        };
+
+                        Map<String, dynamic> download = {
+                          "uid": auth.currentUser!.uid,
+                          "timestamp": DateTime.now()
+                        };
+
+                        Map<String, dynamic> like = {
+                          "uid": auth.currentUser!.uid,
+                          "timestamp": DateTime.now()
+                        };
+
                         if (snapshot.snapshot1.connectionState ==
                                 ConnectionState.waiting ||
                             snapshot.snapshot2.connectionState ==
@@ -101,6 +111,8 @@ StreamBuilder<QuerySnapshot> getStream(stream) {
                             snapshot.snapshot3.connectionState ==
                                 ConnectionState.waiting ||
                             snapshot.snapshot4.connectionState ==
+                                ConnectionState.waiting ||
+                            snapshot.snapshot5.connectionState ==
                                 ConnectionState.waiting) {
                           return Center(
                             child: Padding(
@@ -135,13 +147,29 @@ StreamBuilder<QuerySnapshot> getStream(stream) {
                         if (snapshot.snapshot1.hasData &&
                             snapshot.snapshot2.hasData &&
                             snapshot.snapshot3.hasData &&
-                            snapshot.snapshot4.hasData) {
+                            snapshot.snapshot4.hasData &&
+                            snapshot.snapshot5.hasData) {
+                          final Map<String, String> tags = {
+                            "title": title,
+                            "cover": cover,
+                            "artist": feature.toString().isEmpty
+                                ? snapshot.snapshot5.data!["username"]
+                                : "${snapshot.snapshot5.data!["username"]} ft $feature",
+                            "artistId": artistId
+                          };
+
                           return Padding(
                             padding: const EdgeInsets.only(left: 8),
                             child: Column(
                               children: [
                                 ListTile(
                                   onTap: () {
+                                    db
+                                        .collection("interactions")
+                                        .doc(id)
+                                        .collection("plays")
+                                        .doc(auth.currentUser!.uid)
+                                        .set(play);
                                     playOnline(context, path, tags);
                                   },
                                   contentPadding: const EdgeInsets.all(0),
@@ -209,7 +237,10 @@ StreamBuilder<QuerySnapshot> getStream(stream) {
                                           closedColor: Colors.transparent,
                                           closedBuilder: ((context, action) =>
                                               Text(
-                                                "$artist",
+                                                feature.toString().isEmpty
+                                                    ? snapshot.snapshot5
+                                                        .data!["username"]
+                                                    : "${snapshot.snapshot5.data!["username"]} ft $feature",
                                                 style: TextStyle(
                                                     color: Theme.of(context)
                                                         .primaryColor),

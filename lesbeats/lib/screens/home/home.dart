@@ -1,9 +1,14 @@
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:lesbeats/screens/home/dashboard.dart';
 import 'package:lesbeats/screens/home/library.dart';
 import 'package:lesbeats/screens/home/search.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
+import 'package:iconify_flutter/icons/iconoir.dart';
+import 'package:iconify_flutter/icons/bx.dart';
+import 'package:iconify_flutter/icons/fluent.dart';
+import 'package:iconify_flutter/icons/ph.dart';
+import 'package:iconify_flutter/icons/majesticons.dart';
 
 import '../../main.dart';
 
@@ -23,9 +28,11 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         return const Dashboard();
       case 1:
-        return const MySearchScreen();
-      case 2:
         return const MyLibrary();
+
+      case 2:
+        return const MySearchScreen();
+
       case 3:
         return MyProfilePage(auth.currentUser!.uid);
       default:
@@ -36,30 +43,55 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: destination(selectedIndex),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {}, child: const Icon(Icons.play_arrow)),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: AnimatedBottomNavigationBar(
-        icons: const [
-          Icons.home_filled,
-          Icons.search_sharp,
-          Icons.library_music_outlined,
-          Icons.person
-        ],
-        inactiveColor: Colors.grey,
-        activeColor:
-            Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
-        activeIndex: selectedIndex,
-        gapLocation: GapLocation.center,
-        notchSmoothness: NotchSmoothness.smoothEdge,
-        leftCornerRadius: 30,
-        rightCornerRadius: 30,
-        onTap: (index) => setState(() {
-          selectedIndex = index;
-        }),
-      ),
-    );
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: destination(selectedIndex),
+        bottomNavigationBar: BottomNavigationBar(
+            onTap: (value) => setState(() {
+                  selectedIndex = value;
+                }),
+            currentIndex: selectedIndex,
+            backgroundColor: Colors.white,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            type: BottomNavigationBarType.fixed,
+            items: [
+              BottomNavigationBarItem(
+                icon: Iconify(
+                  selectedIndex == 0
+                      ? Fluent.home_32_filled
+                      : Fluent.home_32_regular,
+                  color: selectedIndex == 0
+                      ? const Color(0xff264653)
+                      : Colors.black38,
+                ),
+                label: "Home",
+              ),
+              BottomNavigationBarItem(
+                  icon: Iconify(
+                    selectedIndex == 1
+                        ? Fluent.library_20_filled
+                        : Fluent.library_20_regular,
+                    color: selectedIndex == 1
+                        ? const Color(0xff264653)
+                        : Colors.black38,
+                  ),
+                  label: "Library"),
+              BottomNavigationBarItem(
+                  icon: Iconify(
+                    selectedIndex == 2 ? Bx.bxs_search : Bx.search,
+                    color: selectedIndex == 2
+                        ? const Color(0xff264653)
+                        : Colors.black38,
+                  ),
+                  label: "Search"),
+              BottomNavigationBarItem(
+                  icon: Iconify(
+                    selectedIndex == 3 ? Ph.user_fill : Ph.user,
+                    color: selectedIndex == 3
+                        ? const Color(0xff264653)
+                        : Colors.black38,
+                  ),
+                  label: "Profile")
+            ]));
   }
 }
