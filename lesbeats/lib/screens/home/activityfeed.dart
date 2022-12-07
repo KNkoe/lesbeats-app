@@ -27,6 +27,6 @@ class _ActivityFeedState extends State<ActivityFeed> {
 
   @override
   Widget build(BuildContext context) {
-    return getStream(_audioStream);
+    return MyAudioStream(stream: _audioStream);
   }
 }

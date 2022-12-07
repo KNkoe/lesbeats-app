@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
-import 'package:lesbeats/services/streams/audio_stream.dart';
 
 class MyFavourites extends StatefulWidget {
   const MyFavourites({super.key});
@@ -11,22 +10,33 @@ class MyFavourites extends StatefulWidget {
 }
 
 class _MyFavouritesState extends State<MyFavourites> {
-  late Stream<QuerySnapshot> _favoritesStream;
+  late final Stream<QuerySnapshot> likeStream;
 
   @override
   void initState() {
     super.initState();
-    _favoritesStream = db
-        .collection("users")
-        .doc(auth.currentUser!.uid)
-        .collection("favorites")
-        .snapshots();
+    likeStream =
+        db.collection("interactions").doc().collection("likes").snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: getStream(_favoritesStream),
-    );
+    return StreamBuilder<QuerySnapshot>(
+        stream: likeStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator(
+              color: Theme.of(context).primaryColor,
+            );
+          }
+
+          if (snapshot.hasData) {
+            return Center(
+              child: Text(snapshot.data!.size.toString()),
+            );
+          }
+
+          return const SizedBox();
+        });
   }
 }

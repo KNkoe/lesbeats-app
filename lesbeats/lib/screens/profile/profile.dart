@@ -23,7 +23,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
   Widget selectedTab(int index) {
     switch (index) {
       case 0:
-        return Expanded(child: getStream(_audioStream, isProfileOpened: true));
+        return Expanded(
+            child: MyAudioStream(stream: _audioStream, isProfileOpened: true));
       case 1:
         return const Text("Albums");
       default:

@@ -51,7 +51,7 @@ class _MyTracksState extends State<MyTracks> {
               ))
         ],
       ),
-      body: getStream(_audioStream),
+      body: MyAudioStream(stream: _audioStream),
     );
   }
 }

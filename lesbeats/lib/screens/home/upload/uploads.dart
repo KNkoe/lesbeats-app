@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/home/upload/upload.dart';
-import 'package:lesbeats/widgets/responsive.dart';
 import 'package:lesbeats/services/streams/audio_stream.dart';
 
 class MySales extends StatefulWidget {
@@ -79,7 +78,7 @@ class _MySalesState extends State<MySales> {
             const SizedBox(
               height: 10,
             ),
-            Expanded(child: getStream(_audioStream))
+            Expanded(child: MyAudioStream(stream: _audioStream))
           ],
         ),
       ),
