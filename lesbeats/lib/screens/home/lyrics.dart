@@ -3,7 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 
 import '../../widgets/animation.dart';
-import '../../widgets/theme.dart';
 
 class MyLyricsScreen extends StatefulWidget {
   const MyLyricsScreen({super.key});
@@ -112,7 +111,7 @@ class _MyLyricsScreenState extends State<MyLyricsScreen> {
                                       if (topArtists.indexOf(artist) == 0)
                                         const Icon(
                                           Icons.verified,
-                                          color: malachite,
+                                          color: Colors.green,
                                           size: 18,
                                         )
                                     ],

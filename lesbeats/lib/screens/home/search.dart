@@ -20,12 +20,11 @@ class _MySearchScreenState extends State<MySearchScreen> {
           "Search",
           style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: Theme.of(context).backgroundColor,
       ),
       body: SizedBox(
         height: Get.height,
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

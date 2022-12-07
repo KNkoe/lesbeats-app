@@ -239,7 +239,8 @@ class _DashboardState extends State<Dashboard> {
                                                               ["isVerified"])
                                                             const Icon(
                                                               Icons.verified,
-                                                              color: malachite,
+                                                              color:
+                                                                  Colors.green,
                                                               size: 18,
                                                             )
                                                         ],

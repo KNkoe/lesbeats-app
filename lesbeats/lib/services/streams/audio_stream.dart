@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
 import 'package:lesbeats/main.dart';
@@ -10,7 +11,7 @@ import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 import '../player/player.dart';
 import '../../screens/profile/profile.dart';
 
-StreamBuilder<QuerySnapshot> getStream(stream) {
+StreamBuilder<QuerySnapshot> getStream(stream, {bool isProfileOpened = false}) {
   return StreamBuilder<QuerySnapshot>(
       stream: stream,
       builder: (context, snapshot) {
@@ -118,28 +119,36 @@ StreamBuilder<QuerySnapshot> getStream(stream) {
                           return Center(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 30,
-                                    width: 40,
-                                    decoration: const BoxDecoration(
-                                        color: Colors.black12,
-                                        shape: BoxShape.circle),
-                                  ),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  Container(
-                                    height: 30,
-                                    width: screenSize(context).width * 0.6,
-                                    decoration: BoxDecoration(
-                                        color: Colors.black12,
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                  )
+                              child: Animate(
+                                effects: const [
+                                  ShimmerEffect(duration: Duration(seconds: 1))
                                 ],
+                                onComplete: ((controller) {
+                                  controller.repeat();
+                                }),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: 30,
+                                      width: 40,
+                                      decoration: const BoxDecoration(
+                                          color: Colors.black12,
+                                          shape: BoxShape.circle),
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Container(
+                                      height: 30,
+                                      width: screenSize(context).width * 0.6,
+                                      decoration: BoxDecoration(
+                                          color: Colors.black12,
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -236,6 +245,7 @@ StreamBuilder<QuerySnapshot> getStream(stream) {
                                       children: [
                                         OpenContainer(
                                           closedElevation: 0,
+                                          tappable: !isProfileOpened,
                                           closedColor: Colors.transparent,
                                           closedBuilder: ((context, action) =>
                                               Text(

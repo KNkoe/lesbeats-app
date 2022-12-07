@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/chats/chats.dart';
-import 'package:lesbeats/screens/home/genre.dart';
+import 'package:lesbeats/screens/home/genre/genre.dart';
 import 'package:lesbeats/screens/home/lyrics.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
@@ -110,7 +110,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         if (snapshot.data!["isVerified"])
                                           const Icon(
                                             Icons.verified,
-                                            color: malachite,
+                                            color: Colors.green,
                                           )
                                       ],
                                     ),

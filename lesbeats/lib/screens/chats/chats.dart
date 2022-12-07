@@ -147,7 +147,7 @@ class _MyChatScreenState extends State<MyChatScreen> {
                                         Container(
                                             margin: const EdgeInsets.all(10),
                                             decoration: const BoxDecoration(
-                                                color: malachite,
+                                                color: Colors.white,
                                                 shape: BoxShape.circle),
                                             padding: const EdgeInsets.all(6),
                                             child: Badge(

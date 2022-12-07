@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lesbeats/main.dart';
-import 'package:lesbeats/screens/profile/beats.dart';
 import 'package:lesbeats/screens/profile/editprofile.dart';
+import 'package:lesbeats/services/streams/audio_stream.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/theme.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
@@ -24,10 +24,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
   Widget selectedTab(int index) {
     switch (index) {
       case 0:
-        return MyBeats(
-          uid: widget.uid,
-          stream: _audioStream,
-        );
+        return Expanded(child: getStream(_audioStream, isProfileOpened: true));
       case 1:
         return const Text("Albums");
       default:
@@ -37,6 +34,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
 
   late final Stream<DocumentSnapshot> _usersStream;
   late final Stream<QuerySnapshot> _audioStream;
+  late final Stream<QuerySnapshot> _uploadsStream;
 
   @override
   void initState() {
@@ -47,13 +45,18 @@ class _MyProfilePageState extends State<MyProfilePage> {
         .where("artistId", isEqualTo: widget.uid)
         .orderBy("uploadedAt", descending: true)
         .snapshots();
+    _uploadsStream = db
+        .collection("tracks")
+        .where("artistId", isEqualTo: widget.uid)
+        .orderBy("uploadedAt", descending: true)
+        .snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 1,
         automaticallyImplyLeading: false,
         title: (widget.uid == auth.currentUser!.uid)
@@ -145,13 +148,22 @@ class _MyProfilePageState extends State<MyProfilePage> {
                         title: const Text("Log out"),
                         leading: const Icon(Icons.logout_rounded),
                       ))
-                    ]))
+                    ])),
+          if (widget.uid != auth.currentUser!.uid)
+            PopupMenuButton(
+                icon: Icon(
+                  Icons.more_horiz,
+                  color: Theme.of(context).textTheme.headline1!.color,
+                ),
+                itemBuilder: (context) =>
+                    [const PopupMenuItem(child: Text("Report account"))])
         ],
       ),
       body: StreamBuilder2<DocumentSnapshot, QuerySnapshot>(
-          streams: StreamTuple2(_usersStream, _audioStream),
+          streams: StreamTuple2(_usersStream, _uploadsStream),
           builder: (context, snapshot) {
-            if (snapshot.snapshot1.connectionState == ConnectionState.waiting) {
+            if (snapshot.snapshot1.connectionState == ConnectionState.waiting &&
+                snapshot.snapshot2.connectionState == ConnectionState.waiting) {
               return Center(
                 child: SizedBox(
                   height: 32,
@@ -162,220 +174,204 @@ class _MyProfilePageState extends State<MyProfilePage> {
                   ),
                 ),
               );
-            } else if (snapshot.snapshot1.hasData) {
-              return Container(
-                color: Theme.of(context).backgroundColor,
-                child: Stack(
-                  children: [
-                    Container(
-                      height: 100,
-                      color: Colors.white,
-                    ),
-                    Animate(
-                      effects: const [FadeEffect()],
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                              height: 30,
+            } else if (snapshot.snapshot1.hasData &&
+                snapshot.snapshot2.hasData) {
+              return Animate(
+                effects: const [FadeEffect()],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    width: 8,
+                                    color: Theme.of(context).backgroundColor)),
+                            child: Animate(
+                              effects: const [ShimmerEffect()],
+                              child: CircleAvatar(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                minRadius: 50,
+                                backgroundImage: NetworkImage(
+                                    snapshot.snapshot1.data!["photoUrl"]),
+                              ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          width: 8,
-                                          color: Theme.of(context)
-                                              .backgroundColor)),
-                                  child: Animate(
-                                    effects: const [ShimmerEffect()],
-                                    child: CircleAvatar(
-                                      backgroundColor:
-                                          Theme.of(context).primaryColor,
-                                      minRadius: 50,
-                                      backgroundImage: NetworkImage(
-                                          snapshot.snapshot1.data!["photoUrl"]),
-                                    ),
-                                  ),
-                                ),
-                                if (snapshot.snapshot2.hasData)
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              snapshot.snapshot2.data!.size
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                            ),
-                                            Text(" Uploads",
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .primaryColor))
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              "3k",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                            ),
-                                            Text(" Followers",
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .primaryColor))
-                                          ],
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                "1k",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Theme.of(context)
-                                                        .primaryColor),
-                                              ),
-                                              Text(
-                                                " Following",
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .primaryColor),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                          ),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
                                   children: [
-                                    Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            snapshot
-                                                .snapshot1.data!["full name"]
-                                                .toString(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline6,
-                                          ),
-                                        ),
-                                        if (snapshot
-                                            .snapshot1.data!["isVerified"])
-                                          const Icon(
-                                            Icons.verified,
-                                            color: malachite,
-                                          )
-                                      ],
+                                    Text(
+                                      snapshot.snapshot2.data!.size.toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Theme.of(context).primaryColor),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10, bottom: 10),
-                                      child: Text(
-                                          "@${snapshot.snapshot1.data!["username"]}"),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
+                                    Text(" Uploads",
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor))
                                   ],
                                 ),
-                              ],
-                            ),
-                            const Divider(
-                              thickness: 1,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            DefaultTabController(
-                              length: 2,
-                              child: TabBar(
-                                  onTap: (index) {
-                                    setState(() {
-                                      selectedIndex = index;
-                                    });
-                                  },
-                                  indicatorColor:
-                                      Theme.of(context).primaryColor,
-                                  indicator: DotIndicator(
-                                      color: Theme.of(context).primaryColor),
-                                  tabs: [
-                                    Tab(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(4))),
-                                        padding: const EdgeInsets.all(10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: const [
-                                            Text("Beats"),
-                                          ],
-                                        ),
-                                      ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "3k",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Theme.of(context).primaryColor),
                                     ),
-                                    Tab(
-                                      child: Container(
-                                        decoration: BoxDecoration(
+                                    Text(" Followers",
+                                        style: TextStyle(
                                             color:
-                                                Theme.of(context).primaryColor,
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(4))),
-                                        padding: const EdgeInsets.all(10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: const [
-                                            Text("Lyrics"),
-                                          ],
-                                        ),
+                                                Theme.of(context).primaryColor))
+                                  ],
+                                ),
+                              ),
+                              GestureDetector(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "1k",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color:
+                                                Theme.of(context).primaryColor),
                                       ),
-                                    )
-                                  ]),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            selectedTab(selectedIndex)
-                          ],
-                        ),
+                                      Text(
+                                        " Following",
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      snapshot.snapshot1.data!["full name"]
+                                          .toString(),
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                    ),
+                                  ),
+                                  if (snapshot.snapshot1.data!["isVerified"])
+                                    const Icon(
+                                      Icons.verified,
+                                      color: Colors.green,
+                                    )
+                                ],
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 10, bottom: 10),
+                                child: Text(
+                                    "@${snapshot.snapshot1.data!["username"]}"),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 30,
+                          ),
+                          if (widget.uid != auth.currentUser!.uid)
+                            OutlinedButton(
+                                onPressed: () {}, child: const Text("Follow")),
+                        ],
+                      ),
+                      const Divider(
+                        thickness: 1,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      DefaultTabController(
+                        length: 2,
+                        child: TabBar(
+                            onTap: (index) {
+                              setState(() {
+                                selectedIndex = index;
+                              });
+                            },
+                            indicatorColor: Theme.of(context).primaryColor,
+                            indicator: DotIndicator(
+                                color: Theme.of(context).primaryColor),
+                            tabs: [
+                              Tab(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(4))),
+                                  padding: const EdgeInsets.all(10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Text("Beats"),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Tab(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(4))),
+                                  padding: const EdgeInsets.all(10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Text("Lyrics"),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ]),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      selectedTab(selectedIndex)
+                    ],
+                  ),
                 ),
               );
-            } else {
+            }
+
+            if (snapshot.snapshot1.hasError || snapshot.snapshot2.hasError) {
               return Center(
                   child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -389,6 +385,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 ],
               ));
             }
+
+            return const SizedBox();
           }),
     );
   }

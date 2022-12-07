@@ -40,9 +40,8 @@ class _MyLibraryState extends State<MyLibrary> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
+        elevation: 2,
         automaticallyImplyLeading: false,
         title: const Text(
           "My Library",
@@ -74,31 +73,33 @@ class _MyLibraryState extends State<MyLibrary> {
                       });
                     },
                     indicator: DotIndicator(
-                      color: Theme.of(context).primaryColor,
-                    ),
+                        color: Theme.of(context).primaryColor, radius: 8),
                     tabs: [
                       Tab(
-                        child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: const Text("Recently played")),
+                        child: ElevatedButton(
+                            onPressed: null,
+                            style: ElevatedButton.styleFrom(
+                                disabledBackgroundColor:
+                                    Theme.of(context).primaryColor,
+                                disabledForegroundColor: Colors.white),
+                            child: const Text("Recent")),
                       ),
                       Tab(
-                        child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(20)),
+                        child: ElevatedButton(
+                            onPressed: null,
+                            style: ElevatedButton.styleFrom(
+                                disabledBackgroundColor:
+                                    Theme.of(context).primaryColor,
+                                disabledForegroundColor: Colors.white),
                             child: const Text("Favourites")),
                       ),
                       Tab(
-                        child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(20)),
+                        child: ElevatedButton(
+                            onPressed: null,
+                            style: ElevatedButton.styleFrom(
+                                disabledBackgroundColor:
+                                    Theme.of(context).primaryColor,
+                                disabledForegroundColor: Colors.white),
                             child: const Text("Following")),
                       ),
                     ]),

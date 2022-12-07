@@ -83,7 +83,7 @@ class _MyArtistsState extends State<MyArtists> {
                                                     const Icon(
                                                       Icons.verified_sharp,
                                                       size: 18,
-                                                      color: malachite,
+                                                      color: Colors.white,
                                                     )
                                                 ],
                                               ),

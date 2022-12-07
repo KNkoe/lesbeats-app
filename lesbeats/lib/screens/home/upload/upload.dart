@@ -323,17 +323,15 @@ class _UploadBeatState extends State<UploadBeat> {
                                     );
                                   } else if (snapshot.hasData) {
                                     return DropdownButtonFormField<String>(
-                                        validator: (value) => selectedGenre
-                                                .isEmpty
-                                            ? "Please select a genre"
-                                            : null,
+                                        validator: (value) =>
+                                            selectedGenre.isEmpty
+                                                ? "Please select a genre"
+                                                : null,
                                         value: snapshot.data!.docs[0]["title"],
                                         items: snapshot.data!.docs
                                             .map((genre) =>
                                                 DropdownMenuItem<String>(
                                                     value: genre["title"],
-                                                    enabled: genre["title"] !=
-                                                        "None",
                                                     child:
                                                         Text(genre["title"])))
                                             .toList(),

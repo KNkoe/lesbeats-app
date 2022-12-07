@@ -1,22 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-const Color starCommandblue = Color(0xff2D80B0);
-const Color grey = Color(0xffCBCBCB);
-const Color yellow = Color(0xffF1D801);
-const Color babypowder = Color(0xffFFFCF9);
-const Color black = Color(0xff141414);
-const Color background = Color(0xff02020A);
-const Color coquilicot = Color(0xffFC440F);
-const Color malachite = Color(0xff09E85E);
-
 ThemeData lightTheme = ThemeData(
     fontFamily: GoogleFonts.poppins().fontFamily,
-    scaffoldBackgroundColor: const Color(0xffFCFFF7),
-    appBarTheme:
-        const AppBarTheme(backgroundColor: Color(0xff2a9d8f), elevation: 0),
-    bottomNavigationBarTheme:
-        const BottomNavigationBarThemeData(selectedItemColor: background),
+    scaffoldBackgroundColor: Colors.white,
+    appBarTheme: const AppBarTheme(backgroundColor: Colors.white, elevation: 0),
     floatingActionButtonTheme:
         const FloatingActionButtonThemeData(backgroundColor: Color(0xff2a9d8f)),
     dialogTheme: const DialogTheme(actionsPadding: EdgeInsets.only(bottom: 20)),
@@ -51,11 +39,6 @@ ThemeData lightTheme = ThemeData(
         color: Color(0xff264653),
       ),
     ));
-
-const LinearGradient backgroundGradient = LinearGradient(
-    begin: Alignment.bottomLeft,
-    end: Alignment.topRight,
-    colors: [Color(0xff0093E9), starCommandblue]);
 
 ThemeData darkTheme = ThemeData(
     backgroundColor: const Color(0xff264653),
