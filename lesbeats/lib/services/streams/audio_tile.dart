@@ -175,7 +175,32 @@ class _MyAudioTileState extends State<MyAudioTile> {
               padding: const EdgeInsets.only(left: 8),
               child: Column(
                 children: [
-                  ListTile(
+                  GestureDetector(
+                    onDoubleTap: (() {
+                      if (!liked) {
+                        db
+                            .collection("interactions")
+                            .doc(id)
+                            .collection("likes")
+                            .doc(auth.currentUser!.uid)
+                            .set(like);
+
+                        setState(() {
+                          liked = true;
+                        });
+                      } else {
+                        db
+                            .collection("interactions")
+                            .doc(id)
+                            .collection("likes")
+                            .doc(auth.currentUser!.uid)
+                            .delete();
+
+                        setState(() {
+                          liked = false;
+                        });
+                      }
+                    }),
                     onTap: () {
                       db
                           .collection("interactions")
@@ -185,127 +210,130 @@ class _MyAudioTileState extends State<MyAudioTile> {
                           .set(play);
                       playOnline(context, path, tags);
                     },
-                    contentPadding: const EdgeInsets.all(0),
-                    minVerticalPadding: 20,
-                    leading: Container(
-                        height: 70,
-                        width: 70,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10)),
-                        clipBehavior: Clip.hardEdge,
-                        child: FadeInImage.assetNetwork(
-                            fit: BoxFit.cover,
-                            placeholder: "assets/images/loading.gif",
-                            image: cover)),
-                    title: Flex(
-                      direction: Axis.horizontal,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: Text(
-                            title,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black54),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 4,
-                          child: Row(
-                            children: [
-                              const Iconify(
-                                Wpf.shopping_bag,
-                                size: 20,
-                                color: Colors.blue,
-                              ),
-                              const SizedBox(
-                                width: 6,
-                              ),
-                              Text(
-                                "R $price",
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    decoration:
-                                        snapshot.snapshot1.data!.size > 0
-                                            ? TextDecoration.lineThrough
-                                            : TextDecoration.none),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Row(
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(0),
+                      minVerticalPadding: 20,
+                      leading: Container(
+                          height: 70,
+                          width: 70,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10)),
+                          clipBehavior: Clip.hardEdge,
+                          child: FadeInImage.assetNetwork(
+                              fit: BoxFit.cover,
+                              placeholder: "assets/images/loading.gif",
+                              image: cover)),
+                      title: Flex(
+                        direction: Axis.horizontal,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          OpenContainer(
-                            closedElevation: 0,
-                            tappable: !widget.isProfileOpened,
-                            closedColor: Colors.transparent,
-                            closedBuilder: ((context, action) => Text(
-                                  feature.toString().isEmpty
-                                      ? snapshot.snapshot5.data!["username"]
-                                      : "${snapshot.snapshot5.data!["username"]} ft $feature",
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor),
-                                )),
-                            openBuilder: (context, action) =>
-                                MyProfilePage(artistId),
+                          Expanded(
+                            flex: 5,
+                            child: Text(
+                              title,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black54),
+                            ),
                           ),
-                          const Text(" | "),
-                          Text(genre)
+                          Expanded(
+                            flex: 4,
+                            child: Row(
+                              children: [
+                                const Iconify(
+                                  Wpf.shopping_bag,
+                                  size: 20,
+                                  color: Colors.blue,
+                                ),
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                Text(
+                                  "R $price",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      decoration:
+                                          snapshot.snapshot1.data!.size > 0
+                                              ? TextDecoration.lineThrough
+                                              : TextDecoration.none),
+                                )
+                              ],
+                            ),
+                          )
                         ],
                       ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Row(
+                          children: [
+                            OpenContainer(
+                              closedElevation: 0,
+                              tappable: !widget.isProfileOpened,
+                              closedColor: Colors.transparent,
+                              closedBuilder: ((context, action) => Text(
+                                    feature.toString().isEmpty
+                                        ? snapshot.snapshot5.data!["username"]
+                                        : "${snapshot.snapshot5.data!["username"]} ft $feature",
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor),
+                                  )),
+                              openBuilder: (context, action) =>
+                                  MyProfilePage(artistId),
+                            ),
+                            const Text(" | "),
+                            Text(genre)
+                          ],
+                        ),
+                      ),
+                      trailing: PopupMenuButton(
+                          itemBuilder: ((context) => [
+                                PopupMenuItem(
+                                    child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: const [
+                                    Icon(Icons.download),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text("Download"),
+                                  ],
+                                )),
+                                PopupMenuItem(
+                                    child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: const [
+                                    Icon(Icons.check_circle),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text("Buy"),
+                                  ],
+                                )),
+                                const PopupMenuItem(
+                                    height: 2, child: Divider()),
+                                PopupMenuItem(
+                                    child: Row(
+                                  children: const [
+                                    Icon(Icons.share),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text("Share"),
+                                  ],
+                                )),
+                                PopupMenuItem(
+                                    child: Row(
+                                  children: const [
+                                    Icon(Icons.report),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text("Report"),
+                                  ],
+                                )),
+                              ])),
                     ),
-                    trailing: PopupMenuButton(
-                        itemBuilder: ((context) => [
-                              PopupMenuItem(
-                                  child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: const [
-                                  Icon(Icons.download),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text("Download"),
-                                ],
-                              )),
-                              PopupMenuItem(
-                                  child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: const [
-                                  Icon(Icons.check_circle),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text("Buy"),
-                                ],
-                              )),
-                              const PopupMenuItem(height: 2, child: Divider()),
-                              PopupMenuItem(
-                                  child: Row(
-                                children: const [
-                                  Icon(Icons.share),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text("Share"),
-                                ],
-                              )),
-                              PopupMenuItem(
-                                  child: Row(
-                                children: const [
-                                  Icon(Icons.report),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text("Report"),
-                                ],
-                              )),
-                            ])),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -386,7 +414,9 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                 Icon(
                                   Icons.favorite,
                                   size: 18,
-                                  color: liked ? Colors.red : Colors.grey,
+                                  color: liked
+                                      ? Theme.of(context).indicatorColor
+                                      : Colors.grey,
                                 ),
                                 Text(
                                   snapshot.snapshot4.data!.size.toString(),
