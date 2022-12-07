@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lesbeats/screens/chats/message.dart';
 import 'package:lesbeats/widgets/responsive.dart';
-import 'package:lesbeats/widgets/theme.dart';
 
 class MyChatScreen extends StatefulWidget {
   const MyChatScreen({super.key});

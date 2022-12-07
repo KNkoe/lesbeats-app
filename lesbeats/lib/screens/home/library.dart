@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lesbeats/screens/home/library/following.dart';
-import 'package:lesbeats/screens/home/library/recentlyplayed.dart';
 import 'package:lesbeats/widgets/decoration.dart';
-import 'package:lesbeats/widgets/responsive.dart';
 
 import 'library/favourites.dart';
 
@@ -27,10 +25,8 @@ class _MyLibraryState extends State<MyLibrary> {
   Widget selectedLibrary(int index) {
     switch (index) {
       case 0:
-        return MyRecentlyPlayed();
+        return const MyFavourites();
       case 1:
-        return MyFavourites();
-      case 2:
         return MyFollowingPage();
       default:
         return Container();
@@ -41,32 +37,25 @@ class _MyLibraryState extends State<MyLibrary> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 2,
         automaticallyImplyLeading: false,
         title: const Text(
           "My Library",
           style: TextStyle(color: Colors.black),
         ),
       ),
-      body: Container(
-        height: screenSize(context).height,
-        width: screenSize(context).width,
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-                opacity: 0.2,
-                fit: BoxFit.contain,
-                image: AssetImage("assets/images/circle-scatter-haikei.png"))),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
+            const Divider(),
             const SizedBox(
               height: 20,
             ),
             SizedBox(
               height: 40,
               child: DefaultTabController(
-                length: 3,
+                length: 2,
                 child: TabBar(
-                    splashBorderRadius: BorderRadius.circular(20),
                     onTap: (value) {
                       setState(() {
                         selectedIndex = value;
@@ -76,31 +65,34 @@ class _MyLibraryState extends State<MyLibrary> {
                         color: Theme.of(context).primaryColor, radius: 8),
                     tabs: [
                       Tab(
-                        child: ElevatedButton(
-                            onPressed: null,
-                            style: ElevatedButton.styleFrom(
-                                disabledBackgroundColor:
-                                    Theme.of(context).primaryColor,
-                                disabledForegroundColor: Colors.white),
-                            child: const Text("Recent")),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(4))),
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text("Favorites"),
+                            ],
+                          ),
+                        ),
                       ),
                       Tab(
-                        child: ElevatedButton(
-                            onPressed: null,
-                            style: ElevatedButton.styleFrom(
-                                disabledBackgroundColor:
-                                    Theme.of(context).primaryColor,
-                                disabledForegroundColor: Colors.white),
-                            child: const Text("Favourites")),
-                      ),
-                      Tab(
-                        child: ElevatedButton(
-                            onPressed: null,
-                            style: ElevatedButton.styleFrom(
-                                disabledBackgroundColor:
-                                    Theme.of(context).primaryColor,
-                                disabledForegroundColor: Colors.white),
-                            child: const Text("Following")),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(4))),
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text("Following"),
+                            ],
+                          ),
+                        ),
                       ),
                     ]),
               ),

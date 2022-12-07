@@ -9,10 +9,9 @@ ThemeData lightTheme = ThemeData(
         const FloatingActionButtonThemeData(backgroundColor: Color(0xff2a9d8f)),
     dialogTheme: const DialogTheme(actionsPadding: EdgeInsets.only(bottom: 20)),
     primaryColor: const Color(0xff2a9d8f),
-    backgroundColor: const Color(0xffFCFFF7),
+    backgroundColor: Colors.white,
     cardColor: const Color(0xff2a9d8f),
     indicatorColor: const Color(0xffe76f51),
-    canvasColor: const Color(0xffFCFFF7),
     snackBarTheme: const SnackBarThemeData(backgroundColor: Color(0xff264653)),
     inputDecorationTheme: const InputDecorationTheme(
         focusedBorder: OutlineInputBorder(

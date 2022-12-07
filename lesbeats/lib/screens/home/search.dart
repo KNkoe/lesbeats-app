@@ -24,7 +24,7 @@ class _MySearchScreenState extends State<MySearchScreen> {
       body: SizedBox(
         height: Get.height,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

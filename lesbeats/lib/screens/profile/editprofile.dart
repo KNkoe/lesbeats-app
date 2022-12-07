@@ -213,25 +213,34 @@ class _EditProfileState extends State<EditProfile> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(
-                              height: 50,
-                              width: Get.width * 0.5,
-                              child: TextFormField(
-                                enabled: _isnameEnabled,
-                                keyboardType: TextInputType.name,
-                                controller: _nameController,
-                                decoration: InputDecoration(
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.never,
-                                  enabledBorder: const OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black12),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  label: Text(
-                                      snapshot.data!["full name"].toString()),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Full Name",
+                                  style: TextStyle(fontSize: 14),
                                 ),
-                              ),
+                                SizedBox(
+                                  height: 50,
+                                  width: Get.width * 0.5,
+                                  child: TextFormField(
+                                    enabled: _isnameEnabled,
+                                    keyboardType: TextInputType.name,
+                                    controller: _nameController,
+                                    decoration: InputDecoration(
+                                      floatingLabelBehavior:
+                                          FloatingLabelBehavior.never,
+                                      enabledBorder: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.black12),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      label: Text(snapshot.data!["full name"]
+                                          .toString()),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             if (!_isnameEnabled)
                               Material(
@@ -252,24 +261,33 @@ class _EditProfileState extends State<EditProfile> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(
-                              height: 50,
-                              width: Get.width * 0.5,
-                              child: TextFormField(
-                                enabled: _isUsernameEnabled,
-                                keyboardType: TextInputType.name,
-                                controller: _usernameController,
-                                decoration: InputDecoration(
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.never,
-                                  enabledBorder: const OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black12),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  label: Text(snapshot.data!["username"]),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "username",
+                                  style: TextStyle(fontSize: 14),
                                 ),
-                              ),
+                                SizedBox(
+                                  height: 50,
+                                  width: Get.width * 0.5,
+                                  child: TextFormField(
+                                    enabled: _isUsernameEnabled,
+                                    keyboardType: TextInputType.name,
+                                    controller: _usernameController,
+                                    decoration: InputDecoration(
+                                      floatingLabelBehavior:
+                                          FloatingLabelBehavior.never,
+                                      enabledBorder: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.black12),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      label: Text(snapshot.data!["username"]),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             if (!_isUsernameEnabled)
                               Material(
@@ -287,50 +305,65 @@ class _EditProfileState extends State<EditProfile> {
                         const SizedBox(
                           height: 20,
                         ),
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              _ispasswordEnabled = true;
-                            });
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 50,
-                                width: screenSize(context).width * 0.6,
-                                child: TextFormField(
-                                    enabled: _ispasswordEnabled,
-                                    keyboardType: TextInputType.name,
-                                    controller: _passwordController,
-                                    obscureText: _obscurePassword,
-                                    decoration: InputDecoration(
-                                        floatingLabelBehavior:
-                                            FloatingLabelBehavior.never,
-                                        enabledBorder: const OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.black12),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10))),
-                                        label: const Text("Change Password"),
-                                        hintText: "New Password",
-                                        suffix: IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _obscurePassword =
-                                                    !_obscurePassword;
-                                              });
-                                            },
-                                            icon: Icon(
-                                              _obscurePassword
-                                                  ? Icons
-                                                      .remove_red_eye_outlined
-                                                  : Icons.remove_red_eye,
-                                              color: Colors.black38,
-                                            )))),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Password",
+                              style: TextStyle(fontSize: 14),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _ispasswordEnabled = true;
+                                });
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 50,
+                                    width: screenSize(context).width * 0.6,
+                                    child: TextFormField(
+                                        enabled: _ispasswordEnabled,
+                                        keyboardType: TextInputType.name,
+                                        controller: _passwordController,
+                                        obscureText: _obscurePassword,
+                                        decoration: InputDecoration(
+                                            floatingLabelBehavior:
+                                                FloatingLabelBehavior.never,
+                                            enabledBorder:
+                                                const OutlineInputBorder(
+                                                    borderSide:
+                                                        BorderSide(
+                                                            color:
+                                                                Colors.black12),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10))),
+                                            label:
+                                                const Text("Change Password"),
+                                            hintText: "New Password",
+                                            suffix: IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _obscurePassword =
+                                                        !_obscurePassword;
+                                                  });
+                                                },
+                                                icon: Icon(
+                                                  _obscurePassword
+                                                      ? Icons
+                                                          .remove_red_eye_outlined
+                                                      : Icons.remove_red_eye,
+                                                  color: Colors.black38,
+                                                )))),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           height: 20,

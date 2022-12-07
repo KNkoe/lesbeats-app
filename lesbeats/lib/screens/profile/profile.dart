@@ -7,7 +7,6 @@ import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/profile/editprofile.dart';
 import 'package:lesbeats/services/streams/audio_stream.dart';
 import 'package:lesbeats/widgets/decoration.dart';
-import 'package:lesbeats/widgets/theme.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 
 class MyProfilePage extends StatefulWidget {
@@ -179,7 +178,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
               return Animate(
                 effects: const [FadeEffect()],
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     children: [
                       const SizedBox(

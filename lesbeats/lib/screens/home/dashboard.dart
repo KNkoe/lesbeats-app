@@ -9,8 +9,6 @@ import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 
-import 'package:lesbeats/widgets/theme.dart';
-
 import 'activityfeed.dart';
 import 'artists.dart';
 import 'drawer.dart';
@@ -42,6 +40,7 @@ class _DashboardState extends State<Dashboard> {
       key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
             onPressed: () {
               _scaffoldKey.currentState!.openDrawer();

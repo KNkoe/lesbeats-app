@@ -15,7 +15,6 @@ import 'package:iconify_flutter/icons/zondicons.dart';
 import 'package:iconify_flutter/icons/ri.dart';
 import 'package:lesbeats/screens/home/upload/uploads.dart';
 import 'package:lesbeats/screens/home/settings.dart';
-import 'package:lesbeats/widgets/theme.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({

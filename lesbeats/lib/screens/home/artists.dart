@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
-import 'package:lesbeats/widgets/theme.dart';
 
 class MyArtists extends StatefulWidget {
   const MyArtists({super.key});

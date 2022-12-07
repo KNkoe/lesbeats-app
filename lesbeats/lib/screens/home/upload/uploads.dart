@@ -29,6 +29,14 @@ class _MySalesState extends State<MySales> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Theme.of(context).textTheme.headline6!.color,
+            )),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -46,41 +54,35 @@ class _MySalesState extends State<MySales> {
           )
         ],
       ),
-      body: Container(
-          color: Theme.of(context).primaryColor,
-          height: screenSize(context).height,
-          width: screenSize(context).width,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50)),
-                color: Theme.of(context).backgroundColor),
-            child: Column(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            const Divider(),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Uploads",
-                        style: TextStyle(
-                            color: Colors.black26,
-                            fontWeight: FontWeight.bold)),
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.filter_list_rounded,
-                          color: Theme.of(context).primaryColor,
-                        ))
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Expanded(child: getStream(_audioStream))
+                const Text("Uploads",
+                    style: TextStyle(
+                        color: Colors.black26, fontWeight: FontWeight.bold)),
+                IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.filter_list_rounded,
+                      color: Theme.of(context).primaryColor,
+                    ))
               ],
             ),
-          )),
+            const SizedBox(
+              height: 10,
+            ),
+            Expanded(child: getStream(_audioStream))
+          ],
+        ),
+      ),
     );
   }
 }
