@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
+import 'package:lesbeats/screens/profile/follow.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 
 import '../../main.dart';
@@ -318,18 +319,34 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                   ],
                                 )),
                                 PopupMenuItem(
+                                    onTap: () {
+                                      if (following) {
+                                        unfollow(
+                                            auth.currentUser!.uid, artistId);
+
+                                        setState(() {
+                                          following = false;
+                                        });
+                                      } else {
+                                        follow(auth.currentUser!.uid, artistId);
+                                        setState(() {
+                                          following = true;
+                                        });
+                                      }
+                                    },
                                     child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Icon(following
-                                        ? Icons.thumb_down
-                                        : Icons.thumb_up),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(following ? "Unfollow" : "Follow"),
-                                  ],
-                                )),
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Icon(following
+                                            ? Icons.thumb_down
+                                            : Icons.thumb_up),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(following ? "Unfollow" : "Follow"),
+                                      ],
+                                    )),
                                 const PopupMenuItem(
                                     height: 2, child: Divider()),
                                 PopupMenuItem(
