@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/profile/editprofile.dart';
+import 'package:lesbeats/screens/profile/follow.dart';
 import 'package:lesbeats/services/streams/audio_stream.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
@@ -35,6 +36,10 @@ class _MyProfilePageState extends State<MyProfilePage> {
   late final Stream<DocumentSnapshot> _usersStream;
   late final Stream<QuerySnapshot> _audioStream;
   late final Stream<QuerySnapshot> _uploadsStream;
+  late final Stream<QuerySnapshot> _followersStream;
+  late final Stream<QuerySnapshot> _followingStream;
+
+  bool following = false;
 
   @override
   void initState() {
@@ -50,6 +55,28 @@ class _MyProfilePageState extends State<MyProfilePage> {
         .where("artistId", isEqualTo: widget.uid)
         .orderBy("uploadedAt", descending: true)
         .snapshots();
+
+    _followersStream = db
+        .collection("follows")
+        .doc(widget.uid)
+        .collection("followers")
+        .snapshots();
+
+    _followingStream = db
+        .collection("follows")
+        .doc(widget.uid)
+        .collection("following")
+        .snapshots();
+
+    db
+        .collection("follows")
+        .doc(auth.currentUser!.uid)
+        .collection("following")
+        .doc(widget.uid)
+        .get()
+        .then((doc) {
+      following = doc.exists;
+    });
   }
 
   @override
@@ -159,11 +186,15 @@ class _MyProfilePageState extends State<MyProfilePage> {
                     [const PopupMenuItem(child: Text("Report account"))])
         ],
       ),
-      body: StreamBuilder2<DocumentSnapshot, QuerySnapshot>(
-          streams: StreamTuple2(_usersStream, _uploadsStream),
+      body: StreamBuilder4<DocumentSnapshot, QuerySnapshot, QuerySnapshot,
+              QuerySnapshot>(
+          streams: StreamTuple4(
+              _usersStream, _uploadsStream, _followersStream, _followingStream),
           builder: (context, snapshot) {
             if (snapshot.snapshot1.connectionState == ConnectionState.waiting &&
-                snapshot.snapshot2.connectionState == ConnectionState.waiting) {
+                snapshot.snapshot2.connectionState == ConnectionState.waiting &&
+                snapshot.snapshot3.connectionState == ConnectionState.waiting &&
+                snapshot.snapshot4.connectionState == ConnectionState.waiting) {
               return Center(
                 child: SizedBox(
                   height: 32,
@@ -175,7 +206,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 ),
               );
             } else if (snapshot.snapshot1.hasData &&
-                snapshot.snapshot2.hasData) {
+                snapshot.snapshot2.hasData &&
+                snapshot.snapshot3.hasData &&
+                snapshot.snapshot4.hasData) {
               return Animate(
                 effects: const [FadeEffect()],
                 child: Padding(
@@ -229,7 +262,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "3k",
+                                      snapshot.snapshot3.data!.size.toString(),
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color:
@@ -248,7 +281,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "1k",
+                                        snapshot.snapshot4.data!.size
+                                            .toString(),
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color:
@@ -308,7 +342,20 @@ class _MyProfilePageState extends State<MyProfilePage> {
                           ),
                           if (widget.uid != auth.currentUser!.uid)
                             OutlinedButton(
-                                onPressed: () {}, child: const Text("Follow")),
+                                onPressed: () {
+                                  if (following) {
+                                    unfollow(auth.currentUser!.uid, widget.uid);
+                                    setState(() {
+                                      following = false;
+                                    });
+                                  } else {
+                                    follow(auth.currentUser!.uid, widget.uid);
+                                    setState(() {
+                                      following = true;
+                                    });
+                                  }
+                                },
+                                child: Text(following ? "Unfollow" : "Follow")),
                         ],
                       ),
                       const Divider(

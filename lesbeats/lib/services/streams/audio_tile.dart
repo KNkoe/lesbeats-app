@@ -10,6 +10,7 @@ import '../../main.dart';
 import '../../screens/profile/profile.dart';
 import '../../widgets/responsive.dart';
 import '../player/player.dart';
+import 'dowload.dart';
 
 class MyAudioTile extends StatefulWidget {
   const MyAudioTile(
@@ -45,6 +46,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
   late final Stream<DocumentSnapshot> artistStream;
 
   bool liked = false;
+  bool following = false;
 
   checkIfLiked(String trackId, String userId, int index) async {
     try {
@@ -92,6 +94,16 @@ class _MyAudioTileState extends State<MyAudioTile> {
     artistStream = db.collection("users").doc(artistId).snapshots();
 
     checkIfLiked(id, auth.currentUser!.uid, widget.index);
+
+    db
+        .collection("follows")
+        .doc(auth.currentUser!.uid)
+        .collection("following")
+        .doc(artistId)
+        .get()
+        .then((doc) {
+      following = doc.exists;
+    });
   }
 
   @override
@@ -102,11 +114,6 @@ class _MyAudioTileState extends State<MyAudioTile> {
             salesStream, playStream, downloadStream, likeStream, artistStream),
         builder: (context, snapshot) {
           Map<String, dynamic> play = {
-            "uid": auth.currentUser!.uid,
-            "timestamp": DateTime.now()
-          };
-
-          Map<String, dynamic> download = {
             "uid": auth.currentUser!.uid,
             "timestamp": DateTime.now()
           };
@@ -310,6 +317,19 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                     Text("Buy"),
                                   ],
                                 )),
+                                PopupMenuItem(
+                                    child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(following
+                                        ? Icons.thumb_down
+                                        : Icons.thumb_up),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(following ? "Unfollow" : "Follow"),
+                                  ],
+                                )),
                                 const PopupMenuItem(
                                     height: 2, child: Divider()),
                                 PopupMenuItem(
@@ -365,20 +385,33 @@ class _MyAudioTileState extends State<MyAudioTile> {
                           const SizedBox(
                             width: 20,
                           ),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.download_rounded,
-                                size: 18,
-                                color: Colors.grey,
-                              ),
-                              Text(
-                                snapshot.snapshot3.data!.size.toString(),
-                                style: const TextStyle(
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  barrierColor: Colors.transparent,
+                                  builder: ((context) {
+                                    return MyDownload(
+                                        id: id,
+                                        title: title,
+                                        downloadUrl: path);
+                                  }));
+                            },
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.download_rounded,
+                                  size: 18,
                                   color: Colors.grey,
                                 ),
-                              )
-                            ],
+                                Text(
+                                  snapshot.snapshot3.data!.size.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                           const SizedBox(
                             width: 20,

@@ -10,7 +10,7 @@ import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 
 import 'activityfeed.dart';
-import 'artists.dart';
+import 'producers.dart';
 import 'drawer.dart';
 
 class Dashboard extends StatefulWidget {
@@ -93,7 +93,7 @@ class _DashboardState extends State<Dashboard> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                "Top Artists",
+                                "Top producers",
                                 style: TextStyle(
                                     color: Colors.black26,
                                     fontWeight: FontWeight.bold),

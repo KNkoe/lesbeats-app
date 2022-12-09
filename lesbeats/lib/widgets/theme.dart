@@ -16,8 +16,7 @@ ThemeData lightTheme = ThemeData(
     inputDecorationTheme: const InputDecorationTheme(
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Color(0xff2a9d8f)))),
-    popupMenuTheme:
-        const PopupMenuThemeData(color: Color(0xffFCFFF7), elevation: 2),
+    popupMenuTheme: const PopupMenuThemeData(color: Colors.white, elevation: 2),
     textTheme: const TextTheme(
       headline1: TextStyle(
         color: Color(0xff264653),
