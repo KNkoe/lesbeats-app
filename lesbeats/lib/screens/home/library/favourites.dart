@@ -10,19 +10,22 @@ class MyFavourites extends StatefulWidget {
 }
 
 class _MyFavouritesState extends State<MyFavourites> {
-  late final Stream<QuerySnapshot> likeStream;
+  late final Stream<QuerySnapshot> _favoritesStream;
 
   @override
   void initState() {
     super.initState();
-    likeStream =
-        db.collection("interactions").doc().collection("likes").snapshots();
+    _favoritesStream = db
+        .collection("users")
+        .doc(auth.currentUser!.uid)
+        .collection("favorites")
+        .snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: likeStream,
+        stream: _favoritesStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator(
@@ -31,12 +34,27 @@ class _MyFavouritesState extends State<MyFavourites> {
           }
 
           if (snapshot.hasData) {
-            return Center(
-              child: Text(snapshot.data!.size.toString()),
-            );
+            return Expanded(
+                child: ListView.builder(
+              itemCount: snapshot.data!.size,
+              itemBuilder: ((context, index) {
+                return TrackTile();
+              }),
+            ));
           }
 
           return const SizedBox();
         });
+  }
+}
+
+class TrackTile extends StatelessWidget {
+  const TrackTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile();
   }
 }

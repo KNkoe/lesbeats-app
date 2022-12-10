@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/profile/editprofile.dart';
-import 'package:lesbeats/screens/profile/follow.dart';
+import 'package:lesbeats/services/streams/follow.dart';
 import 'package:lesbeats/services/streams/audio_stream.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
@@ -57,19 +57,19 @@ class _MyProfilePageState extends State<MyProfilePage> {
         .snapshots();
 
     _followersStream = db
-        .collection("follows")
+        .collection("users")
         .doc(widget.uid)
         .collection("followers")
         .snapshots();
 
     _followingStream = db
-        .collection("follows")
+        .collection("users")
         .doc(widget.uid)
         .collection("following")
         .snapshots();
 
     db
-        .collection("follows")
+        .collection("users")
         .doc(auth.currentUser!.uid)
         .collection("following")
         .doc(widget.uid)

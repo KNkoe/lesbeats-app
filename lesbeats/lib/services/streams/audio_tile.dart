@@ -1,15 +1,15 @@
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
-import 'package:lesbeats/screens/profile/follow.dart';
+import 'package:lesbeats/services/streams/follow.dart';
+import 'package:lesbeats/services/streams/like.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 
 import '../../main.dart';
+import '../../widgets/load.dart';
 import '../../screens/profile/profile.dart';
-import '../../widgets/responsive.dart';
 import '../player/player.dart';
 import 'dowload.dart';
 
@@ -52,7 +52,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
   checkIfLiked(String trackId, String userId, int index) async {
     try {
       await db
-          .collection("interactions")
+          .collection("tracks")
           .doc(trackId)
           .collection("likes")
           .doc(userId)
@@ -81,23 +81,20 @@ class _MyAudioTileState extends State<MyAudioTile> {
     artistId = widget.snapshot.data!.docs[widget.index]["artistId"];
     id = widget.snapshot.data!.docs[widget.index]["id"];
 
-    downloadStream = db
-        .collection("interactions")
-        .doc(id)
-        .collection("downloads")
-        .snapshots();
+    downloadStream =
+        db.collection("tracks").doc(id).collection("downloads").snapshots();
     playStream =
-        db.collection("interactions").doc(id).collection("plays").snapshots();
+        db.collection("tracks").doc(id).collection("plays").snapshots();
     salesStream =
-        db.collection("interactions").doc(id).collection("sales").snapshots();
+        db.collection("tracks").doc(id).collection("sales").snapshots();
     likeStream =
-        db.collection("interactions").doc(id).collection("likes").snapshots();
+        db.collection("tracks").doc(id).collection("likes").snapshots();
     artistStream = db.collection("users").doc(artistId).snapshots();
 
     checkIfLiked(id, auth.currentUser!.uid, widget.index);
 
     db
-        .collection("follows")
+        .collection("users")
         .doc(auth.currentUser!.uid)
         .collection("following")
         .doc(artistId)
@@ -119,50 +116,12 @@ class _MyAudioTileState extends State<MyAudioTile> {
             "timestamp": DateTime.now()
           };
 
-          Map<String, dynamic> like = {
-            "uid": auth.currentUser!.uid,
-            "timestamp": DateTime.now()
-          };
-
           if (snapshot.snapshot1.connectionState == ConnectionState.waiting ||
               snapshot.snapshot2.connectionState == ConnectionState.waiting ||
               snapshot.snapshot3.connectionState == ConnectionState.waiting ||
               snapshot.snapshot4.connectionState == ConnectionState.waiting ||
               snapshot.snapshot5.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Animate(
-                  effects: const [
-                    ShimmerEffect(duration: Duration(seconds: 1))
-                  ],
-                  onComplete: ((controller) {
-                    controller.repeat();
-                  }),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 30,
-                        width: 40,
-                        decoration: const BoxDecoration(
-                            color: Colors.black12, shape: BoxShape.circle),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        height: 30,
-                        width: screenSize(context).width * 0.6,
-                        decoration: BoxDecoration(
-                            color: Colors.black12,
-                            borderRadius: BorderRadius.circular(20)),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            );
+            return const LoadTrack();
           }
 
           if (snapshot.snapshot1.hasData &&
@@ -186,19 +145,14 @@ class _MyAudioTileState extends State<MyAudioTile> {
                   GestureDetector(
                     onDoubleTap: (() {
                       if (!liked) {
-                        db
-                            .collection("interactions")
-                            .doc(id)
-                            .collection("likes")
-                            .doc(auth.currentUser!.uid)
-                            .set(like);
+                        likeTrack(id);
 
                         setState(() {
                           liked = true;
                         });
                       } else {
                         db
-                            .collection("interactions")
+                            .collection("tracks")
                             .doc(id)
                             .collection("likes")
                             .doc(auth.currentUser!.uid)
@@ -211,7 +165,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                     }),
                     onTap: () {
                       db
-                          .collection("interactions")
+                          .collection("tracks")
                           .doc(id)
                           .collection("plays")
                           .doc(auth.currentUser!.uid)
@@ -436,23 +390,13 @@ class _MyAudioTileState extends State<MyAudioTile> {
                           GestureDetector(
                             onTap: () {
                               if (!liked) {
-                                db
-                                    .collection("interactions")
-                                    .doc(id)
-                                    .collection("likes")
-                                    .doc(auth.currentUser!.uid)
-                                    .set(like);
+                                likeTrack(id);
 
                                 setState(() {
                                   liked = true;
                                 });
                               } else {
-                                db
-                                    .collection("interactions")
-                                    .doc(id)
-                                    .collection("likes")
-                                    .doc(auth.currentUser!.uid)
-                                    .delete();
+                                unlikeTrack(id);
 
                                 setState(() {
                                   liked = false;

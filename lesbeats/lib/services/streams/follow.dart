@@ -2,14 +2,14 @@ import '../../main.dart';
 
 follow(String follower, String followed) {
   db
-      .collection("follows")
+      .collection("users")
       .doc(followed)
       .collection("followers")
       .doc(follower)
       .set({"uid": follower, "timestamp": DateTime.now()});
 
   db
-      .collection("follows")
+      .collection("users")
       .doc(follower)
       .collection("following")
       .doc(followed)
@@ -18,14 +18,14 @@ follow(String follower, String followed) {
 
 unfollow(String follower, String followed) {
   db
-      .collection("follows")
+      .collection("users")
       .doc(followed)
       .collection("followers")
       .doc(follower)
       .delete();
 
   db
-      .collection("follows")
+      .collection("users")
       .doc(follower)
       .collection("following")
       .doc(followed)
