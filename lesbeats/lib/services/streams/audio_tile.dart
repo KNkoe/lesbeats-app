@@ -151,12 +151,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                           liked = true;
                         });
                       } else {
-                        db
-                            .collection("tracks")
-                            .doc(id)
-                            .collection("likes")
-                            .doc(auth.currentUser!.uid)
-                            .delete();
+                        unlikeTrack(id);
 
                         setState(() {
                           liked = false;
