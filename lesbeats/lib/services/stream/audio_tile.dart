@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
-import 'package:lesbeats/services/streams/follow.dart';
-import 'package:lesbeats/services/streams/like.dart';
+import 'package:lesbeats/services/stream/follow.dart';
+import 'package:lesbeats/services/stream/like.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 
 import '../../main.dart';
@@ -138,36 +138,36 @@ class _MyAudioTileState extends State<MyAudioTile> {
               "artistId": artistId
             };
 
-            return Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onDoubleTap: (() {
-                      if (!liked) {
-                        likeTrack(id);
+            return GestureDetector(
+              onDoubleTap: (() {
+                if (!liked) {
+                  likeTrack(id);
 
-                        setState(() {
-                          liked = true;
-                        });
-                      } else {
-                        unlikeTrack(id);
+                  setState(() {
+                    liked = true;
+                  });
+                } else {
+                  unlikeTrack(id);
 
-                        setState(() {
-                          liked = false;
-                        });
-                      }
-                    }),
-                    onTap: () {
-                      db
-                          .collection("tracks")
-                          .doc(id)
-                          .collection("plays")
-                          .doc(auth.currentUser!.uid)
-                          .set(play);
-                      playOnline(context, path, tags);
-                    },
-                    child: ListTile(
+                  setState(() {
+                    liked = false;
+                  });
+                }
+              }),
+              onTap: () {
+                db
+                    .collection("tracks")
+                    .doc(id)
+                    .collection("plays")
+                    .doc(auth.currentUser!.uid)
+                    .set(play);
+                playOnline(context, path, tags);
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Column(
+                  children: [
+                    ListTile(
                       contentPadding: const EdgeInsets.all(0),
                       minVerticalPadding: 20,
                       leading: Container(
@@ -320,111 +320,111 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                 )),
                               ])),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          "${DateTime.now().difference(date.toDate()).inDays} days ago",
-                          style: const TextStyle(color: Colors.black45),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            "${DateTime.now().difference(date.toDate()).inDays} days ago",
+                            style: const TextStyle(color: Colors.black45),
+                          ),
                         ),
-                      ),
-                      Row(
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.play_arrow,
-                                size: 18,
-                                color: Colors.grey,
-                              ),
-                              Text(
-                                snapshot.snapshot2.data!.size.toString(),
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  barrierColor: Colors.transparent,
-                                  builder: ((context) {
-                                    return MyDownload(
-                                        id: id,
-                                        title: title,
-                                        downloadUrl: path);
-                                  }));
-                            },
-                            child: Row(
+                        Row(
+                          children: [
+                            Row(
                               children: [
                                 const Icon(
-                                  Icons.download_rounded,
+                                  Icons.play_arrow,
                                   size: 18,
                                   color: Colors.grey,
                                 ),
                                 Text(
-                                  snapshot.snapshot3.data!.size.toString(),
+                                  snapshot.snapshot2.data!.size.toString(),
                                   style: const TextStyle(
                                     color: Colors.grey,
                                   ),
                                 )
                               ],
                             ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              if (!liked) {
-                                likeTrack(id);
-
-                                setState(() {
-                                  liked = true;
-                                });
-                              } else {
-                                unlikeTrack(id);
-
-                                setState(() {
-                                  liked = false;
-                                });
-                              }
-                            },
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.favorite,
-                                  size: 18,
-                                  color: liked
-                                      ? Theme.of(context).indicatorColor
-                                      : Colors.grey,
-                                ),
-                                Text(
-                                  snapshot.snapshot4.data!.size.toString(),
-                                  style: const TextStyle(
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    barrierColor: Colors.transparent,
+                                    builder: ((context) {
+                                      return MyDownload(
+                                          id: id,
+                                          title: title,
+                                          downloadUrl: path);
+                                    }));
+                              },
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.download_rounded,
+                                    size: 18,
                                     color: Colors.grey,
                                   ),
-                                )
-                              ],
+                                  Text(
+                                    snapshot.snapshot3.data!.size.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                  const Divider()
-                ],
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                if (!liked) {
+                                  likeTrack(id);
+
+                                  setState(() {
+                                    liked = true;
+                                  });
+                                } else {
+                                  unlikeTrack(id);
+
+                                  setState(() {
+                                    liked = false;
+                                  });
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.favorite,
+                                    size: 18,
+                                    color: liked
+                                        ? Theme.of(context).indicatorColor
+                                        : Colors.grey,
+                                  ),
+                                  Text(
+                                    snapshot.snapshot4.data!.size.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    const Divider()
+                  ],
+                ),
               ),
             );
           }

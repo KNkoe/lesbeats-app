@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/profile/editprofile.dart';
-import 'package:lesbeats/services/streams/follow.dart';
-import 'package:lesbeats/services/streams/audio_stream.dart';
+import 'package:lesbeats/services/stream/follow.dart';
+import 'package:lesbeats/services/stream/audio_stream.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 

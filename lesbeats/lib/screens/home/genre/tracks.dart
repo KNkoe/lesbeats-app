@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../main.dart';
-import '../../../services/streams/audio_stream.dart';
+import '../../../services/stream/audio_stream.dart';
 
 class MyTracks extends StatefulWidget {
   const MyTracks({super.key, required this.genre});

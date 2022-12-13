@@ -93,7 +93,7 @@ class _DashboardState extends State<Dashboard> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                "Top producers",
+                                "Most followed",
                                 style: TextStyle(
                                     color: Colors.black26,
                                     fontWeight: FontWeight.bold),
@@ -263,12 +263,13 @@ class _DashboardState extends State<Dashboard> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                _viewAllArtists ? "Artists" : "Activity Feed",
-                                style: const TextStyle(
-                                    color: Colors.black26,
-                                    fontWeight: FontWeight.bold),
-                              ),
+                              if (!_viewAllArtists)
+                                const Text(
+                                  "Activity Feed",
+                                  style: TextStyle(
+                                      color: Colors.black26,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               if (!_viewAllArtists)
                                 IconButton(
                                     onPressed: () {

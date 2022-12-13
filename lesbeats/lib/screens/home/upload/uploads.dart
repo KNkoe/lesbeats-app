@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/home/upload/upload.dart';
-import 'package:lesbeats/services/streams/audio_stream.dart';
+import 'package:lesbeats/services/stream/audio_stream.dart';
 
 class MySales extends StatefulWidget {
   const MySales({super.key});

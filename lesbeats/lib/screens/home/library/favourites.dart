@@ -95,36 +95,40 @@ class _TrackTileState extends State<TrackTile> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(
-                leading: Container(
-                    height: 70,
-                    width: 70,
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                    clipBehavior: Clip.hardEdge,
-                    child: FadeInImage.assetNetwork(
-                        fit: BoxFit.cover,
-                        placeholder: "assets/images/loading.gif",
-                        image: cover)),
-                title: Text(title),
-                subtitle: StreamBuilder<DocumentSnapshot>(
-                    stream: _producerStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return OpenContainer(
-                          closedElevation: 0,
-                          closedBuilder: (context, function) {
-                            return Text(feature.toString().isEmpty
-                                ? snapshot.data!["username"]
-                                : "${snapshot.data!["username"]} ft $feature");
-                          },
-                          openBuilder: (context, action) =>
-                              MyProfilePage(artistId),
-                        );
-                      }
+                  leading: Container(
+                      height: 70,
+                      width: 70,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10)),
+                      clipBehavior: Clip.hardEdge,
+                      child: FadeInImage.assetNetwork(
+                          fit: BoxFit.cover,
+                          placeholder: "assets/images/loading.gif",
+                          image: cover)),
+                  title: Text(title),
+                  subtitle: StreamBuilder<DocumentSnapshot>(
+                      stream: _producerStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return OpenContainer(
+                            closedElevation: 0,
+                            closedBuilder: (context, function) {
+                              return Text(feature.toString().isEmpty
+                                  ? snapshot.data!["username"]
+                                  : "${snapshot.data!["username"]} ft $feature");
+                            },
+                            openBuilder: (context, action) =>
+                                MyProfilePage(artistId),
+                          );
+                        }
 
-                      return const SizedBox();
-                    }),
-              ),
+                        return const SizedBox();
+                      }),
+                  trailing: PopupMenuButton(
+                      icon: const Icon(Icons.favorite),
+                      itemBuilder: (context) {
+                        return [const PopupMenuItem(child: Text("Report"))];
+                      })),
             );
           }
 

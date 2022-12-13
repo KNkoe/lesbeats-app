@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:lesbeats/services/streams/audio_tile.dart';
+import 'package:lesbeats/services/stream/audio_tile.dart';
 import 'package:iconify_flutter/icons/uil.dart';
 
 class MyAudioStream extends StatelessWidget {
