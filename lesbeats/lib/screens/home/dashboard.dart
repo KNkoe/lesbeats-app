@@ -292,10 +292,15 @@ class _DashboardState extends State<Dashboard> {
                                 : const ActivityFeed()),
                       ],
                     );
-                  } else if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: Image.asset(
+                        "assets/images/loading.gif",
+                        height: 70,
+                        width: 70,
+                      ),
                     );
                   }
 

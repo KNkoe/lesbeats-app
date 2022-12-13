@@ -49,22 +49,18 @@ class _MyAudioTileState extends State<MyAudioTile> {
   bool liked = false;
   bool following = false;
 
-  checkIfLiked(String trackId, String userId, int index) async {
-    try {
-      await db
-          .collection("tracks")
-          .doc(trackId)
-          .collection("likes")
-          .doc(userId)
-          .get()
-          .then((doc) {
-        liked = doc.exists;
-
-        return;
-      });
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+  checkIfLiked(String trackId) async {
+    await db
+        .collection("tracks")
+        .doc(trackId)
+        .collection("likes")
+        .doc(
+          auth.currentUser!.uid,
+        )
+        .get()
+        .then((doc) {
+      liked = doc.exists;
+    });
   }
 
   @override
@@ -91,7 +87,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
         db.collection("tracks").doc(id).collection("likes").snapshots();
     artistStream = db.collection("users").doc(artistId).snapshots();
 
-    checkIfLiked(id, auth.currentUser!.uid, widget.index);
+    checkIfLiked(id);
 
     db
         .collection("users")
@@ -142,16 +138,14 @@ class _MyAudioTileState extends State<MyAudioTile> {
               onDoubleTap: (() {
                 if (!liked) {
                   likeTrack(id);
+                  checkIfLiked(id);
 
-                  setState(() {
-                    liked = true;
-                  });
+                  setState(() {});
                 } else {
                   unlikeTrack(id);
+                  checkIfLiked(id);
 
-                  setState(() {
-                    liked = false;
-                  });
+                  setState(() {});
                 }
               }),
               onTap: () {

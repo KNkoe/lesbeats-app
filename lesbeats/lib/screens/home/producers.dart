@@ -153,10 +153,12 @@ class _MyArtistsState extends State<MyArtists> {
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-                child: CircularProgressIndicator(
-              color: Theme.of(context).primaryColor,
-              strokeWidth: 2,
-            ));
+              child: Image.asset(
+                "assets/images/loading.gif",
+                height: 70,
+                width: 70,
+              ),
+            );
           }
           return Container();
         });

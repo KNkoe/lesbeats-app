@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
+import 'package:lesbeats/services/stream/like.dart';
 import 'package:lesbeats/widgets/load.dart';
 
 class MyFavourites extends StatefulWidget {
@@ -31,8 +32,12 @@ class _MyFavouritesState extends State<MyFavourites> {
         stream: _favoritesStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator(
-              color: Theme.of(context).primaryColor,
+            return Center(
+              child: Image.asset(
+                "assets/images/loading.gif",
+                height: 70,
+                width: 70,
+              ),
             );
           }
 
@@ -64,10 +69,28 @@ class _TrackTileState extends State<TrackTile> {
   late Stream<DocumentSnapshot> _trackStream;
   late Stream<DocumentSnapshot> _producerStream;
 
+  bool liked = true;
+
+  checkIfLiked(String trackId) async {
+    await db
+        .collection("tracks")
+        .doc(trackId)
+        .collection("likes")
+        .doc(
+          auth.currentUser!.uid,
+        )
+        .get()
+        .then((doc) {
+      liked = doc.exists;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _trackStream = db.collection("tracks").doc(widget.id).snapshots();
+
+    checkIfLiked(widget.id);
   }
 
   @override
@@ -92,44 +115,71 @@ class _TrackTileState extends State<TrackTile> {
 
             _producerStream = db.collection("users").doc(artistId).snapshots();
 
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                  leading: Container(
-                      height: 70,
-                      width: 70,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10)),
-                      clipBehavior: Clip.hardEdge,
-                      child: FadeInImage.assetNetwork(
-                          fit: BoxFit.cover,
-                          placeholder: "assets/images/loading.gif",
-                          image: cover)),
-                  title: Text(title),
-                  subtitle: StreamBuilder<DocumentSnapshot>(
-                      stream: _producerStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return OpenContainer(
-                            closedElevation: 0,
-                            closedBuilder: (context, function) {
-                              return Text(feature.toString().isEmpty
-                                  ? snapshot.data!["username"]
-                                  : "${snapshot.data!["username"]} ft $feature");
-                            },
-                            openBuilder: (context, action) =>
-                                MyProfilePage(artistId),
-                          );
-                        }
+            return ListTile(
+                leading: Container(
+                    height: 70,
+                    width: 70,
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                    clipBehavior: Clip.hardEdge,
+                    child: FadeInImage.assetNetwork(
+                        fit: BoxFit.cover,
+                        placeholder: "assets/images/loading.gif",
+                        image: cover)),
+                title: Text(title),
+                subtitle: Row(
+                  children: [
+                    StreamBuilder<DocumentSnapshot>(
+                        stream: _producerStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return OpenContainer(
+                              closedElevation: 0,
+                              closedBuilder: (context, function) {
+                                return Text(
+                                  feature.toString().isEmpty
+                                      ? snapshot.data!["username"]
+                                      : "${snapshot.data!["username"]} ft $feature",
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
+                                );
+                              },
+                              openBuilder: (context, action) =>
+                                  MyProfilePage(artistId),
+                            );
+                          }
 
-                        return const SizedBox();
-                      }),
-                  trailing: PopupMenuButton(
-                      icon: const Icon(Icons.favorite),
-                      itemBuilder: (context) {
-                        return [const PopupMenuItem(child: Text("Report"))];
-                      })),
-            );
+                          return const SizedBox();
+                        }),
+                    const Spacer(),
+                    GestureDetector(
+                        onTap: () {
+                          if (!liked) {
+                            likeTrack(id);
+                            checkIfLiked(widget.id);
+
+                            setState(() {});
+                          } else {
+                            unlikeTrack(id);
+                            checkIfLiked(widget.id);
+
+                            setState(() {});
+                          }
+                        },
+                        child: Icon(
+                          Icons.favorite,
+                          color: liked
+                              ? Theme.of(context).indicatorColor
+                              : Colors.grey,
+                        ))
+                  ],
+                ),
+                isThreeLine: true,
+                trailing: PopupMenuButton(
+                    icon: const Icon(Icons.more_vert),
+                    itemBuilder: (context) {
+                      return [const PopupMenuItem(child: Text("Report"))];
+                    }));
           }
 
           return const SizedBox();

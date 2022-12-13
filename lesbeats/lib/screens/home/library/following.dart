@@ -1,55 +1,118 @@
+import 'package:animations/animations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lesbeats/main.dart';
+import 'package:lesbeats/screens/profile/profile.dart';
 
-class MyFollowingPage extends StatelessWidget {
-  MyFollowingPage({super.key});
+class MyFollowingPage extends StatefulWidget {
+  const MyFollowingPage({super.key});
 
-  final List<String> followedArtists = [
-    "Mjo Konondo",
-    "Funky Debelicous",
-    "Goodey",
-    "Delicous",
-    "Vicous",
-    "Mjo Konondo",
-    "Funky Debelicous",
-    "Goodey",
-    "Delicous",
-    "Vicous",
-    "Mjo Konondo",
-    "Funky Debelicous",
-    "Goodey",
-    "Delicous",
-    "Vicous"
-  ];
+  @override
+  State<MyFollowingPage> createState() => _MyFollowingPageState();
+}
+
+class _MyFollowingPageState extends State<MyFollowingPage> {
+  late final Stream<QuerySnapshot> _followingStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _followingStream = db
+        .collection("users")
+        .doc(auth.currentUser!.uid)
+        .collection("following")
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: GridView.count(
-      physics: const BouncingScrollPhysics(),
-      crossAxisCount: 2,
-      children: followedArtists
-          .map((e) => Column(
+    return StreamBuilder<QuerySnapshot>(
+        stream: _followingStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Image.asset(
+                "assets/images/loading.gif",
+                height: 70,
+                width: 70,
+              ),
+            );
+          }
+
+          if (snapshot.hasData) {
+            return Expanded(
+                child: GridView.builder(
+              physics: const BouncingScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2),
+              itemCount: snapshot.data!.size,
+              itemBuilder: (context, index) {
+                return FollowingTile(uid: snapshot.data!.docs[index]["uid"]);
+              },
+            ));
+          }
+
+          return const SizedBox();
+        });
+  }
+}
+
+class FollowingTile extends StatefulWidget {
+  const FollowingTile({super.key, required this.uid});
+  final String uid;
+
+  @override
+  State<FollowingTile> createState() => _FollowingTileState();
+}
+
+class _FollowingTileState extends State<FollowingTile> {
+  late final Stream<DocumentSnapshot> _followingDoc;
+
+  @override
+  void initState() {
+    super.initState();
+    _followingDoc = db.collection("users").doc(widget.uid).snapshots();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<DocumentSnapshot>(
+        stream: _followingDoc,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Image.asset(
+                "assets/images/loading.gif",
+                height: 70,
+                width: 70,
+              ),
+            );
+          }
+
+          if (snapshot.hasData) {
+            return OpenContainer(
+              closedElevation: 0,
+              closedBuilder: (context, action) => Column(
                 children: [
-                  Container(
-                    height: 150,
-                    width: 150,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage("assets/images/rnb.jpg"))),
+                  ClipOval(
+                      child: FadeInImage.assetNetwork(
+                    image: snapshot.data!["photoUrl"],
+                    placeholder: "assets/images/loading.gif",
+                    height: 120,
+                    width: 120,
+                    fit: BoxFit.cover,
+                  )),
+                  const SizedBox(
+                    height: 10,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Text(
-                      e,
-                      style: const TextStyle(
-                          color: Colors.black54, fontWeight: FontWeight.bold),
-                    ),
-                  ),
+                  Text(snapshot.data!["username"])
                 ],
-              ))
-          .toList(),
-    ));
+              ),
+              openBuilder: (context, action) => MyProfilePage(widget.uid),
+            );
+          }
+
+          return const SizedBox();
+        });
   }
 }

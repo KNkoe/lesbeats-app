@@ -27,7 +27,7 @@ class _MyLibraryState extends State<MyLibrary> {
       case 0:
         return const MyFavourites();
       case 1:
-        return MyFollowingPage();
+        return const MyFollowingPage();
       default:
         return Container();
     }
