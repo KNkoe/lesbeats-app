@@ -20,12 +20,12 @@ follow(String follower, String followed) {
 
   Get.showSnackbar(const GetSnackBar(
     isDismissible: true,
-    duration: Duration(seconds: 5),
+    duration: Duration(seconds: 2),
     backgroundColor: Color(0xff264653),
     borderRadius: 30,
     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
     icon: Icon(
-      Icons.error,
+      Icons.check,
       color: Colors.white,
     ),
     message: "Followed",
@@ -49,12 +49,12 @@ unfollow(String follower, String followed) {
 
   Get.showSnackbar(const GetSnackBar(
     isDismissible: true,
-    duration: Duration(seconds: 5),
+    duration: Duration(seconds: 2),
     backgroundColor: Color(0xff264653),
     borderRadius: 30,
     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
     icon: Icon(
-      Icons.error,
+      Icons.check,
       color: Colors.white,
     ),
     message: "Unfollowed",

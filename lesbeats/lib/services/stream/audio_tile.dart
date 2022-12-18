@@ -334,24 +334,20 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                           });
                                         }
                                       },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 20),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Icon(following
-                                                ? Icons.thumb_down
-                                                : Icons.thumb_up),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(following
-                                                ? "Unfollow"
-                                                : "Follow"),
-                                          ],
-                                        ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Icon(following
+                                              ? Icons.thumb_down
+                                              : Icons.thumb_up),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(following
+                                              ? "Unfollow"
+                                              : "Follow"),
+                                        ],
                                       )),
                                 const PopupMenuItem(
                                     height: 2, child: Divider()),
