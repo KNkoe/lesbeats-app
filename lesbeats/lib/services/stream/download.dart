@@ -35,8 +35,17 @@ class _MyDownloadState extends State<MyDownload> {
   Future downloadAudio() async {
     try {
       final storageRef = storage.refFromURL(widget.downloadUrl);
-      final appDocDir = await getApplicationDocumentsDirectory();
-      final filePath = "${appDocDir.absolute}/${widget.title}";
+
+      Directory directory = Directory('/storage/emulated/0/Download');
+
+      if (!await directory.exists()) {
+        directory = (await getExternalStorageDirectory())!;
+      }
+
+      final filePath = "${directory.path}/${widget.title}.mp3";
+
+      debugPrint("FILE PATH :$filePath");
+
       final file = File(filePath);
 
       final downloadTask = storageRef.writeToFile(file);
@@ -48,6 +57,13 @@ class _MyDownloadState extends State<MyDownload> {
                   100)
               .roundToDouble();
         });
+
+        db
+            .collection("tracks")
+            .doc(widget.id)
+            .collection("downloads")
+            .doc(auth.currentUser!.uid)
+            .set({"uid": auth.currentUser!.uid, "timestamp": DateTime.now()});
       });
     } catch (error) {
       debugPrint(error.toString());
@@ -123,7 +139,7 @@ class _MyDownloadState extends State<MyDownload> {
                   Navigator.pop(context);
                 },
                 style: cancelButtonStyle,
-                child: const Text("Hide"))
+                child: Text(_progress == 100 ? "Close" : "Hide"))
             : ElevatedButton(
                 onPressed: () {
                   setState(() {

@@ -20,6 +20,45 @@ deleteTrack(BuildContext context, String id, String title) {
             ElevatedButton(
                 onPressed: () {
                   try {
+                    db
+                        .collection("tracks")
+                        .doc(id)
+                        .collection("likes")
+                        .get()
+                        .then((value) {
+                      if (value.docs.isNotEmpty) {
+                        for (var element in value.docs) {
+                          element.reference.delete();
+                        }
+                      }
+                    });
+
+                    db
+                        .collection("tracks")
+                        .doc(id)
+                        .collection("downloads")
+                        .get()
+                        .then((value) {
+                      if (value.docs.isNotEmpty) {
+                        for (var element in value.docs) {
+                          element.reference.delete();
+                        }
+                      }
+                    });
+
+                    db
+                        .collection("tracks")
+                        .doc(id)
+                        .collection("plays")
+                        .get()
+                        .then((value) {
+                      if (value.docs.isNotEmpty) {
+                        for (var element in value.docs) {
+                          element.reference.delete();
+                        }
+                      }
+                    });
+
                     db.collection("tracks").doc(id).delete();
 
                     final storageRef =

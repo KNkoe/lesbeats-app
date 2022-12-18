@@ -166,7 +166,6 @@ class _MyAudioTileState extends State<MyAudioTile> {
                   children: [
                     ListTile(
                       contentPadding: const EdgeInsets.all(0),
-                      minVerticalPadding: 20,
                       leading: Container(
                           height: 70,
                           width: 70,
@@ -287,11 +286,12 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                   PopupMenuItem(
                                       onTap: () {
                                         Future.delayed(
-                                            Duration.zero,
-                                            () => deleteTrack(
-                                                context, id, title));
-
-                                        setState(() {});
+                                                Duration.zero,
+                                                () => deleteTrack(
+                                                    context, id, title))
+                                            .then((value) {
+                                          setState(() {});
+                                        });
                                       },
                                       child: Row(
                                         mainAxisAlignment:
@@ -417,20 +417,24 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                             downloadUrl: path);
                                       }));
                                 },
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.download_rounded,
-                                      size: 18,
-                                      color: Colors.grey,
-                                    ),
-                                    Text(
-                                      snapshot.snapshot3.data!.size.toString(),
-                                      style: const TextStyle(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.download_rounded,
+                                        size: 18,
                                         color: Colors.grey,
                                       ),
-                                    )
-                                  ],
+                                      Text(
+                                        snapshot.snapshot3.data!.size
+                                            .toString(),
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             const SizedBox(
@@ -452,22 +456,25 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                   });
                                 }
                               },
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.favorite,
-                                    size: 18,
-                                    color: liked
-                                        ? Theme.of(context).indicatorColor
-                                        : Colors.grey,
-                                  ),
-                                  Text(
-                                    snapshot.snapshot4.data!.size.toString(),
-                                    style: const TextStyle(
-                                      color: Colors.grey,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.favorite,
+                                      size: 18,
+                                      color: liked
+                                          ? Theme.of(context).indicatorColor
+                                          : Colors.grey,
                                     ),
-                                  )
-                                ],
+                                    Text(
+                                      snapshot.snapshot4.data!.size.toString(),
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                             const SizedBox(

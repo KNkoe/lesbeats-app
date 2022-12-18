@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/profile/editprofile.dart';
+import 'package:lesbeats/screens/profile/genres.dart';
 import 'package:lesbeats/services/stream/follow.dart';
 import 'package:lesbeats/services/stream/audio_stream.dart';
 import 'package:lesbeats/widgets/decoration.dart';
@@ -27,7 +28,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
         return Expanded(
             child: MyAudioStream(stream: _audioStream, isProfileOpened: true));
       case 1:
-        return const Text("Albums");
+        return MyGenres(
+          uid: widget.uid,
+        );
       default:
         return Container();
     }
@@ -196,13 +199,10 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 snapshot.snapshot3.connectionState == ConnectionState.waiting &&
                 snapshot.snapshot4.connectionState == ConnectionState.waiting) {
               return Center(
-                child: SizedBox(
-                  height: 32,
-                  width: 32,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Theme.of(context).primaryColor,
-                  ),
+                child: Image.asset(
+                  "assets/images/loading.gif",
+                  height: 70,
+                  width: 70,
                 ),
               );
             } else if (snapshot.snapshot1.hasData &&

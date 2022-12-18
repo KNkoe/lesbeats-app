@@ -5,8 +5,9 @@ import '../../../main.dart';
 import '../../../services/stream/audio_stream.dart';
 
 class MyTracks extends StatefulWidget {
-  const MyTracks({super.key, required this.genre});
+  const MyTracks({super.key, required this.genre, this.uid = ""});
   final String genre;
+  final String uid;
   @override
   State<MyTracks> createState() => _MyTracksState();
 }
@@ -17,11 +18,18 @@ class _MyTracksState extends State<MyTracks> {
   @override
   void initState() {
     super.initState();
-    _audioStream = db
-        .collection("tracks")
-        .where("genre", isEqualTo: widget.genre)
-        .orderBy("uploadedAt", descending: true)
-        .snapshots();
+    _audioStream = widget.uid == ''
+        ? db
+            .collection("tracks")
+            .where("genre", isEqualTo: widget.genre)
+            .orderBy("uploadedAt", descending: true)
+            .snapshots()
+        : db
+            .collection("tracks")
+            .where("artistId", isEqualTo: widget.uid)
+            .where("genre", isEqualTo: widget.genre)
+            .orderBy("uploadedAt", descending: true)
+            .snapshots();
   }
 
   @override
