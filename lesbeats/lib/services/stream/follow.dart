@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
 import '../../main.dart';
 
 follow(String follower, String followed) {
@@ -14,6 +17,19 @@ follow(String follower, String followed) {
       .collection("following")
       .doc(followed)
       .set({"uid": followed, "timestamp": DateTime.now()});
+
+  Get.showSnackbar(const GetSnackBar(
+    isDismissible: true,
+    duration: Duration(seconds: 5),
+    backgroundColor: Color(0xff264653),
+    borderRadius: 30,
+    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+    icon: Icon(
+      Icons.error,
+      color: Colors.white,
+    ),
+    message: "Followed",
+  ));
 }
 
 unfollow(String follower, String followed) {
@@ -30,4 +46,17 @@ unfollow(String follower, String followed) {
       .collection("following")
       .doc(followed)
       .delete();
+
+  Get.showSnackbar(const GetSnackBar(
+    isDismissible: true,
+    duration: Duration(seconds: 5),
+    backgroundColor: Color(0xff264653),
+    borderRadius: 30,
+    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+    icon: Icon(
+      Icons.error,
+      color: Colors.white,
+    ),
+    message: "Unfollowed",
+  ));
 }

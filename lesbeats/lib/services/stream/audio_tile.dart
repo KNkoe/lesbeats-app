@@ -11,7 +11,8 @@ import '../../main.dart';
 import '../../widgets/load.dart';
 import '../../screens/profile/profile.dart';
 import '../player/player.dart';
-import 'dowload.dart';
+import 'delete.dart';
+import 'download.dart';
 
 class MyAudioTile extends StatefulWidget {
   const MyAudioTile(
@@ -38,6 +39,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
   late String genre;
   late String artistId;
   late String id;
+  late bool download;
 
   late final Stream<QuerySnapshot> downloadStream;
   late final Stream<QuerySnapshot> salesStream;
@@ -76,6 +78,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
     genre = widget.snapshot.data!.docs[widget.index]["genre"];
     artistId = widget.snapshot.data!.docs[widget.index]["artistId"];
     id = widget.snapshot.data!.docs[widget.index]["id"];
+    download = widget.snapshot.data!.docs[widget.index]["download"];
 
     downloadStream =
         db.collection("tracks").doc(id).collection("downloads").snapshots();
@@ -238,58 +241,118 @@ class _MyAudioTileState extends State<MyAudioTile> {
                         ),
                       ),
                       trailing: PopupMenuButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20).copyWith(
+                                  topRight: const Radius.circular(0))),
                           itemBuilder: ((context) => [
-                                PopupMenuItem(
-                                    child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: const [
-                                    Icon(Icons.download),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text("Download"),
-                                  ],
-                                )),
-                                PopupMenuItem(
-                                    child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: const [
-                                    Icon(Icons.check_circle),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text("Buy"),
-                                  ],
-                                )),
-                                PopupMenuItem(
-                                    onTap: () {
-                                      if (following) {
-                                        unfollow(
-                                            auth.currentUser!.uid, artistId);
+                                if (download)
+                                  PopupMenuItem(
+                                      onTap: () {
+                                        Future.delayed(
+                                            Duration.zero,
+                                            () => showDialog(
+                                                context: context,
+                                                barrierColor:
+                                                    Colors.transparent,
+                                                builder: (context) =>
+                                                    MyDownload(
+                                                        title: title,
+                                                        id: id,
+                                                        downloadUrl: path)));
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: const [
+                                          Icon(Icons.download),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text("Download"),
+                                        ],
+                                      )),
+                                if (artistId == auth.currentUser!.uid)
+                                  PopupMenuItem(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: const [
+                                      Icon(Icons.update),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text("Update"),
+                                    ],
+                                  )),
+                                if (artistId == auth.currentUser!.uid)
+                                  PopupMenuItem(
+                                      onTap: () {
+                                        Future.delayed(
+                                            Duration.zero,
+                                            () => deleteTrack(
+                                                context, id, title));
 
-                                        setState(() {
-                                          following = false;
-                                        });
-                                      } else {
-                                        follow(auth.currentUser!.uid, artistId);
-                                        setState(() {
-                                          following = true;
-                                        });
-                                      }
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Icon(following
-                                            ? Icons.thumb_down
-                                            : Icons.thumb_up),
-                                        const SizedBox(
-                                          width: 10,
+                                        setState(() {});
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: const [
+                                          Icon(Icons.delete),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text("Delete"),
+                                        ],
+                                      )),
+                                if (artistId != auth.currentUser!.uid)
+                                  PopupMenuItem(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: const [
+                                      Icon(Icons.check_circle),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text("Buy"),
+                                    ],
+                                  )),
+                                if (artistId != auth.currentUser!.uid)
+                                  PopupMenuItem(
+                                      onTap: () {
+                                        if (following) {
+                                          unfollow(
+                                              auth.currentUser!.uid, artistId);
+
+                                          setState(() {
+                                            following = false;
+                                          });
+                                        } else {
+                                          follow(
+                                              auth.currentUser!.uid, artistId);
+                                          setState(() {
+                                            following = true;
+                                          });
+                                        }
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 20),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Icon(following
+                                                ? Icons.thumb_down
+                                                : Icons.thumb_up),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(following
+                                                ? "Unfollow"
+                                                : "Follow"),
+                                          ],
                                         ),
-                                        Text(following ? "Unfollow" : "Follow"),
-                                      ],
-                                    )),
+                                      )),
                                 const PopupMenuItem(
                                     height: 2, child: Divider()),
                                 PopupMenuItem(
@@ -341,37 +404,39 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                 )
                               ],
                             ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                    context: context,
-                                    barrierColor: Colors.transparent,
-                                    builder: ((context) {
-                                      return MyDownload(
-                                          id: id,
-                                          title: title,
-                                          downloadUrl: path);
-                                    }));
-                              },
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.download_rounded,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  Text(
-                                    snapshot.snapshot3.data!.size.toString(),
-                                    style: const TextStyle(
+                            if (download)
+                              const SizedBox(
+                                width: 20,
+                              ),
+                            if (download)
+                              GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      barrierColor: Colors.transparent,
+                                      builder: ((context) {
+                                        return MyDownload(
+                                            id: id,
+                                            title: title,
+                                            downloadUrl: path);
+                                      }));
+                                },
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.download_rounded,
+                                      size: 18,
                                       color: Colors.grey,
                                     ),
-                                  )
-                                ],
+                                    Text(
+                                      snapshot.snapshot3.data!.size.toString(),
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
                             const SizedBox(
                               width: 20,
                             ),

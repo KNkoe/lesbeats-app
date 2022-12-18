@@ -4,14 +4,12 @@ import 'package:get/get.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/chats/chats.dart';
 import 'package:lesbeats/screens/home/genre/genre.dart';
-import 'package:lesbeats/screens/home/lyrics.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:day_night_switcher/day_night_switcher.dart';
 
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/bx.dart';
-import 'package:iconify_flutter/icons/zondicons.dart';
 import 'package:iconify_flutter/icons/ri.dart';
 import 'package:lesbeats/screens/home/upload/uploads.dart';
 import 'package:lesbeats/screens/home/settings.dart';
@@ -169,14 +167,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       },
                       leading: const Iconify(Bx.bxs_music),
                       title: const Text("Genres"),
-                    ),
-                    ListTile(
-                      onTap: () {
-                        Get.to(() => const MyLyricsScreen());
-                        widget._scaffoldKey.currentState!.closeDrawer();
-                      },
-                      leading: const Iconify(Zondicons.music_artist),
-                      title: const Text("Lyrics"),
                     ),
                     const Divider(),
                     ListTile(

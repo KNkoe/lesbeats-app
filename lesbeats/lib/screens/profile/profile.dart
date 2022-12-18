@@ -401,7 +401,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
-                                      Text("Lyrics"),
+                                      Text("Genres"),
                                     ],
                                   ),
                                 ),

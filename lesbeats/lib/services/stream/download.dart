@@ -36,7 +36,7 @@ class _MyDownloadState extends State<MyDownload> {
     try {
       final storageRef = storage.refFromURL(widget.downloadUrl);
       final appDocDir = await getApplicationDocumentsDirectory();
-      final filePath = "${appDocDir.absolute}/${widget.title}.mp3";
+      final filePath = "${appDocDir.absolute}/${widget.title}";
       final file = File(filePath);
 
       final downloadTask = storageRef.writeToFile(file);
