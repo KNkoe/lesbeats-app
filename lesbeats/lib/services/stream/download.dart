@@ -128,39 +128,47 @@ class _MyDownloadState extends State<MyDownload> {
             ),
       actionsAlignment: MainAxisAlignment.center,
       actions: [
-        _isDownloading
-            ? OutlinedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                style: cancelButtonStyle,
-                child: Text(_progress == 100 ? "Close" : "Hide"))
-            : ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _isDownloading = true;
-                  });
+        if (_progress == 100)
+          OutlinedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: cancelButtonStyle,
+              child: const Text("Close")),
+        if (!_isDownloading)
+          ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _isDownloading = true;
+                });
 
-                  downloadAudio().whenComplete(() {
-                    db
-                        .collection("tracks")
-                        .doc(widget.id)
-                        .collection("downloads")
-                        .doc(auth.currentUser!.uid)
-                        .set(download);
+                downloadAudio().whenComplete(() {
+                  db
+                      .collection("tracks")
+                      .doc(widget.id)
+                      .collection("downloads")
+                      .doc(auth.currentUser!.uid)
+                      .set(download);
+
+                  if (widget.producer != auth.currentUser!.uid) {
+                    final downloadNotification = {
+                      "message":
+                          "${auth.currentUser!.displayName} downloaded ${widget.title}",
+                      "timestamp": DateTime.now(),
+                      "read": false
+                    };
 
                     db
                         .collection("users")
                         .doc(widget.producer)
                         .collection("notifications")
-                        .add({
-                      "message":
-                          "${auth.currentUser!.displayName} downloaded ${widget.title}"
-                    });
-                  });
-                },
-                style: confirmButtonStyle,
-                child: const Text("Download"))
+                        .doc(auth.currentUser!.uid)
+                        .set(downloadNotification);
+                  }
+                });
+              },
+              style: confirmButtonStyle,
+              child: const Text("Download"))
       ],
     );
   }

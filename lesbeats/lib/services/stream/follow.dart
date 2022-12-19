@@ -18,8 +18,21 @@ follow(String follower, String followed) {
       .doc(followed)
       .set({"uid": followed, "timestamp": DateTime.now()});
 
-  db.collection("users").doc(followed).collection("notifications").add(
-      {"message": "${auth.currentUser!.displayName}started following you"});
+  final followNotification = {
+    "message": "${auth.currentUser!.displayName} started following you",
+    "timestamp": DateTime.now(),
+    "read": false,
+    "type": "follow"
+  };
+
+  if (followed != auth.currentUser!.uid) {
+    db
+        .collection("users")
+        .doc(followed)
+        .collection("notifications")
+        .doc(auth.currentUser!.uid)
+        .set(followNotification);
+  }
 
   Get.showSnackbar(const GetSnackBar(
     isDismissible: true,

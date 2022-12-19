@@ -1,6 +1,6 @@
 import '../../main.dart';
 
-likeTrack(String id) {
+likeTrack(String id) async {
   Map<String, dynamic> like = {
     "uid": auth.currentUser!.uid,
     "timestamp": DateTime.now()
@@ -24,16 +24,25 @@ likeTrack(String id) {
   String title = "";
   String producer = "";
 
-  track.then((value) {
+  await track.then((value) {
     title = value.get("title");
     producer = value.get("artistId");
   });
 
-  db
-      .collection("users")
-      .doc(producer)
-      .collection("notifications")
-      .add({"message": "${auth.currentUser!.displayName} downloaded $title"});
+  if (producer != auth.currentUser!.uid) {
+    final likeNotification = {
+      "message": "${auth.currentUser!.displayName} liked $title",
+      "timestamp": DateTime.now(),
+      "read": false,
+      "type": "like"
+    };
+    db
+        .collection("users")
+        .doc(producer)
+        .collection("notifications")
+        .doc(auth.currentUser!.uid)
+        .set(likeNotification);
+  }
 }
 
 unlikeTrack(String id) {
