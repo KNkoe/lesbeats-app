@@ -102,7 +102,7 @@ class _TrackTileState extends State<TrackTile> {
             return const LoadTrack();
           }
 
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data!.exists) {
             final cover = snapshot.data!["cover"];
             final title = snapshot.data!["title"];
             final feature = snapshot.data!["feature"];

@@ -31,7 +31,7 @@ likeTrack(String id) async {
 
   if (producer != auth.currentUser!.uid) {
     final likeNotification = {
-      "message": "${auth.currentUser!.displayName} liked $title",
+      "message": "${auth.currentUser!.displayName} liked your beat $title",
       "timestamp": DateTime.now(),
       "read": false,
       "type": "like"
@@ -40,7 +40,7 @@ likeTrack(String id) async {
         .collection("users")
         .doc(producer)
         .collection("notifications")
-        .doc(auth.currentUser!.uid)
+        .doc("${auth.currentUser!.uid}-liked-$id")
         .set(likeNotification);
   }
 }

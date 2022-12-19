@@ -23,14 +23,6 @@ class _MyNotificationsState extends State<MyNotifications> {
         .doc(auth.currentUser!.uid)
         .collection("notifications")
         .snapshots();
-
-    _notificationsStream.listen((element) {
-      for (var element in element.docs) {
-        if (!element.get("read")) {
-          unread++;
-        }
-      }
-    });
   }
 
   @override

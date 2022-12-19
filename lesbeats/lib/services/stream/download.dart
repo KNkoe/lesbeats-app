@@ -12,6 +12,7 @@ class MyDownload extends StatefulWidget {
       {Key? key,
       required this.title,
       required this.id,
+      required this.producerId,
       required this.producer,
       required this.downloadUrl})
       : super(key: key);
@@ -19,6 +20,7 @@ class MyDownload extends StatefulWidget {
   final String title;
   final String id;
   final String downloadUrl;
+  final String producerId;
   final String producer;
 
   @override
@@ -44,7 +46,8 @@ class _MyDownloadState extends State<MyDownload> {
         directory = (await getExternalStorageDirectory())!;
       }
 
-      final filePath = "${directory.path}/${widget.title}.mp3";
+      final filePath =
+          "${directory.path}/${widget.producer}-${widget.title}.mp3";
 
       debugPrint("FILE PATH :$filePath");
 
@@ -126,14 +129,21 @@ class _MyDownloadState extends State<MyDownload> {
                 ),
               ],
             ),
-      actionsAlignment: MainAxisAlignment.center,
+      actionsAlignment: MainAxisAlignment.spaceAround,
       actions: [
-        if (_progress == 100)
+        if (_progress != 100)
           OutlinedButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               style: cancelButtonStyle,
+              child: const Text("Cancel")),
+        if (_progress == 100)
+          ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: confirmButtonStyle,
               child: const Text("Close")),
         if (!_isDownloading)
           ElevatedButton(
@@ -142,7 +152,7 @@ class _MyDownloadState extends State<MyDownload> {
                   _isDownloading = true;
                 });
 
-                downloadAudio().whenComplete(() {
+                downloadAudio().whenComplete(() async {
                   db
                       .collection("tracks")
                       .doc(widget.id)
@@ -150,19 +160,26 @@ class _MyDownloadState extends State<MyDownload> {
                       .doc(auth.currentUser!.uid)
                       .set(download);
 
-                  if (widget.producer != auth.currentUser!.uid) {
+                  if (widget.producerId != auth.currentUser!.uid) {
+                    final track = db.collection("tracks").doc(widget.id).get();
+                    String producerId = "";
+
+                    await track.then((value) {
+                      producerId = value.get("artistId");
+                    });
+
                     final downloadNotification = {
                       "message":
-                          "${auth.currentUser!.displayName} downloaded ${widget.title}",
+                          "${auth.currentUser!.displayName} downloaded your beat ${widget.title}",
                       "timestamp": DateTime.now(),
                       "read": false
                     };
 
                     db
                         .collection("users")
-                        .doc(widget.producer)
+                        .doc(producerId)
                         .collection("notifications")
-                        .doc(auth.currentUser!.uid)
+                        .doc("${auth.currentUser!.uid}-downloaded-${widget.id}")
                         .set(downloadNotification);
                   }
                 });

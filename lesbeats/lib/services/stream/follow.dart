@@ -30,7 +30,7 @@ follow(String follower, String followed) {
         .collection("users")
         .doc(followed)
         .collection("notifications")
-        .doc(auth.currentUser!.uid)
+        .doc("${auth.currentUser!.uid}-followed-$followed")
         .set(followNotification);
   }
 

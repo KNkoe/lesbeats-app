@@ -167,7 +167,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                               await auth.signOut().then(
                                                   (value) => Navigator.of(
                                                           context)
-                                                      .popAndPushNamed('/'));
+                                                      .pushNamedAndRemoveUntil(
+                                                          "/",
+                                                          (route) => false));
                                             },
                                             child: const Text("Logout"))
                                       ],

@@ -89,7 +89,7 @@ class _FollowingTileState extends State<FollowingTile> {
             );
           }
 
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data!.exists) {
             return OpenContainer(
               closedElevation: 0,
               closedBuilder: (context, action) => Column(

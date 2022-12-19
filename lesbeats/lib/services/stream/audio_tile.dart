@@ -261,7 +261,10 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                                     MyDownload(
                                                         title: title,
                                                         id: id,
-                                                        producer: artistId,
+                                                        producer: snapshot
+                                                            .snapshot5
+                                                            .data!["username"],
+                                                        producerId: artistId,
                                                         downloadUrl: path)));
                                       },
                                       child: Row(
@@ -419,6 +422,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                         return MyDownload(
                                             id: id,
                                             title: title,
+                                            producerId: artistId,
                                             producer: snapshot
                                                 .snapshot5.data!["username"],
                                             downloadUrl: path);
