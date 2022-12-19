@@ -5,9 +5,9 @@ import 'package:lesbeats/main.dart';
 import '../../services/stream/audio_stream.dart';
 
 class ActivityFeed extends StatefulWidget {
-  const ActivityFeed({
-    Key? key,
-  }) : super(key: key);
+  const ActivityFeed({Key? key, required this.scaffoldKey}) : super(key: key);
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   State<ActivityFeed> createState() => _ActivityFeedState();
@@ -27,6 +27,26 @@ class _ActivityFeedState extends State<ActivityFeed> {
 
   @override
   Widget build(BuildContext context) {
-    return MyAudioStream(stream: _audioStream);
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              Text(
+                "Activity Feed",
+                style: TextStyle(
+                    color: Colors.black26, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Expanded(child: MyAudioStream(stream: _audioStream)),
+      ],
+    );
   }
 }

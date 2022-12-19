@@ -18,6 +18,9 @@ follow(String follower, String followed) {
       .doc(followed)
       .set({"uid": followed, "timestamp": DateTime.now()});
 
+  db.collection("users").doc(followed).collection("notifications").add(
+      {"message": "${auth.currentUser!.displayName}started following you"});
+
   Get.showSnackbar(const GetSnackBar(
     isDismissible: true,
     duration: Duration(seconds: 2),

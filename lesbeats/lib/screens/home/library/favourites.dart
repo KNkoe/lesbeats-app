@@ -103,13 +103,9 @@ class _TrackTileState extends State<TrackTile> {
           }
 
           if (snapshot.hasData) {
-            final date = snapshot.data!["uploadedAt"];
             final cover = snapshot.data!["cover"];
-            final path = snapshot.data!["path"];
             final title = snapshot.data!["title"];
-            final price = snapshot.data!["price"];
             final feature = snapshot.data!["feature"];
-            final genre = snapshot.data!["genre"];
             final artistId = snapshot.data!["artistId"];
             final id = snapshot.data!["id"];
 

@@ -12,12 +12,14 @@ class MyDownload extends StatefulWidget {
       {Key? key,
       required this.title,
       required this.id,
+      required this.producer,
       required this.downloadUrl})
       : super(key: key);
 
   final String title;
   final String id;
   final String downloadUrl;
+  final String producer;
 
   @override
   State<MyDownload> createState() => _MyDownloadState();
@@ -57,13 +59,6 @@ class _MyDownloadState extends State<MyDownload> {
                   100)
               .roundToDouble();
         });
-
-        db
-            .collection("tracks")
-            .doc(widget.id)
-            .collection("downloads")
-            .doc(auth.currentUser!.uid)
-            .set({"uid": auth.currentUser!.uid, "timestamp": DateTime.now()});
       });
     } catch (error) {
       debugPrint(error.toString());
@@ -148,11 +143,20 @@ class _MyDownloadState extends State<MyDownload> {
 
                   downloadAudio().whenComplete(() {
                     db
-                        .collection("interactions")
+                        .collection("tracks")
                         .doc(widget.id)
                         .collection("downloads")
                         .doc(auth.currentUser!.uid)
                         .set(download);
+
+                    db
+                        .collection("users")
+                        .doc(widget.producer)
+                        .collection("notifications")
+                        .add({
+                      "message":
+                          "${auth.currentUser!.displayName} downloaded ${widget.title}"
+                    });
                   });
                 },
                 style: confirmButtonStyle,

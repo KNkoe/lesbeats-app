@@ -19,6 +19,21 @@ likeTrack(String id) {
       .collection("favorites")
       .doc(id)
       .set({"id": id, "timestamp": DateTime.now()});
+
+  final track = db.collection("tracks").doc(id).get();
+  String title = "";
+  String producer = "";
+
+  track.then((value) {
+    title = value.get("title");
+    producer = value.get("artistId");
+  });
+
+  db
+      .collection("users")
+      .doc(producer)
+      .collection("notifications")
+      .add({"message": "${auth.currentUser!.displayName} downloaded $title"});
 }
 
 unlikeTrack(String id) {

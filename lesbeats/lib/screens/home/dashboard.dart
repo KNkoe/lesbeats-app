@@ -1,11 +1,11 @@
 import 'package:animations/animations.dart';
-import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/jam.dart';
 import 'package:lesbeats/main.dart';
+import 'package:lesbeats/screens/home/notifications.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 
@@ -54,20 +54,7 @@ class _DashboardState extends State<Dashboard> {
             height: 250,
             width: 130,
             image: AssetImage("assets/images/lesbeats.png")),
-        actions: [
-          IconButton(
-              onPressed: () {
-                showBottomSheet(
-                    context: context, builder: (context) => Container());
-              },
-              icon: Badge(
-                  badgeColor: Theme.of(context).indicatorColor,
-                  badgeContent: const Text(
-                    "4",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  child: const Icon(Icons.notifications)))
-        ],
+        actions: const [MyNotifications()],
       ),
       body: Container(
         color: Theme.of(context).primaryColor,
@@ -258,38 +245,12 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              if (!_viewAllArtists)
-                                const Text(
-                                  "Activity Feed",
-                                  style: TextStyle(
-                                      color: Colors.black26,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              if (!_viewAllArtists)
-                                IconButton(
-                                    onPressed: () {
-                                      _scaffoldKey.currentState!
-                                          .openEndDrawer();
-                                    },
-                                    icon: Icon(
-                                      Icons.filter_list_rounded,
-                                      color: Theme.of(context).primaryColor,
-                                    ))
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
                         Expanded(
                             child: _viewAllArtists
                                 ? const MyArtists()
-                                : const ActivityFeed()),
+                                : ActivityFeed(
+                                    scaffoldKey: _scaffoldKey,
+                                  )),
                       ],
                     );
                   }

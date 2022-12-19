@@ -6,6 +6,7 @@ import 'package:iconify_flutter/icons/wpf.dart';
 import 'package:lesbeats/services/stream/follow.dart';
 import 'package:lesbeats/services/stream/like.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 import '../../main.dart';
 import '../../widgets/load.dart';
@@ -137,6 +138,9 @@ class _MyAudioTileState extends State<MyAudioTile> {
               "artistId": artistId
             };
 
+            final timeDifference = DateTime.now().difference(date.toDate());
+            final timeAgo = DateTime.now().subtract(timeDifference);
+
             return GestureDetector(
               onDoubleTap: (() {
                 if (!liked) {
@@ -257,6 +261,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                                     MyDownload(
                                                         title: title,
                                                         id: id,
+                                                        producer: artistId,
                                                         downloadUrl: path)));
                                       },
                                       child: Row(
@@ -379,7 +384,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                         Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: Text(
-                            "${DateTime.now().difference(date.toDate()).inDays} days ago",
+                            timeago.format(timeAgo),
                             style: const TextStyle(color: Colors.black45),
                           ),
                         ),
@@ -414,6 +419,8 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                         return MyDownload(
                                             id: id,
                                             title: title,
+                                            producer: snapshot
+                                                .snapshot5.data!["username"],
                                             downloadUrl: path);
                                       }));
                                 },
