@@ -104,9 +104,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
         .doc(artistId)
         .get()
         .then((doc) {
-      setState(() {
-        following = doc.exists;
-      });
+      following = doc.exists;
     });
   }
 
@@ -192,13 +190,9 @@ class _MyAudioTileState extends State<MyAudioTile> {
                         children: [
                           Expanded(
                             flex: 5,
-                            child: Text(
-                              title,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black54),
-                            ),
+                            child: Text(title,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodyText1),
                           ),
                           Expanded(
                             flex: 4,
@@ -215,11 +209,14 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                 Text(
                                   "R $price",
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      decoration:
-                                          snapshot.snapshot1.data!.size > 0
-                                              ? TextDecoration.lineThrough
-                                              : TextDecoration.none),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(
+                                          decoration:
+                                              snapshot.snapshot1.data!.size > 0
+                                                  ? TextDecoration.lineThrough
+                                                  : TextDecoration.none),
                                 )
                               ],
                             ),
@@ -244,12 +241,18 @@ class _MyAudioTileState extends State<MyAudioTile> {
                               openBuilder: (context, action) =>
                                   MyProfilePage(artistId),
                             ),
-                            const Text(" | "),
-                            Text(genre)
+                            Text(
+                              " | $genre",
+                              style: Theme.of(context).textTheme.bodyText2,
+                            )
                           ],
                         ),
                       ),
                       trailing: PopupMenuButton(
+                          icon: Icon(
+                            Icons.more_vert,
+                            color: Theme.of(context).primaryIconTheme.color,
+                          ),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20).copyWith(
                                   topRight: const Radius.circular(0))),
@@ -394,7 +397,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                           padding: const EdgeInsets.only(left: 10),
                           child: Text(
                             timeago.format(timeAgo),
-                            style: const TextStyle(color: Colors.black45),
+                            style: Theme.of(context).textTheme.bodyText2,
                           ),
                         ),
                         Row(

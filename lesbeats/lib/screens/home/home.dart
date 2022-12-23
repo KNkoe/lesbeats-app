@@ -61,7 +61,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       ? Theme.of(context)
                           .bottomNavigationBarTheme
                           .selectedItemColor
-                      : Colors.black38,
+                      : Theme.of(context)
+                          .bottomNavigationBarTheme
+                          .unselectedItemColor,
                 ),
                 label: "Home",
               ),

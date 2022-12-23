@@ -79,11 +79,9 @@ class _DashboardState extends State<Dashboard> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 "Most followed",
-                                style: TextStyle(
-                                    color: Colors.black26,
-                                    fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.subtitle2,
                               ),
                               InkWell(
                                 onTap: () {
@@ -212,12 +210,10 @@ class _DashboardState extends State<Dashboard> {
                                                                           .docs[
                                                                       index]
                                                                   ["username"],
-                                                              style: const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color: Colors
-                                                                      .black54),
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodyText1,
                                                             ),
                                                           ),
                                                           if (snapshot.data!

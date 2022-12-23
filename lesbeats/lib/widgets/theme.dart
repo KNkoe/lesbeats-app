@@ -5,7 +5,9 @@ ThemeData lightTheme = ThemeData(
     fontFamily: GoogleFonts.poppins().fontFamily,
     scaffoldBackgroundColor: Colors.white,
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: Color(0xff264653), selectedItemColor: Colors.white),
+        backgroundColor: Colors.white,
+        selectedItemColor: Color(0xff264653),
+        unselectedItemColor: Colors.black38),
     appBarTheme: const AppBarTheme(backgroundColor: Colors.white, elevation: 0),
     dialogTheme: const DialogTheme(actionsPadding: EdgeInsets.only(bottom: 20)),
     primaryColor: const Color(0xff2a9d8f),
@@ -19,8 +21,19 @@ ThemeData lightTheme = ThemeData(
             borderSide: BorderSide(color: Color(0xff2a9d8f)))),
     popupMenuTheme: const PopupMenuThemeData(color: Colors.white, elevation: 2),
     textTheme: const TextTheme(
+      bodyText1: TextStyle(
+        color: Colors.black54,
+      ),
+      bodyText2:
+          TextStyle(color: Colors.black54, fontWeight: FontWeight.normal),
       headline1: TextStyle(
         color: Color(0xff264653),
+      ),
+      subtitle1: TextStyle(
+        color: Colors.black26,
+      ),
+      subtitle2: TextStyle(
+        color: Colors.black26,
       ),
       headline2: TextStyle(
         color: Color(0xff264653),
@@ -42,7 +55,9 @@ ThemeData lightTheme = ThemeData(
 ThemeData darkTheme = ThemeData(
     primaryColor: const Color(0xff2a9d8f),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: Color(0xff264653), selectedItemColor: Colors.white),
+        backgroundColor: Color(0xff264653),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white38),
     primaryIconTheme: const IconThemeData(color: Colors.white),
     appBarTheme:
         const AppBarTheme(backgroundColor: Color(0xff264653), elevation: 0),
@@ -56,6 +71,17 @@ ThemeData darkTheme = ThemeData(
     popupMenuTheme:
         const PopupMenuThemeData(color: Color(0xff264653), elevation: 2),
     textTheme: const TextTheme(
+      bodyText1: TextStyle(
+        color: Colors.white54,
+      ),
+      bodyText2:
+          TextStyle(color: Colors.white54, fontWeight: FontWeight.normal),
+      subtitle1: TextStyle(
+        color: Colors.white30,
+      ),
+      subtitle2: TextStyle(
+        color: Colors.white30,
+      ),
       headline1: TextStyle(
         color: Colors.white,
       ),
