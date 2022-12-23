@@ -48,7 +48,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   selectedIndex = value;
                 }),
             currentIndex: selectedIndex,
-            backgroundColor: Colors.white,
             showSelectedLabels: false,
             showUnselectedLabels: false,
             type: BottomNavigationBarType.fixed,
@@ -59,7 +58,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       ? Fluent.home_32_filled
                       : Fluent.home_32_regular,
                   color: selectedIndex == 0
-                      ? const Color(0xff264653)
+                      ? Theme.of(context)
+                          .bottomNavigationBarTheme
+                          .selectedItemColor
                       : Colors.black38,
                 ),
                 label: "Home",
@@ -70,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ? Fluent.library_20_filled
                         : Fluent.library_20_regular,
                     color: selectedIndex == 1
-                        ? const Color(0xff264653)
+                        ? Theme.of(context).primaryIconTheme.color
                         : Colors.black38,
                   ),
                   label: "Library"),

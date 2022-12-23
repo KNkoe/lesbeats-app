@@ -11,6 +11,7 @@ import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/bx.dart';
 import 'package:iconify_flutter/icons/ri.dart';
+import 'package:lesbeats/screens/home/trending.dart';
 import 'package:lesbeats/screens/home/upload/uploads.dart';
 import 'package:lesbeats/screens/home/settings.dart';
 
@@ -156,7 +157,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       height: 20,
                     ),
                     ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        Get.to(() => const MyTrendingPage());
+                        widget._scaffoldKey.currentState!.closeDrawer();
+                      },
                       leading: const Iconify(Ion.rocket),
                       title: const Text("Trending"),
                     ),
@@ -204,16 +208,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         color: Colors.black,
                       ),
                       title: const Text("Purchased"),
-                    ),
-                    ListTile(
-                      onTap: () {
-                        widget._scaffoldKey.currentState!.closeDrawer();
-                      },
-                      leading: const Icon(
-                        Icons.download,
-                        color: Colors.black,
-                      ),
-                      title: const Text("Downloads"),
                     ),
                     const Divider(),
                     ListTile(

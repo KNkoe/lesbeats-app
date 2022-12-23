@@ -6,6 +6,8 @@ import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/services/stream/like.dart';
 import 'package:lesbeats/widgets/load.dart';
 
+import '../../../services/player/player.dart';
+
 class MyFavourites extends StatefulWidget {
   const MyFavourites({super.key});
 
@@ -44,6 +46,7 @@ class _MyFavouritesState extends State<MyFavourites> {
           if (snapshot.hasData) {
             return Expanded(
                 child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
               itemCount: snapshot.data!.size,
               itemBuilder: ((context, index) {
                 return TrackTile(id: snapshot.data!.docs[index]["id"]);
@@ -108,74 +111,106 @@ class _TrackTileState extends State<TrackTile> {
             final feature = snapshot.data!["feature"];
             final artistId = snapshot.data!["artistId"];
             final id = snapshot.data!["id"];
+            final path = snapshot.data!["path"];
 
             _producerStream = db.collection("users").doc(artistId).snapshots();
 
-            return ListTile(
-                leading: Container(
-                    height: 70,
-                    width: 70,
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                    clipBehavior: Clip.hardEdge,
-                    child: FadeInImage.assetNetwork(
-                        fit: BoxFit.cover,
-                        placeholder: "assets/images/loading.gif",
-                        image: cover)),
-                title: Text(title),
-                subtitle: Row(
-                  children: [
-                    StreamBuilder<DocumentSnapshot>(
-                        stream: _producerStream,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return OpenContainer(
-                              closedElevation: 0,
-                              closedBuilder: (context, function) {
-                                return Text(
-                                  feature.toString().isEmpty
-                                      ? snapshot.data!["username"]
-                                      : "${snapshot.data!["username"]} ft $feature",
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor),
-                                );
-                              },
-                              openBuilder: (context, action) =>
-                                  MyProfilePage(artistId),
-                            );
-                          }
+            return StreamBuilder<DocumentSnapshot>(
+                stream: _producerStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final Map<String, String> tags = {
+                      "title": title,
+                      "cover": cover,
+                      "artist": feature.toString().isEmpty
+                          ? snapshot.data!["username"]
+                          : "${snapshot.data!["username"]} ft $feature",
+                      "artistId": artistId
+                    };
 
-                          return const SizedBox();
-                        }),
-                    const Spacer(),
-                    GestureDetector(
-                        onTap: () {
-                          if (!liked) {
-                            likeTrack(id);
-                            checkIfLiked(widget.id);
+                    if (liked) {
+                      return ListTile(
+                          onTap: () {
+                            Map<String, dynamic> play = {
+                              "uid": auth.currentUser!.uid,
+                              "timestamp": DateTime.now()
+                            };
 
-                            setState(() {});
-                          } else {
-                            unlikeTrack(id);
-                            checkIfLiked(widget.id);
+                            db
+                                .collection("tracks")
+                                .doc(id)
+                                .collection("plays")
+                                .doc(auth.currentUser!.uid)
+                                .set(play);
+                            playOnline(context, path, tags);
+                          },
+                          leading: Container(
+                              height: 70,
+                              width: 70,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10)),
+                              clipBehavior: Clip.hardEdge,
+                              child: FadeInImage.assetNetwork(
+                                  fit: BoxFit.cover,
+                                  placeholder: "assets/images/loading.gif",
+                                  image: cover)),
+                          title: Text(title),
+                          subtitle: Row(
+                            children: [
+                              OpenContainer(
+                                closedElevation: 0,
+                                closedBuilder: (context, function) {
+                                  return Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        0, 10, 10, 10),
+                                    child: Text(
+                                      feature.toString().isEmpty
+                                          ? snapshot.data!["username"]
+                                          : "${snapshot.data!["username"]} ft $feature",
+                                      style: TextStyle(
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                                  );
+                                },
+                                openBuilder: (context, action) =>
+                                    MyProfilePage(artistId),
+                              ),
+                              const Spacer(),
+                              GestureDetector(
+                                  onTap: () {
+                                    if (!liked) {
+                                      likeTrack(id);
+                                    } else {
+                                      unlikeTrack(id);
+                                    }
 
-                            setState(() {});
-                          }
-                        },
-                        child: Icon(
-                          Icons.favorite,
-                          color: liked
-                              ? Theme.of(context).indicatorColor
-                              : Colors.grey,
-                        ))
-                  ],
-                ),
-                isThreeLine: true,
-                trailing: PopupMenuButton(
-                    icon: const Icon(Icons.more_vert),
-                    itemBuilder: (context) {
-                      return [const PopupMenuItem(child: Text("Report"))];
-                    }));
+                                    setState(() {
+                                      checkIfLiked(id);
+                                    });
+                                  },
+                                  child: Icon(
+                                    Icons.favorite,
+                                    color: liked
+                                        ? Theme.of(context).indicatorColor
+                                        : Colors.grey,
+                                  ))
+                            ],
+                          ),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 10),
+                          trailing: PopupMenuButton(
+                              icon: const Icon(Icons.more_vert),
+                              itemBuilder: (context) {
+                                return [
+                                  const PopupMenuItem(child: Text("Report"))
+                                ];
+                              }));
+                    }
+                  }
+
+                  return const SizedBox();
+                });
           }
 
           return const SizedBox();

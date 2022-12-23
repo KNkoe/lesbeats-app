@@ -45,10 +45,10 @@ class _DashboardState extends State<Dashboard> {
             onPressed: () {
               _scaffoldKey.currentState!.openDrawer();
             },
-            icon: Iconify(
+            icon: const Iconify(
               Jam.menu,
               size: 32,
-              color: Theme.of(context).backgroundColor,
+              color: Colors.white,
             )),
         title: const Image(
             height: 250,
@@ -247,7 +247,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         Expanded(
                             child: _viewAllArtists
-                                ? const MyArtists()
+                                ? const MyProducers()
                                 : ActivityFeed(
                                     scaffoldKey: _scaffoldKey,
                                   )),

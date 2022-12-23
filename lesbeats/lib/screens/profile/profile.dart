@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -10,6 +11,8 @@ import 'package:lesbeats/services/stream/follow.dart';
 import 'package:lesbeats/services/stream/audio_stream.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
+
+import 'followers.dart';
 
 class MyProfilePage extends StatefulWidget {
   const MyProfilePage(this.uid, {super.key});
@@ -88,20 +91,17 @@ class _MyProfilePageState extends State<MyProfilePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 1,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading:
+            (widget.uid == auth.currentUser!.uid) ? false : true,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryIconTheme.color,
+        ),
         title: (widget.uid == auth.currentUser!.uid)
             ? Text(
                 "Profile",
                 style: Theme.of(context).textTheme.headline6!,
               )
-            : IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Theme.of(context).textTheme.headline6!.color,
-                )),
+            : const SizedBox(),
         actions: [
           if (widget.uid == auth.currentUser!.uid)
             PopupMenuButton(
@@ -196,9 +196,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
           streams: StreamTuple4(
               _usersStream, _uploadsStream, _followersStream, _followingStream),
           builder: (context, snapshot) {
-            if (snapshot.snapshot1.connectionState == ConnectionState.waiting &&
-                snapshot.snapshot2.connectionState == ConnectionState.waiting &&
-                snapshot.snapshot3.connectionState == ConnectionState.waiting &&
+            if (snapshot.snapshot1.connectionState == ConnectionState.waiting ||
+                snapshot.snapshot2.connectionState == ConnectionState.waiting ||
+                snapshot.snapshot3.connectionState == ConnectionState.waiting ||
                 snapshot.snapshot4.connectionState == ConnectionState.waiting) {
               return Center(
                 child: Image.asset(
@@ -259,47 +259,62 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      snapshot.snapshot3.data!.size.toString(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                    ),
-                                    Text(" Followers",
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor))
-                                  ],
-                                ),
-                              ),
-                              GestureDetector(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        snapshot.snapshot4.data!.size
-                                            .toString(),
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color:
-                                                Theme.of(context).primaryColor),
-                                      ),
-                                      Text(
-                                        " Following",
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              OpenContainer(
+                                  closedElevation: 0,
+                                  closedBuilder: ((context, action) => Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              snapshot.snapshot3.data!.size
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                            ),
+                                            Text(
+                                              " Followers",
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                            )
+                                          ],
+                                        ),
+                                      )),
+                                  openBuilder: ((context, action) =>
+                                      MyFollowers(
+                                        snapshot: snapshot.snapshot3.data,
+                                        follow: "Followers",
+                                      ))),
+                              OpenContainer(
+                                  closedElevation: 0,
+                                  closedBuilder: ((context, action) => Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              snapshot.snapshot4.data!.size
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                            ),
+                                            Text(
+                                              " Following",
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                            )
+                                          ],
+                                        ),
+                                      )),
+                                  openBuilder: ((context, action) =>
+                                      MyFollowers(
+                                        snapshot: snapshot.snapshot4.data,
+                                        follow: "Following",
+                                      ))),
                             ],
                           ),
                         ],

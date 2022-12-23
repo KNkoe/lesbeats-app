@@ -93,14 +93,20 @@ class _MyAudioTileState extends State<MyAudioTile> {
 
     checkIfLiked(id);
 
-    db
+    getFollow();
+  }
+
+  getFollow() async {
+    await db
         .collection("users")
         .doc(auth.currentUser!.uid)
         .collection("following")
         .doc(artistId)
         .get()
         .then((doc) {
-      following = doc.exists;
+      setState(() {
+        following = doc.exists;
+      });
     });
   }
 
