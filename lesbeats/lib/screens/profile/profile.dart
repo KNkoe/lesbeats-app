@@ -4,15 +4,16 @@ import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:lesbeats/main.dart';
-import 'package:lesbeats/screens/profile/editprofile.dart';
-import 'package:lesbeats/screens/profile/genres.dart';
-import 'package:lesbeats/services/stream/follow.dart';
-import 'package:lesbeats/services/stream/audio_stream.dart';
-import 'package:lesbeats/widgets/decoration.dart';
+
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 
+import '../../main.dart';
+import '../../services/stream/audio_stream.dart';
+import '../../services/stream/follow.dart';
+import '../../widgets/decoration.dart';
+import 'editprofile.dart';
 import 'followers.dart';
+import 'genres.dart';
 
 class MyProfilePage extends StatefulWidget {
   const MyProfilePage(this.uid, {super.key});

@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Lesbeats',
-      theme: darkTheme,
+      theme: lightTheme,
       initialRoute: '/',
       routes: {
         '/': (context) => const Wrapper(),

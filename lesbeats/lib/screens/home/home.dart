@@ -73,24 +73,36 @@ class _MyHomePageState extends State<MyHomePage> {
                         ? Fluent.library_20_filled
                         : Fluent.library_20_regular,
                     color: selectedIndex == 1
-                        ? Theme.of(context).primaryIconTheme.color
-                        : Colors.black38,
+                        ? Theme.of(context)
+                            .bottomNavigationBarTheme
+                            .selectedItemColor
+                        : Theme.of(context)
+                            .bottomNavigationBarTheme
+                            .unselectedItemColor,
                   ),
                   label: "Library"),
               BottomNavigationBarItem(
                   icon: Iconify(
                     selectedIndex == 2 ? Bx.bxs_search : Bx.search,
                     color: selectedIndex == 2
-                        ? const Color(0xff264653)
-                        : Colors.black38,
+                        ? Theme.of(context)
+                            .bottomNavigationBarTheme
+                            .selectedItemColor
+                        : Theme.of(context)
+                            .bottomNavigationBarTheme
+                            .unselectedItemColor,
                   ),
                   label: "Search"),
               BottomNavigationBarItem(
                   icon: Iconify(
                     selectedIndex == 3 ? Ph.user_fill : Ph.user,
                     color: selectedIndex == 3
-                        ? const Color(0xff264653)
-                        : Colors.black38,
+                        ? Theme.of(context)
+                            .bottomNavigationBarTheme
+                            .selectedItemColor
+                        : Theme.of(context)
+                            .bottomNavigationBarTheme
+                            .unselectedItemColor,
                   ),
                   label: "Profile")
             ]));

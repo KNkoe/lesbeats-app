@@ -251,7 +251,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                       trailing: PopupMenuButton(
                           icon: Icon(
                             Icons.more_vert,
-                            color: Theme.of(context).primaryIconTheme.color,
+                            color: Theme.of(context).textTheme.bodyText1!.color,
                           ),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20).copyWith(

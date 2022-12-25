@@ -12,6 +12,9 @@ ThemeData lightTheme = ThemeData(
     dialogTheme: const DialogTheme(actionsPadding: EdgeInsets.only(bottom: 20)),
     primaryColor: const Color(0xff2a9d8f),
     backgroundColor: Colors.white,
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: Colors.white,
+    ),
     cardColor: const Color(0xff2a9d8f),
     indicatorColor: const Color(0xffe76f51),
     primaryIconTheme: const IconThemeData(color: Color(0xff264653)),
@@ -30,10 +33,10 @@ ThemeData lightTheme = ThemeData(
         color: Color(0xff264653),
       ),
       subtitle1: TextStyle(
-        color: Colors.black26,
+        color: Colors.black38,
       ),
       subtitle2: TextStyle(
-        color: Colors.black26,
+        color: Colors.black38,
       ),
       headline2: TextStyle(
         color: Color(0xff264653),
@@ -59,6 +62,9 @@ ThemeData darkTheme = ThemeData(
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white38),
     primaryIconTheme: const IconThemeData(color: Colors.white),
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: Color(0xff264653),
+    ),
     appBarTheme:
         const AppBarTheme(backgroundColor: Color(0xff264653), elevation: 0),
     backgroundColor: const Color(0xff264653),
