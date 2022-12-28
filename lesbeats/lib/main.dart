@@ -9,10 +9,12 @@ import 'package:lesbeats/screens/signup.dart';
 import 'package:lesbeats/widgets/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:lesbeats/wrapper.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 final storage = FirebaseStorage.instance;
 final db = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
+final messaging = FirebaseMessaging.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

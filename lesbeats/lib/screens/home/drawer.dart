@@ -234,7 +234,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       applicationIcon: Image(
                           height: 30,
                           width: 30,
-                          image: AssetImage("assets/images/Logo.png")),
+                          image: AssetImage("assets/icon/_logo.png")),
                       applicationVersion: "1.0",
                       child: Text("About"),
                     ),

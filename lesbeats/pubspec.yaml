@@ -47,11 +47,11 @@ dependencies:
   http: ^0.13.5
   path_provider: ^2.0.11
   badges: ^2.0.3
-  firebase_core: ^1.24.0
-  firebase_auth: ^3.11.0
+  firebase_core: ^2.4.0
+  firebase_auth: ^4.2.3
   smooth_page_indicator: ^1.0.0+2
-  cloud_firestore: ^3.5.0
-  firebase_storage: ^10.3.10
+  cloud_firestore: ^4.3.0
+  firebase_storage: ^11.0.9
   provider: ^6.0.3
   day_night_switcher: ^0.2.0+1
   animations: ^2.0.5
@@ -60,6 +60,7 @@ dependencies:
   lottie: ^2.0.0
   multiple_stream_builder: ^3.0.2
   timeago: ^3.3.0
+  firebase_messaging: ^14.2.0
 
 dev_dependencies:
   flutter_test:
