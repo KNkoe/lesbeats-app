@@ -71,12 +71,17 @@ class _MyProducerTileState extends State<MyProducerTile> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     getFollow();
     getFollowers();
   }
 
-  getFollow() async {
-    await db
+  getFollow() {
+    db
         .collection("users")
         .doc(auth.currentUser!.uid)
         .collection("following")
@@ -91,8 +96,8 @@ class _MyProducerTileState extends State<MyProducerTile> {
 
   int followers = 0;
 
-  getFollowers() async {
-    await db
+  getFollowers() {
+    db
         .collection("users")
         .doc(widget.doc["uid"])
         .collection("followers")

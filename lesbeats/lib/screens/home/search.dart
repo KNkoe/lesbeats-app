@@ -4,8 +4,11 @@ import 'package:get/get.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/ri.dart';
 import 'package:lesbeats/main.dart';
+import 'package:lesbeats/screens/home/producers.dart';
 import 'package:lesbeats/services/stream/audio_tile.dart';
 import 'package:lottie/lottie.dart';
+
+import '../../widgets/decoration.dart';
 
 class MySearchScreen extends StatefulWidget {
   const MySearchScreen({super.key});
@@ -16,6 +19,7 @@ class MySearchScreen extends StatefulWidget {
 
 class _MySearchScreenState extends State<MySearchScreen> {
   late final Stream<QuerySnapshot> _trackStream;
+  late final Stream<QuerySnapshot> _userStream;
   final TextEditingController queryController = TextEditingController();
   String query = "";
 
@@ -23,7 +27,10 @@ class _MySearchScreenState extends State<MySearchScreen> {
   void initState() {
     super.initState();
     _trackStream = db.collection("tracks").snapshots();
+    _userStream = db.collection("users").snapshots();
   }
+
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +72,67 @@ class _MySearchScreenState extends State<MySearchScreen> {
                   height: 40,
                 ),
                 if (query.isNotEmpty)
+                  SizedBox(
+                    height: 40,
+                    child: DefaultTabController(
+                      length: 2,
+                      child: TabBar(
+                          onTap: (value) {
+                            setState(() {
+                              selectedIndex = value;
+                            });
+                          },
+                          indicator: DotIndicator(
+                              color: Theme.of(context).primaryColor, radius: 8),
+                          tabs: [
+                            Tab(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(4))),
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Text("Beats"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Tab(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(4))),
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Text("Producers"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ]),
+                    ),
+                  ),
+                if (query.isNotEmpty)
+                  const SizedBox(
+                    height: 40,
+                  ),
+                if (query.isNotEmpty && selectedIndex == 0)
                   StreamBuilder<QuerySnapshot>(
                       stream: _trackStream,
                       builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: Lottie.network(
+                                "https://assets5.lottiefiles.com/packages/lf20_xbf1be8x.json"),
+                          );
+                        }
                         if (snapshot.hasData) {
                           List<QueryDocumentSnapshot<Object?>> tracks =
                               snapshot.data!.docs.toList();
@@ -75,7 +140,7 @@ class _MySearchScreenState extends State<MySearchScreen> {
                           final trackMap = tracks.asMap();
 
                           tracks = tracks
-                              .where((s) => s
+                              .where((track) => track
                                   .get("title")
                                   .toLowerCase()
                                   .contains(query.toLowerCase()))
@@ -98,13 +163,62 @@ class _MySearchScreenState extends State<MySearchScreen> {
                                 (element) => tracks[index] == trackMap[element],
                               );
 
-                              debugPrint(
-                                  "INDEX OF TRACK: $indexoftrack \nINDEX: $index");
                               return MyAudioTile(
                                 snapshot: snapshot,
                                 index: indexoftrack,
                                 isProfileOpened: false,
                               );
+                            },
+                          ));
+                        }
+
+                        return const SizedBox();
+                      }),
+                if (query.isNotEmpty && selectedIndex == 1)
+                  StreamBuilder<QuerySnapshot>(
+                      stream: _userStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: Lottie.network(
+                                "https://assets5.lottiefiles.com/packages/lf20_xbf1be8x.json"),
+                          );
+                        }
+                        if (snapshot.hasData) {
+                          List<QueryDocumentSnapshot<Object?>> users =
+                              snapshot.data!.docs.toList();
+
+                          final userMap = users.asMap();
+
+                          users = users
+                              .where((user) => user
+                                  .get("username")
+                                  .toLowerCase()
+                                  .contains(query.toLowerCase()))
+                              .toList();
+
+                          if (users.isEmpty) {
+                            return Center(
+                              child: LottieBuilder.network(
+                                  "https://assets1.lottiefiles.com/packages/lf20_dmw3t0vg.json"),
+                            );
+                          }
+
+                          return Expanded(
+                              child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: users.length,
+                            itemBuilder: (context, index) {
+                              int indexofUser = userMap.keys.firstWhere(
+                                (element) => users[index] == userMap[element],
+                              );
+
+                              debugPrint(
+                                  "UID: ${snapshot.data!.docs[indexofUser]}");
+                              return MyProducerTile(
+                                  doc: snapshot.data!.docs[indexofUser]);
                             },
                           ));
                         }

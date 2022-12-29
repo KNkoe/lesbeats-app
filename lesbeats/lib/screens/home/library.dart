@@ -12,14 +12,6 @@ class MyLibrary extends StatefulWidget {
 }
 
 class _MyLibraryState extends State<MyLibrary> {
-  final List<String> followedArtists = [
-    "Mjo Konondo",
-    "Funky Debelicous",
-    "Goodey",
-    "Delicous",
-    "Vicous"
-  ];
-
   int selectedIndex = 0;
 
   Widget selectedLibrary(int index) {
