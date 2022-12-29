@@ -72,6 +72,7 @@ class _MyProducerTileState extends State<MyProducerTile> {
   void initState() {
     super.initState();
     getFollow();
+    getFollowers();
   }
 
   getFollow() async {
@@ -84,6 +85,21 @@ class _MyProducerTileState extends State<MyProducerTile> {
         .then((doc) {
       setState(() {
         following = doc.exists;
+      });
+    });
+  }
+
+  int followers = 0;
+
+  getFollowers() async {
+    await db
+        .collection("users")
+        .doc(widget.doc["uid"])
+        .collection("followers")
+        .get()
+        .then((value) {
+      setState(() {
+        followers = value.size;
       });
     });
   }
@@ -135,14 +151,14 @@ class _MyProducerTileState extends State<MyProducerTile> {
                               height: 10,
                             ),
                             Row(
-                              children: const [
+                              children: [
                                 Text(
-                                  "2K",
-                                  style: TextStyle(
+                                  followers.toString(),
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black54),
                                 ),
-                                Text(
+                                const Text(
                                   " Followers",
                                   style: TextStyle(color: Colors.black54),
                                 )

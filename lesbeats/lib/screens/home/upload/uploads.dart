@@ -4,14 +4,14 @@ import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/home/upload/upload.dart';
 import 'package:lesbeats/services/stream/audio_stream.dart';
 
-class MySales extends StatefulWidget {
-  const MySales({super.key});
+class MyUploads extends StatefulWidget {
+  const MyUploads({super.key});
 
   @override
-  State<MySales> createState() => _MySalesState();
+  State<MyUploads> createState() => _MyUploadsState();
 }
 
-class _MySalesState extends State<MySales> {
+class _MyUploadsState extends State<MyUploads> {
   late final Stream<QuerySnapshot> _audioStream;
 
   @override

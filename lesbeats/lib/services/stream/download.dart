@@ -47,7 +47,7 @@ class _MyDownloadState extends State<MyDownload> {
       }
 
       final filePath =
-          "${directory.path}/${widget.producer}-${widget.title}.mp3";
+          "${directory.path}/${widget.producer}-${widget.title}(Lesbeats).mp3";
 
       debugPrint("FILE PATH :$filePath");
 

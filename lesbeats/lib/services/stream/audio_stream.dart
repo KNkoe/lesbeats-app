@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:lesbeats/services/stream/audio_tile.dart';
-import 'package:iconify_flutter/icons/uil.dart';
+import 'package:lottie/lottie.dart';
 
 class MyAudioStream extends StatelessWidget {
   const MyAudioStream(
@@ -29,23 +28,16 @@ class MyAudioStream extends StatelessWidget {
 
           if (snapshot.hasData) {
             if ((snapshot.data!.size == 0)) {
-              return Center(
-                child: SizedBox(
-                  width: 100,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Iconify(Uil.cloud_exclamation,
-                          color: Colors.black38, size: 24),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Empty",
-                        style: TextStyle(color: Colors.black38),
-                      )
-                    ],
-                  ),
+              return SizedBox(
+                height: 200,
+                width: 200,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.network(
+                        "https://assets1.lottiefiles.com/private_files/lf30_e3pteeho.json"),
+                    const Text("Empty")
+                  ],
                 ),
               );
             } else {

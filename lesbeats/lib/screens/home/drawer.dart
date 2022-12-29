@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/chats/chats.dart';
+import 'package:lesbeats/screens/home/downloads.dart';
 import 'package:lesbeats/screens/home/genre/genre.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
@@ -190,7 +191,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     const Divider(),
                     ListTile(
                       onTap: () {
-                        Get.to(() => const MySales());
+                        Get.to(() => const MyUploads());
                         widget._scaffoldKey.currentState!.closeDrawer();
                       },
                       leading: const Icon(
@@ -208,6 +209,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         color: Colors.black,
                       ),
                       title: const Text("Purchased"),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        Get.to(() => const MyDownloads());
+                        widget._scaffoldKey.currentState!.closeDrawer();
+                      },
+                      leading: const Icon(
+                        Icons.download,
+                        color: Colors.black,
+                      ),
+                      title: const Text("Downloads"),
                     ),
                     const Divider(),
                     ListTile(
