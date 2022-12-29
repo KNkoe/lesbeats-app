@@ -359,7 +359,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                               onPressed: () {
                                 _googleSignin().then((value) {
                                   if (value == "Success") {
-                                    Get.to(const MyHomePage());
+                                    Get.to(() => const MyHomePage());
                                   }
                                 });
                               },
@@ -368,22 +368,22 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                 color: Theme.of(context).primaryColor,
                               )),
                         ),
-                        Animate(
-                          effects: const [FadeEffect()],
-                          delay: const Duration(milliseconds: 1200),
-                          child: OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                fixedSize: const Size(100, 40),
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                              ),
-                              onPressed: () {},
-                              child: Iconify(
-                                Bi.facebook,
-                                color: Theme.of(context).primaryColor,
-                              )),
-                        )
+                        // Animate(
+                        //   effects: const [FadeEffect()],
+                        //   delay: const Duration(milliseconds: 1200),
+                        //   child: OutlinedButton(
+                        //       style: OutlinedButton.styleFrom(
+                        //         fixedSize: const Size(100, 40),
+                        //         shape: const RoundedRectangleBorder(
+                        //             borderRadius:
+                        //                 BorderRadius.all(Radius.circular(10))),
+                        //       ),
+                        //       onPressed: () {},
+                        //       child: Iconify(
+                        //         Bi.facebook,
+                        //         color: Theme.of(context).primaryColor,
+                        //       )),
+                        // )
                       ],
                     ),
                   ],

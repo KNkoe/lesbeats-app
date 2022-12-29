@@ -2,8 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:iconify_flutter/icons/bi.dart';
 import 'package:lesbeats/screens/home/home.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
@@ -448,47 +446,47 @@ class _MySignupPageState extends State<MySignupPage> {
                         const SizedBox(
                           height: 30,
                         ),
-                        Column(
-                          children: [
-                            const Text("or register in using"),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                OutlinedButton(
-                                    style: ButtonStyle(
-                                      fixedSize: MaterialStateProperty.all(
-                                          const Size(100, 40)),
-                                      shape: MaterialStateProperty.all(
-                                          const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10)))),
-                                    ),
-                                    onPressed: () {},
-                                    child: Iconify(
-                                      Bi.google,
-                                      color: Theme.of(context).primaryColor,
-                                    )),
-                                OutlinedButton(
-                                    style: ButtonStyle(
-                                      fixedSize: MaterialStateProperty.all(
-                                          const Size(100, 40)),
-                                      shape: MaterialStateProperty.all(
-                                          const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10)))),
-                                    ),
-                                    onPressed: () {},
-                                    child: Iconify(
-                                      Bi.facebook,
-                                      color: Theme.of(context).primaryColor,
-                                    ))
-                              ],
-                            ),
-                          ],
-                        ),
+                        // Column(
+                        //   children: [
+                        //     const Text("or register in using"),
+                        //     const SizedBox(
+                        //       height: 10,
+                        //     ),
+                        //     Row(
+                        //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        //       children: [
+                        //         OutlinedButton(
+                        //             style: ButtonStyle(
+                        //               fixedSize: MaterialStateProperty.all(
+                        //                   const Size(100, 40)),
+                        //               shape: MaterialStateProperty.all(
+                        //                   const RoundedRectangleBorder(
+                        //                       borderRadius: BorderRadius.all(
+                        //                           Radius.circular(10)))),
+                        //             ),
+                        //             onPressed: () {},
+                        //             child: Iconify(
+                        //               Bi.google,
+                        //               color: Theme.of(context).primaryColor,
+                        //             )),
+                        //         OutlinedButton(
+                        //             style: ButtonStyle(
+                        //               fixedSize: MaterialStateProperty.all(
+                        //                   const Size(100, 40)),
+                        //               shape: MaterialStateProperty.all(
+                        //                   const RoundedRectangleBorder(
+                        //                       borderRadius: BorderRadius.all(
+                        //                           Radius.circular(10)))),
+                        //             ),
+                        //             onPressed: () {},
+                        //             child: Iconify(
+                        //               Bi.facebook,
+                        //               color: Theme.of(context).primaryColor,
+                        //             ))
+                        //       ],
+                        //     ),
+                        //   ],
+                        // ),
                         const SizedBox(
                           height: 30,
                         ),

@@ -19,6 +19,7 @@ follow(String follower, String followed) {
       .set({"uid": followed, "timestamp": DateTime.now()});
 
   final followNotification = {
+    "title": "New follower",
     "message": "${auth.currentUser!.displayName} started following you",
     "timestamp": DateTime.now(),
     "read": false,

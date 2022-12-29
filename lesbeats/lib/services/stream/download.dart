@@ -169,10 +169,12 @@ class _MyDownloadState extends State<MyDownload> {
                     });
 
                     final downloadNotification = {
+                      "title": "New download",
                       "message":
                           "${auth.currentUser!.displayName} downloaded your beat ${widget.title}",
                       "timestamp": DateTime.now(),
-                      "read": false
+                      "read": false,
+                      "type": "Download"
                     };
 
                     db
