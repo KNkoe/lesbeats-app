@@ -55,7 +55,7 @@ class _MySearchScreenState extends State<MySearchScreen> {
                   },
                   decoration: InputDecoration(
                       icon: const Iconify(Ri.search_2_line),
-                      hintText: "Artists, beats, genre or lyrics",
+                      hintText: "Producers, artists or beats",
                       hintStyle: const TextStyle(color: Colors.black26),
                       border: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.black12),
