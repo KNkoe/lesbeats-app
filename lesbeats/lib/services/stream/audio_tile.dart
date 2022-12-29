@@ -63,6 +63,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
         .get()
         .then((doc) {
       liked = doc.exists;
+      debugPrint("LIKED = $liked");
     });
   }
 
@@ -134,6 +135,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
               snapshot.snapshot4.hasData &&
               snapshot.snapshot5.hasData) {
             final Map<String, String> tags = {
+              "id": id,
               "title": title,
               "cover": cover,
               "artist": feature.toString().isEmpty
@@ -146,18 +148,16 @@ class _MyAudioTileState extends State<MyAudioTile> {
             final timeAgo = DateTime.now().subtract(timeDifference);
 
             return GestureDetector(
-              onDoubleTap: (() {
+              onDoubleTap: (() async {
                 if (!liked) {
                   likeTrack(id);
-                  checkIfLiked(id);
-
-                  setState(() {});
                 } else {
                   unlikeTrack(id);
-                  checkIfLiked(id);
-
-                  setState(() {});
                 }
+
+                setState(() {
+                  checkIfLiked(id);
+                });
               }),
               onTap: () {
                 db

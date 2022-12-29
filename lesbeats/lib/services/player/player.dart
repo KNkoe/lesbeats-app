@@ -14,6 +14,9 @@ import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../main.dart';
+import '../stream/like.dart';
+
 playOffline(BuildContext context, PlatformFile audio) {
   Scaffold.of(context).showBottomSheet(
     (context) => MiniPlayer(
@@ -47,7 +50,6 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
   final _tagger = Audiotagger();
 
   bool _repeat = false;
-  bool _isFavourite = false;
 
   String? _title;
   String? _artist;
@@ -58,6 +60,23 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
     super.initState();
 
     _init();
+    checkIfLiked(widget.tags!["id"]!);
+  }
+
+  bool liked = false;
+
+  checkIfLiked(String trackId) async {
+    await db
+        .collection("tracks")
+        .doc(trackId)
+        .collection("likes")
+        .doc(
+          auth.currentUser!.uid,
+        )
+        .get()
+        .then((doc) {
+      liked = doc.exists;
+    });
   }
 
   Future<void> _init() async {
@@ -514,12 +533,23 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                         IconButton(
                                             onPressed: () {
                                               setState(() {
-                                                _isFavourite = !_isFavourite;
+                                                if (!liked) {
+                                                  likeTrack(
+                                                      widget.tags!["id"]!);
+                                                } else {
+                                                  unlikeTrack(
+                                                      widget.tags!["id"]!);
+                                                }
+
+                                                setState(() {
+                                                  checkIfLiked(
+                                                      widget.tags!["id"]!);
+                                                });
                                               });
                                             },
                                             icon: Icon(
                                               Icons.favorite_rounded,
-                                              color: _isFavourite
+                                              color: liked
                                                   ? Colors.red
                                                   : Colors.white,
                                             ))

@@ -5,6 +5,7 @@ import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/services/stream/like.dart';
 import 'package:lesbeats/widgets/load.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../services/player/player.dart';
 
@@ -44,6 +45,19 @@ class _MyFavouritesState extends State<MyFavourites> {
           }
 
           if (snapshot.hasData) {
+            if (snapshot.data!.size == 0) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.network(
+                        "https://assets1.lottiefiles.com/private_files/lf30_e3pteeho.json"),
+                    const Text("No favourites")
+                  ],
+                ),
+              );
+            }
+
             return Expanded(
                 child: ListView.builder(
               physics: const BouncingScrollPhysics(),

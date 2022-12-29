@@ -61,7 +61,8 @@ class _MyNotificationsState extends State<MyNotifications> {
           "message": message.notification!.body,
           "timestamp": DateTime.now(),
           "read": false,
-          "type": message.notification!.title
+          "type": message.notification!.title,
+          "url": message.notification!.web?.link,
         };
         db
             .collection("users")

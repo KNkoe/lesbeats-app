@@ -40,6 +40,11 @@ class _MyFollowingPageState extends State<MyFollowingPage> {
           }
 
           if (snapshot.hasData) {
+            if (snapshot.data!.size == 0) {
+              return const Center(
+                child: Text("You have not followed anyone"),
+              );
+            }
             return Expanded(
                 child: GridView.builder(
               physics: const BouncingScrollPhysics(),
