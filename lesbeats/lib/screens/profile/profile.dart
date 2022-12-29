@@ -4,6 +4,7 @@ import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 
@@ -171,6 +172,16 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                                       .pushNamedAndRemoveUntil(
                                                           "/",
                                                           (route) => false));
+
+                                              try {
+                                                final GoogleSignIn
+                                                    googleSignIn =
+                                                    GoogleSignIn();
+                                                await googleSignIn.signOut();
+                                                debugPrint("User Sign Out");
+                                              } catch (e) {
+                                                debugPrint(e.toString());
+                                              }
                                             },
                                             child: const Text("Logout"))
                                       ],
