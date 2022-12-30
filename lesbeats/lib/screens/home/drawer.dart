@@ -1,20 +1,21 @@
 import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:lesbeats/main.dart';
-import 'package:lesbeats/screens/chats/chats.dart';
-import 'package:lesbeats/screens/home/downloads.dart';
-import 'package:lesbeats/screens/home/genre/genre.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:day_night_switcher/day_night_switcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/bx.dart';
 import 'package:iconify_flutter/icons/ri.dart';
-import 'package:lesbeats/screens/home/trending.dart';
-import 'package:lesbeats/screens/home/upload/uploads.dart';
-import 'package:lesbeats/screens/home/settings.dart';
+
+import '../../main.dart';
+import '../chats/chats.dart';
+import 'downloads.dart';
+import 'genre/genre.dart';
+import 'trending.dart';
+import 'upload/uploads.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({
@@ -34,6 +35,33 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   final Stream<DocumentSnapshot> _userStream =
       db.collection("users").doc(auth.currentUser!.uid).snapshots();
+
+  String? encodeQueryParameters(Map<String, String> params) {
+    return params.entries
+        .map((MapEntry<String, String> e) =>
+            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+        .join('&');
+  }
+
+  late final Uri emailLaunchUri;
+
+  Future<void> _launchUrl() async {
+    if (!await launchUrl(emailLaunchUri)) {
+      throw 'Could not launch $emailLaunchUri';
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'katleholnkoe@gmail.com',
+      query: encodeQueryParameters(<String, String>{
+        'subject': 'Lesbeats: Feedback or Suggestions',
+      }),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -200,16 +228,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       title: const Text("Upload"),
                     ),
-                    ListTile(
-                      onTap: () {
-                        widget._scaffoldKey.currentState!.closeDrawer();
-                      },
-                      leading: const Icon(
-                        Icons.attach_money,
-                        color: Colors.black,
-                      ),
-                      title: const Text("Purchased"),
-                    ),
+                    // ListTile(
+                    //   onTap: () {
+                    //     widget._scaffoldKey.currentState!.closeDrawer();
+                    //   },
+                    //   leading: const Icon(
+                    //     Icons.attach_money,
+                    //     color: Colors.black,
+                    //   ),
+                    //   title: const Text("Purchased"),
+                    // ),
                     ListTile(
                       onTap: () {
                         Get.to(() => const MyDownloads());
@@ -222,33 +250,70 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       title: const Text("Downloads"),
                     ),
                     const Divider(),
-                    ListTile(
-                      onTap: () {
-                        Get.to(() => const MySettings());
-                        widget._scaffoldKey.currentState!.closeDrawer();
-                      },
-                      leading: const Icon(Icons.settings),
-                      title: const Text("Settings"),
-                    ),
+                    // ListTile(
+                    //   onTap: () {
+                    //     Get.to(() => const MySettings());
+                    //     widget._scaffoldKey.currentState!.closeDrawer();
+                    //   },
+                    //   leading: const Icon(Icons.settings),
+                    //   title: const Text("Settings"),
+                    // ),
                     ListTile(
                       onTap: () {},
                       leading: const Icon(Icons.share),
                       title: const Text("Tell a friend"),
                     ),
                     ListTile(
-                      onTap: () {},
+                      onTap: _launchUrl,
                       leading: const Icon(Icons.help),
-                      title: const Text("Help and Feadback"),
+                      title: const Text("Help and Feedback"),
                     ),
-                    const AboutListTile(
-                      icon: Icon(Icons.info),
+                    AboutListTile(
+                      icon: const Icon(Icons.info),
                       applicationName: "Lesbeats",
-                      applicationIcon: Image(
+                      applicationIcon: const Image(
                           height: 30,
                           width: 30,
                           image: AssetImage("assets/icon/_logo.png")),
-                      applicationVersion: "1.0",
-                      child: Text("About"),
+                      applicationVersion: "1.0.0",
+                      aboutBoxChildren: [
+                        const Text("A goto place to buy and sell beats online"),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text("Features"),
+                        const Divider(),
+                        const Text("- A library of music tracks"),
+                        const Text("- Personalization"),
+                        const Text("- Social integration"),
+                        const Text("- Producer profiles"),
+                        const Text("- Playback control"),
+                        const Text("- Offline playback"),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text("Coming soon"),
+                        const Divider(),
+                        const Text("- In-app purchases"),
+                        const Text("- Music recommendations"),
+                        const Text("- Background playback"),
+                        const Text("- Audio quality options"),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text(
+                            "Lesbeats is developed by Katleho Nkoe, a solo developer based in Maseru Lesotho. With a passion for music and technology, Katleho created Lesbeats to provide a simple and intuitive way for producers to sell their beats. If you have any feedback or suggestions, Jane would love to hear from you! You can contact her at "),
+                        GestureDetector(
+                          onTap: _launchUrl,
+                          child: const Text(
+                            "Katleholnkoe@gmail.com",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline),
+                          ),
+                        )
+                      ],
+                      child: const Text("About"),
                     ),
                   ],
                 ),
