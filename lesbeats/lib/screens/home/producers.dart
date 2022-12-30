@@ -36,7 +36,7 @@ class _MyArtistsState extends State<MyProducers> {
                 itemBuilder: (context, index) {
                   if (snapshot.data!.docs[index]["uid"] !=
                       auth.currentUser!.uid) {
-                    if (index > 4) {
+                    if (index >= 10) {
                       return MyProducerTile(doc: snapshot.data!.docs[index]);
                     }
                   }
@@ -69,11 +69,6 @@ class _MyProducerTileState extends State<MyProducerTile> {
   bool following = false;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     getFollow();
@@ -88,9 +83,11 @@ class _MyProducerTileState extends State<MyProducerTile> {
         .doc(widget.doc["uid"])
         .get()
         .then((doc) {
-      setState(() {
-        following = doc.exists;
-      });
+      if (mounted) {
+        setState(() {
+          following = doc.exists;
+        });
+      }
     });
   }
 
@@ -103,9 +100,11 @@ class _MyProducerTileState extends State<MyProducerTile> {
         .collection("followers")
         .get()
         .then((value) {
-      setState(() {
-        followers = value.size;
-      });
+      if (mounted) {
+        setState(() {
+          followers = value.size;
+        });
+      }
     });
   }
 

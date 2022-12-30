@@ -1,4 +1,4 @@
-package com.example.lesbeats
+package com.mechintech.lesbeats
 
 import io.flutter.embedding.android.FlutterActivity
 

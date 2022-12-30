@@ -488,6 +488,7 @@ class _UploadBeatState extends State<UploadBeat> {
                                 width: screenSize(context).width * 0.9,
                               ),
                               TextFormField(
+                                enabled: !_enableDownload,
                                 controller: _priceController,
                                 // ignore: body_might_complete_normally_nullable
                                 validator: (value) {

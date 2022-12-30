@@ -9,6 +9,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:lesbeats/services/player/common.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/widgets/responsive.dart';
@@ -58,7 +59,6 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
     _init();
     checkIfLiked(widget.tags!["id"]!);
   }
@@ -92,7 +92,12 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
     // Try to load audio from a source and catch any errors.
     if (widget.url != null) {
       try {
-        await _player.setAudioSource(AudioSource.uri(Uri.parse(widget.url!)));
+        await _player.setAudioSource(AudioSource.uri(Uri.parse(widget.url!),
+            tag: MediaItem(
+                id: widget.tags!["id"]!,
+                title: widget.tags!["title"]!,
+                artist: widget.tags!["artist"]!,
+                artUri: Uri.parse(widget.tags!["cover"]!))));
       } catch (e) {
         debugPrint(e.toString());
       }
@@ -550,7 +555,8 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                             icon: Icon(
                                               Icons.favorite_rounded,
                                               color: liked
-                                                  ? Colors.red
+                                                  ? Theme.of(context)
+                                                      .primaryColor
                                                   : Colors.white,
                                             ))
                                       ],

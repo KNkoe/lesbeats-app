@@ -20,14 +20,32 @@ class MySearchScreen extends StatefulWidget {
 class _MySearchScreenState extends State<MySearchScreen> {
   late final Stream<QuerySnapshot> _trackStream;
   late final Stream<QuerySnapshot> _userStream;
+  late final Stream<QuerySnapshot> _recentStream;
+
   final TextEditingController queryController = TextEditingController();
   String query = "";
+  List<QueryDocumentSnapshot<Object?>> tracks = [];
+  List<QueryDocumentSnapshot<Object?>> users = [];
 
   @override
   void initState() {
     super.initState();
     _trackStream = db.collection("tracks").snapshots();
     _userStream = db.collection("users").snapshots();
+    _recentStream = db
+        .collection("users")
+        .doc(auth.currentUser!.uid)
+        .collection("recent searches")
+        .orderBy("timestamp", descending: true)
+        .snapshots();
+  }
+
+  @override
+  void dispose() {
+    queryController.dispose();
+    tracks.clear();
+    users.clear();
+    super.dispose();
   }
 
   int selectedIndex = 0;
@@ -59,6 +77,13 @@ class _MySearchScreenState extends State<MySearchScreen> {
                     setState(() {
                       query = value;
                     });
+                  },
+                  onEditingComplete: () {
+                    db
+                        .collection("users")
+                        .doc(auth.currentUser!.uid)
+                        .collection("recent searches")
+                        .add({"query": query, "timestamp": DateTime.now()});
                   },
                   decoration: InputDecoration(
                       icon: const Iconify(Ri.search_2_line),
@@ -110,7 +135,9 @@ class _MySearchScreenState extends State<MySearchScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: const [
-                                    Text("Producers"),
+                                    Text(
+                                      "Producers",
+                                    ),
                                   ],
                                 ),
                               ),
@@ -118,9 +145,62 @@ class _MySearchScreenState extends State<MySearchScreen> {
                           ]),
                     ),
                   ),
+                if (query.isEmpty)
+                  Row(children: [
+                    const Icon(Icons.refresh),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Recent searches",
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                  ]),
+                if (query.isEmpty)
+                  StreamBuilder(
+                      stream: _recentStream,
+                      builder: ((context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox();
+                        }
+
+                        if (snapshot.hasData) {
+                          return Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: snapshot.data!.size,
+                              itemBuilder: ((context, index) {
+                                return ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      query =
+                                          snapshot.data!.docs[index]["query"];
+                                    });
+                                  },
+                                  title:
+                                      Text(snapshot.data!.docs[index]["query"]),
+                                  trailing: IconButton(
+                                      onPressed: () {
+                                        snapshot.data!.docs[index].reference
+                                            .delete();
+                                      },
+                                      icon: const Icon(Icons.clear)),
+                                );
+                              }),
+                            ),
+                          );
+                        }
+
+                        return const SizedBox();
+                      })),
                 if (query.isNotEmpty)
                   const SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
                 if (query.isNotEmpty && selectedIndex == 0)
                   StreamBuilder<QuerySnapshot>(
@@ -134,8 +214,7 @@ class _MySearchScreenState extends State<MySearchScreen> {
                           );
                         }
                         if (snapshot.hasData) {
-                          List<QueryDocumentSnapshot<Object?>> tracks =
-                              snapshot.data!.docs.toList();
+                          tracks = snapshot.data!.docs.toList();
 
                           final trackMap = tracks.asMap();
 
@@ -186,8 +265,7 @@ class _MySearchScreenState extends State<MySearchScreen> {
                           );
                         }
                         if (snapshot.hasData) {
-                          List<QueryDocumentSnapshot<Object?>> users =
-                              snapshot.data!.docs.toList();
+                          users = snapshot.data!.docs.toList();
 
                           final userMap = users.asMap();
 

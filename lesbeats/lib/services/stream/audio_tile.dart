@@ -52,8 +52,8 @@ class _MyAudioTileState extends State<MyAudioTile> {
   bool liked = false;
   bool following = false;
 
-  checkIfLiked(String trackId) async {
-    await db
+  checkIfLiked(String trackId) {
+    db
         .collection("tracks")
         .doc(trackId)
         .collection("likes")
@@ -62,8 +62,11 @@ class _MyAudioTileState extends State<MyAudioTile> {
         )
         .get()
         .then((doc) {
-      liked = doc.exists;
-      debugPrint("LIKED = $liked");
+      if (mounted) {
+        setState(() {
+          liked = doc.exists;
+        });
+      }
     });
   }
 
@@ -91,22 +94,29 @@ class _MyAudioTileState extends State<MyAudioTile> {
     likeStream =
         db.collection("tracks").doc(id).collection("likes").snapshots();
     artistStream = db.collection("users").doc(artistId).snapshots();
-
-    checkIfLiked(id);
-
-    getFollow();
   }
 
-  getFollow() async {
-    await db
+  getFollow() {
+    db
         .collection("users")
         .doc(auth.currentUser!.uid)
         .collection("following")
         .doc(artistId)
         .get()
         .then((doc) {
-      following = doc.exists;
+      if (mounted) {
+        setState(() {
+          following = doc.exists;
+        });
+      }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    getFollow();
+    checkIfLiked(id);
   }
 
   @override
@@ -378,16 +388,17 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                     Text("Share"),
                                   ],
                                 )),
-                                PopupMenuItem(
-                                    child: Row(
-                                  children: const [
-                                    Icon(Icons.report),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text("Report"),
-                                  ],
-                                )),
+                                if (artistId != auth.currentUser!.uid)
+                                  PopupMenuItem(
+                                      child: Row(
+                                    children: const [
+                                      Icon(Icons.report),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text("Report"),
+                                    ],
+                                  )),
                               ])),
                     ),
                     Row(
@@ -484,7 +495,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                       Icons.favorite,
                                       size: 18,
                                       color: liked
-                                          ? Theme.of(context).indicatorColor
+                                          ? Theme.of(context).primaryColor
                                           : Colors.grey,
                                     ),
                                     Text(

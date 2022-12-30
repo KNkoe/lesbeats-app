@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.lesbeats">
-   <application
+    package="com.mechintech.lesbeats">
+    <application
         android:label="LesBeats"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
