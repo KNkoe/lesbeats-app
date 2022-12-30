@@ -15,6 +15,7 @@ import 'package:lesbeats/services/player/player.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:lottie/lottie.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 showUpload(BuildContext context) => showDialog(
     context: context,
@@ -255,6 +256,15 @@ class _UploadBeatState extends State<UploadBeat> {
     }
 
     return null;
+  }
+
+  final Uri _url =
+      Uri.parse('http://lesbeats.nicepage.io/Terms-and-conditions.html');
+
+  Future<void> _launchUrl() async {
+    if (!await launchUrl(_url)) {
+      throw 'Could not launch $_url';
+    }
   }
 
   @override
@@ -554,7 +564,7 @@ class _UploadBeatState extends State<UploadBeat> {
                                   //       fontWeight: FontWeight.normal, fontSize: 16),
                                   // ),
                                   InkWell(
-                                    onTap: () {},
+                                    onTap: _launchUrl,
                                     child: const Padding(
                                       padding: EdgeInsets.all(4.0),
                                       child: Text(

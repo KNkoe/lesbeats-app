@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -119,6 +120,29 @@ class _MyLoginPageState extends State<MyLoginPage> {
       setState(() {
         _isLoggin = false;
       });
+
+      if (auth.currentUser != null) {
+        final String photoUrl =
+            await storage.ref("/users/placeholder.jpg").getDownloadURL();
+
+        await auth.currentUser!.updatePhotoURL(photoUrl);
+        final QuerySnapshot result = await db
+            .collection('users')
+            .where('uid', isEqualTo: auth.currentUser!.uid)
+            .get();
+        if (result.docs.isEmpty) {
+          db.collection('users').doc(auth.currentUser!.uid).set({
+            "uid": auth.currentUser!.uid,
+            "full name": auth.currentUser!.displayName,
+            "username": auth.currentUser!.displayName,
+            "email": auth.currentUser!.email,
+            "photoUrl": auth.currentUser!.photoURL,
+            "isVerified": false,
+            "created at": DateTime.now()
+          });
+        }
+      }
+
       return "Success";
     } catch (e) {
       Get.showSnackbar(GetSnackBar(

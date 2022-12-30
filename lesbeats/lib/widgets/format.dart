@@ -12,3 +12,7 @@ String numberFormat(dynamic n) {
     return num.toString();
   }
 }
+
+bool isNumeric(String s) {
+  return double.tryParse(s) != null;
+}

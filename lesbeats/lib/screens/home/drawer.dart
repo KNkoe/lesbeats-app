@@ -11,7 +11,7 @@ import 'package:iconify_flutter/icons/bx.dart';
 import 'package:iconify_flutter/icons/ri.dart';
 
 import '../../main.dart';
-import '../chats/chats.dart';
+import '../chats/chat_list.dart';
 import 'downloads.dart';
 import 'genre/genre.dart';
 import 'trending.dart';
@@ -204,7 +204,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     const Divider(),
                     ListTile(
                       onTap: () {
-                        Get.to(() => const MyChatScreen());
+                        Get.to(() => const MyChatList());
                         widget._scaffoldKey.currentState!.closeDrawer();
                       },
                       title: const Text("Messages"),

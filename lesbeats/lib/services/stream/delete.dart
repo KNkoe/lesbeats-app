@@ -18,9 +18,9 @@ deleteTrack(BuildContext context, String id, String title) {
                 },
                 child: const Text("Cancel")),
             ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   try {
-                    db
+                    await db
                         .collection("tracks")
                         .doc(id)
                         .collection("likes")
@@ -33,7 +33,7 @@ deleteTrack(BuildContext context, String id, String title) {
                       }
                     });
 
-                    db
+                    await db
                         .collection("tracks")
                         .doc(id)
                         .collection("downloads")
@@ -46,7 +46,7 @@ deleteTrack(BuildContext context, String id, String title) {
                       }
                     });
 
-                    db
+                    await db
                         .collection("tracks")
                         .doc(id)
                         .collection("plays")
@@ -59,28 +59,31 @@ deleteTrack(BuildContext context, String id, String title) {
                       }
                     });
 
-                    db.collection("tracks").doc(id).delete();
+                    await db.collection("tracks").doc(id).delete();
 
                     final storageRef =
                         storage.ref("/tracks/${auth.currentUser!.uid}/$title/");
-                    storageRef.listAll().then((value) =>
-                        storage.ref(value.items.first.fullPath).delete());
+                    storageRef
+                        .listAll()
+                        .then((value) =>
+                            storage.ref(value.items.first.fullPath).delete())
+                        .then((value) {
+                      Navigator.pop(context);
 
-                    Get.showSnackbar(const GetSnackBar(
-                      isDismissible: true,
-                      duration: Duration(seconds: 5),
-                      backgroundColor: Color(0xff264653),
-                      borderRadius: 30,
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                      icon: Icon(
-                        Icons.check,
-                        color: Colors.white,
-                      ),
-                      message: "Deleted successfully",
-                    ));
-
-                    Navigator.pop(context);
+                      Get.showSnackbar(const GetSnackBar(
+                        isDismissible: true,
+                        duration: Duration(seconds: 5),
+                        backgroundColor: Color(0xff264653),
+                        borderRadius: 30,
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                        icon: Icon(
+                          Icons.check,
+                          color: Colors.white,
+                        ),
+                        message: "Deleted successfully",
+                      ));
+                    });
                   } catch (e) {
                     debugPrint("DELETE ERROR $e");
                   }

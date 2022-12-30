@@ -6,21 +6,24 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/bx.dart';
 import 'package:lesbeats/main.dart';
 
-import 'message.dart';
+import 'chat.dart';
 
-class MyChatScreen extends StatefulWidget {
-  const MyChatScreen({super.key});
+class MyChatList extends StatefulWidget {
+  const MyChatList({super.key});
 
   @override
-  State<MyChatScreen> createState() => _MyChatScreenState();
+  State<MyChatList> createState() => _MyChatListState();
 }
 
-class _MyChatScreenState extends State<MyChatScreen> {
+class _MyChatListState extends State<MyChatList> {
   late final Stream<QuerySnapshot> messages;
 
   @override
   void initState() {
-    messages = db.collection("messages").snapshots();
+    messages = db
+        .collection("messages")
+        .where("participants", arrayContains: auth.currentUser!.uid)
+        .snapshots();
     super.initState();
   }
 
@@ -76,7 +79,15 @@ class _MyChatScreenState extends State<MyChatScreen> {
         body: StreamBuilder<QuerySnapshot>(
             stream: messages,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {}
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: Image.asset(
+                    "assets/images/loading.gif",
+                    height: 70,
+                    width: 70,
+                  ),
+                );
+              }
               if (snapshot.hasData) {
                 return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
@@ -107,14 +118,12 @@ class _MyChatScreenState extends State<MyChatScreen> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            bottom: 10,
-                                                            top: 20),
+                                                  const Padding(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: 10, top: 20),
                                                     child: Text(
                                                       "Hello world",
-                                                      style: const TextStyle(
+                                                      style: TextStyle(
                                                           fontSize: 18),
                                                     ),
                                                   ),
@@ -167,8 +176,8 @@ class _MyChatScreenState extends State<MyChatScreen> {
                                     ),
                                   ],
                                 )),
-                            openBuilder: ((context, action) => MyMessageScreen(
-                                uid: snapshot.data!.docs[index]["pid"]))),
+                            openBuilder: ((context, action) => MyChat(
+                                chatId: snapshot.data!.docs[index]["chatId"]))),
                       );
                     });
               }

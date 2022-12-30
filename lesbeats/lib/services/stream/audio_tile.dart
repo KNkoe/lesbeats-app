@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
 import 'package:lesbeats/screens/home/features.dart';
+import 'package:lesbeats/screens/home/edit_track.dart';
 import 'package:lesbeats/services/stream/follow.dart';
 import 'package:lesbeats/services/stream/like.dart';
 import 'package:lesbeats/widgets/format.dart';
@@ -310,16 +311,23 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                       )),
                                 if (artistId == auth.currentUser!.uid)
                                   PopupMenuItem(
+                                      onTap: () {
+                                        Future.delayed(
+                                            Duration.zero,
+                                            () =>
+                                                showUpdate(context, id, price));
+                                      },
                                       child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: const [
-                                      Icon(Icons.update),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text("Update"),
-                                    ],
-                                  )),
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: const [
+                                          Icon(Icons.edit),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text("Edit"),
+                                        ],
+                                      )),
                                 if (artistId == auth.currentUser!.uid)
                                   PopupMenuItem(
                                       onTap: () {
