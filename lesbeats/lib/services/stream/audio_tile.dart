@@ -3,8 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
+import 'package:lesbeats/screens/home/features.dart';
 import 'package:lesbeats/services/stream/follow.dart';
 import 'package:lesbeats/services/stream/like.dart';
+import 'package:lesbeats/widgets/format.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -199,36 +201,45 @@ class _MyAudioTileState extends State<MyAudioTile> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            flex: 5,
+                            flex: 6,
                             child: Text(title,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodyText1),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2!
+                                    .copyWith(fontWeight: FontWeight.bold)),
                           ),
                           Expanded(
                             flex: 4,
-                            child: Row(
-                              children: [
-                                const Iconify(
-                                  Wpf.shopping_bag,
-                                  size: 20,
-                                  color: Colors.blue,
-                                ),
-                                const SizedBox(
-                                  width: 6,
-                                ),
-                                Text(
-                                  "R $price",
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(
-                                          decoration:
-                                              snapshot.snapshot1.data!.size > 0
-                                                  ? TextDecoration.lineThrough
-                                                  : TextDecoration.none),
-                                )
-                              ],
+                            child: GestureDetector(
+                              onTap: () {
+                                showFeatureNotAvail(context);
+                              },
+                              child: Row(
+                                children: [
+                                  const Iconify(
+                                    Wpf.shopping_bag,
+                                    size: 20,
+                                    color: Colors.blue,
+                                  ),
+                                  const SizedBox(
+                                    width: 6,
+                                  ),
+                                  Text(
+                                    price == 0 ? "Free" : "R $price",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(
+                                            decoration:
+                                                snapshot.snapshot1.data!.size >
+                                                        0
+                                                    ? TextDecoration.lineThrough
+                                                    : TextDecoration.none),
+                                  )
+                                ],
+                              ),
                             ),
                           )
                         ],
@@ -331,7 +342,8 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                           Text("Delete"),
                                         ],
                                       )),
-                                if (artistId != auth.currentUser!.uid)
+                                if (artistId != auth.currentUser!.uid &&
+                                    price != 0)
                                   PopupMenuItem(
                                       child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -421,7 +433,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                   color: Colors.grey,
                                 ),
                                 Text(
-                                  snapshot.snapshot2.data!.size.toString(),
+                                  numberFormat(snapshot.snapshot2.data!.size),
                                   style: const TextStyle(
                                     color: Colors.grey,
                                   ),
@@ -458,8 +470,8 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                         color: Colors.grey,
                                       ),
                                       Text(
-                                        snapshot.snapshot3.data!.size
-                                            .toString(),
+                                        numberFormat(
+                                            snapshot.snapshot3.data!.size),
                                         style: const TextStyle(
                                           color: Colors.grey,
                                         ),
@@ -499,7 +511,8 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                           : Colors.grey,
                                     ),
                                     Text(
-                                      snapshot.snapshot4.data!.size.toString(),
+                                      numberFormat(
+                                          snapshot.snapshot4.data!.size),
                                       style: const TextStyle(
                                         color: Colors.grey,
                                       ),

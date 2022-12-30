@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lesbeats/widgets/format.dart';
 
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 
@@ -258,7 +259,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      snapshot.snapshot2.data!.size.toString(),
+                                      numberFormat(
+                                          snapshot.snapshot2.data!.size),
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color:
@@ -278,8 +280,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                         child: Column(
                                           children: [
                                             Text(
-                                              snapshot.snapshot3.data!.size
-                                                  .toString(),
+                                              numberFormat(snapshot
+                                                  .snapshot3.data!.size),
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   color: Theme.of(context)
@@ -306,8 +308,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                         child: Column(
                                           children: [
                                             Text(
-                                              snapshot.snapshot4.data!.size
-                                                  .toString(),
+                                              numberFormat(snapshot
+                                                  .snapshot4.data!.size),
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   color: Theme.of(context)

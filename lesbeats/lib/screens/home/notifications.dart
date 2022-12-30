@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
+import 'package:lesbeats/widgets/format.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class MyNotifications extends StatefulWidget {
@@ -102,7 +103,7 @@ class _MyNotificationsState extends State<MyNotifications> {
                     badgeContent: unread == 0
                         ? const SizedBox()
                         : Text(
-                            unread.toString(),
+                            numberFormat(unread),
                             style: const TextStyle(color: Colors.white),
                           ),
                     child: const Icon(Icons.notifications)),

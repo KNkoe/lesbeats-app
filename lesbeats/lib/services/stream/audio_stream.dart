@@ -28,14 +28,13 @@ class MyAudioStream extends StatelessWidget {
 
           if (snapshot.hasData) {
             if ((snapshot.data!.size == 0)) {
-              return SizedBox(
-                height: 200,
-                width: 200,
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Lottie.network(
-                        "https://assets1.lottiefiles.com/private_files/lf30_e3pteeho.json"),
+                      "https://assets1.lottiefiles.com/private_files/lf30_e3pteeho.json",
+                    ),
                     const Text("Empty")
                   ],
                 ),

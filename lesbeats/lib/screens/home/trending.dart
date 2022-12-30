@@ -27,8 +27,6 @@ class _MyTrendingPageState extends State<MyTrendingPage> {
         });
 
         element.reference.set({"plays": plays}, SetOptions(merge: true));
-
-        debugPrint("PLAYS: ${plays.toString()}");
       }
     });
 

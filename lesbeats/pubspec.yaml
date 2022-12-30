@@ -63,6 +63,7 @@ dependencies:
   firebase_messaging: ^14.2.0
   open_filex: ^4.3.2
   just_audio_background: ^0.0.1-beta.8
+  url_launcher: ^6.1.7
 
 dev_dependencies:
   flutter_test:
