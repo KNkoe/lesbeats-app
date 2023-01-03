@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 
 InputDecoration dialogInputdecoration = InputDecoration(
     floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -60,3 +61,14 @@ class _DotPainter extends BoxPainter {
     );
   }
 }
+
+Widget online(BuildContext context) => Container(
+      margin: const EdgeInsets.all(10),
+      height: 12,
+      width: 12,
+      decoration: BoxDecoration(
+          border:
+              Border.all(color: Theme.of(context).backgroundColor, width: 2),
+          shape: BoxShape.circle,
+          color: Colors.green),
+    );

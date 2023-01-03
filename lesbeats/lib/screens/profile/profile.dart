@@ -5,9 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lesbeats/screens/chats/chat.dart';
 import 'package:lesbeats/widgets/format.dart';
 
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../main.dart';
 import '../../services/stream/audio_stream.dart';
@@ -49,6 +51,20 @@ class _MyProfilePageState extends State<MyProfilePage> {
   late final Stream<QuerySnapshot> _followingStream;
 
   bool following = false;
+  late final Uri emailLaunchUri;
+
+  String? encodeQueryParameters(Map<String, String> params) {
+    return params.entries
+        .map((MapEntry<String, String> e) =>
+            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+        .join('&');
+  }
+
+  Future<void> _launchEmail() async {
+    if (!await launchUrl(emailLaunchUri)) {
+      throw 'Could not launch $emailLaunchUri';
+    }
+  }
 
   @override
   void initState() {
@@ -86,6 +102,14 @@ class _MyProfilePageState extends State<MyProfilePage> {
         .then((doc) {
       following = doc.exists;
     });
+
+    emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'lesbeats0@gmail.com',
+      query: encodeQueryParameters(<String, String>{
+        'subject': 'Report User ${widget.uid} (DO NOT EDIT SUBJECT)',
+      }),
+    );
   }
 
   @override
@@ -112,6 +136,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
                   Icons.more_horiz,
                   color: Theme.of(context).textTheme.headline1!.color,
                 ),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)
+                        .copyWith(topRight: const Radius.circular(0))),
                 itemBuilder: ((context) => [
                       PopupMenuItem(
                         child: ListTile(
@@ -200,8 +227,15 @@ class _MyProfilePageState extends State<MyProfilePage> {
                   Icons.more_horiz,
                   color: Theme.of(context).textTheme.headline1!.color,
                 ),
-                itemBuilder: (context) =>
-                    [const PopupMenuItem(child: Text("Report account"))])
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                          onTap: () {
+                            Future.delayed(Duration.zero, () {
+                              _launchEmail();
+                            });
+                          },
+                          child: const Text("Report account"))
+                    ])
         ],
       ),
       body: StreamBuilder4<DocumentSnapshot, QuerySnapshot, QuerySnapshot,
@@ -234,159 +268,203 @@ class _MyProfilePageState extends State<MyProfilePage> {
                         height: 30,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                    width: 8,
-                                    color: Theme.of(context).backgroundColor)),
-                            child: Animate(
-                              effects: const [ShimmerEffect()],
-                              child: CircleAvatar(
-                                backgroundColor: Theme.of(context).primaryColor,
-                                minRadius: 50,
-                                backgroundImage: NetworkImage(
-                                    snapshot.snapshot1.data!["photoUrl"]),
-                              ),
-                            ),
-                          ),
-                          Row(
+                          Column(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      numberFormat(
-                                          snapshot.snapshot2.data!.size),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                    ),
-                                    Text(" Uploads",
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor))
-                                  ],
-                                ),
+                              Stack(
+                                alignment: Alignment.bottomRight,
+                                children: [
+                                  ClipOval(
+                                    child: FadeInImage.assetNetwork(
+                                        height: 100,
+                                        width: 100,
+                                        fit: BoxFit.cover,
+                                        placeholder:
+                                            "assets/images/placeholder.jpg",
+                                        image: snapshot
+                                            .snapshot1.data!["photoUrl"]),
+                                  ),
+                                  if (snapshot.snapshot1.data!['online'])
+                                    online(context)
+                                ],
                               ),
-                              OpenContainer(
-                                  closedElevation: 0,
-                                  closedBuilder: ((context, action) => Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              numberFormat(snapshot
-                                                  .snapshot3.data!.size),
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                            ),
-                                            Text(
-                                              " Followers",
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                            )
-                                          ],
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          snapshot.snapshot1.data!["full name"]
+                                              .toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6,
                                         ),
-                                      )),
-                                  openBuilder: ((context, action) =>
-                                      MyFollowers(
-                                        snapshot: snapshot.snapshot3.data,
-                                        follow: "Followers",
-                                      ))),
-                              OpenContainer(
-                                  closedElevation: 0,
-                                  closedBuilder: ((context, action) => Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              numberFormat(snapshot
-                                                  .snapshot4.data!.size),
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                            ),
-                                            Text(
-                                              " Following",
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                            )
-                                          ],
-                                        ),
-                                      )),
-                                  openBuilder: ((context, action) =>
-                                      MyFollowers(
-                                        snapshot: snapshot.snapshot4.data,
-                                        follow: "Following",
-                                      ))),
+                                      ),
+                                      if (snapshot
+                                          .snapshot1.data!["isVerified"])
+                                        const Icon(
+                                          Icons.verified,
+                                          color: Colors.green,
+                                        )
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 10, bottom: 10),
+                                    child: Text(
+                                        "@${snapshot.snapshot1.data!["username"]}"),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      snapshot.snapshot1.data!["full name"]
-                                          .toString(),
-                                      style:
-                                          Theme.of(context).textTheme.headline6,
+                                    padding: const EdgeInsets.all(10),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          numberFormat(
+                                              snapshot.snapshot2.data!.size),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                        ),
+                                        Text(" Uploads",
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor))
+                                      ],
                                     ),
                                   ),
-                                  if (snapshot.snapshot1.data!["isVerified"])
-                                    const Icon(
-                                      Icons.verified,
-                                      color: Colors.green,
-                                    )
+                                  OpenContainer(
+                                      closedElevation: 0,
+                                      closedBuilder: ((context, action) =>
+                                          Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  numberFormat(snapshot
+                                                      .snapshot3.data!.size),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Theme.of(context)
+                                                          .primaryColor),
+                                                ),
+                                                Text(
+                                                  " Followers",
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor),
+                                                )
+                                              ],
+                                            ),
+                                          )),
+                                      openBuilder: ((context, action) =>
+                                          MyFollowers(
+                                            snapshot: snapshot.snapshot3.data,
+                                            follow: "Followers",
+                                          ))),
+                                  OpenContainer(
+                                      closedElevation: 0,
+                                      closedBuilder: ((context, action) =>
+                                          Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  numberFormat(snapshot
+                                                      .snapshot4.data!.size),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Theme.of(context)
+                                                          .primaryColor),
+                                                ),
+                                                Text(
+                                                  " Following",
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor),
+                                                )
+                                              ],
+                                            ),
+                                          )),
+                                      openBuilder: ((context, action) =>
+                                          MyFollowers(
+                                            snapshot: snapshot.snapshot4.data,
+                                            follow: "Following",
+                                          ))),
                                 ],
                               ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 10, bottom: 10),
-                                child: Text(
-                                    "@${snapshot.snapshot1.data!["username"]}"),
-                              ),
                               const SizedBox(
-                                height: 10,
+                                height: 30,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  if (widget.uid != auth.currentUser!.uid)
+                                    OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                            foregroundColor: (following)
+                                                ? Colors.grey
+                                                : Theme.of(context)
+                                                    .primaryColor),
+                                        onPressed: () {
+                                          if (following) {
+                                            unfollow(auth.currentUser!.uid,
+                                                widget.uid);
+                                            setState(() {
+                                              following = false;
+                                            });
+                                          } else {
+                                            follow(auth.currentUser!.uid,
+                                                widget.uid);
+                                            setState(() {
+                                              following = true;
+                                            });
+                                          }
+                                        },
+                                        child: Text(
+                                            following ? "Unfollow" : "Follow")),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  if (widget.uid != auth.currentUser!.uid)
+                                    OpenContainer(
+                                        closedElevation: 0,
+                                        closedBuilder: ((context, action) =>
+                                            OutlinedButton.icon(
+                                                onPressed: null,
+                                                style: OutlinedButton.styleFrom(
+                                                    disabledForegroundColor:
+                                                        Theme.of(context)
+                                                            .primaryColor),
+                                                icon: const Icon(Icons.message),
+                                                label: const Text("Message"))),
+                                        openBuilder: ((context, action) =>
+                                            MyChat(userId: widget.uid)))
+                                ],
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            width: 30,
-                          ),
-                          if (widget.uid != auth.currentUser!.uid)
-                            OutlinedButton(
-                                onPressed: () {
-                                  if (following) {
-                                    unfollow(auth.currentUser!.uid, widget.uid);
-                                    setState(() {
-                                      following = false;
-                                    });
-                                  } else {
-                                    follow(auth.currentUser!.uid, widget.uid);
-                                    setState(() {
-                                      following = true;
-                                    });
-                                  }
-                                },
-                                child: Text(following ? "Unfollow" : "Follow")),
                         ],
                       ),
                       const Divider(

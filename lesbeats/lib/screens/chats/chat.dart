@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
+import 'package:lesbeats/widgets/format.dart';
 
 class MyChat extends StatefulWidget {
-  const MyChat({super.key, required this.chatId});
-  final String chatId;
+  const MyChat({super.key, required this.userId});
+  final String userId;
 
   @override
   State<MyChat> createState() => _MyChatState();
@@ -13,101 +14,161 @@ class MyChat extends StatefulWidget {
 class _MyChatState extends State<MyChat> {
   final TextEditingController _textController = TextEditingController();
   late final Stream<QuerySnapshot> _chatStream;
+  late String _chatId;
 
   @override
   void initState() {
     super.initState();
+    _chatId = auth.currentUser!.uid.hashCode >= widget.userId.hashCode
+        ? '${auth.currentUser!.uid}+${widget.userId}'
+        : '${widget.userId}+${auth.currentUser!.uid}';
+
     _chatStream = db
         .collection('messages')
-        .where('chatId', isEqualTo: widget.chatId)
+        .where('chatId', isEqualTo: _chatId)
         .snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chat'),
-      ),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                  stream: _chatStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: Image.asset(
-                          "assets/images/loading.gif",
-                          height: 70,
-                          width: 70,
-                        ),
-                      );
-                    }
-                    final messages = snapshot.data!.docs.reversed;
-                    List<Widget> messageWidgets = [];
-                    for (var message in messages) {
-                      final messageText = message['text'];
-                      final messageSender = message['sender'];
-                      final messageWidget =
-                          Text('$messageText from $messageSender');
-                      messageWidgets.add(messageWidget);
-                    }
-                    if (snapshot.hasData) {
-                      return ListView(
-                        reverse: true,
-                        children: messageWidgets,
-                      );
-                    }
-
-                    return const SizedBox();
-                  }),
-            ),
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30.0),
-                  topRight: Radius.circular(30.0),
+    return StreamBuilder<DocumentSnapshot>(
+        stream: db.collection("users").doc(widget.userId).snapshots(),
+        builder: (context, usersnapshot) {
+          if (usersnapshot.connectionState == ConnectionState.waiting) {
+            return Scaffold(
+              body: Center(
+                child: Image.asset(
+                  "assets/images/loading.gif",
+                  height: 70,
+                  width: 70,
                 ),
               ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
+            );
+          }
+
+          if (usersnapshot.hasData) {
+            return Scaffold(
+              appBar: AppBar(
+                title: Row(
+                  children: [
+                    ClipOval(
+                      child: FadeInImage.assetNetwork(
+                          placeholder: "assets/images/placeholder.jpg",
+                          height: 40,
+                          fit: BoxFit.cover,
+                          width: 40,
+                          image: usersnapshot.data!.get("photoUrl")),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(usersnapshot.data!.get("username"),
+                        style: Theme.of(context).textTheme.subtitle1),
+                  ],
+                ),
+                iconTheme: IconThemeData(
+                  color: Theme.of(context).textTheme.headline6!.color,
+                ),
+                actions: [
+                  IconButton(
+                      onPressed: () {}, icon: const Icon(Icons.more_vert))
+                ],
+              ),
+              body: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Divider(),
                     Expanded(
-                      child: TextField(
-                        controller: _textController,
-                        decoration: const InputDecoration(
-                          hintText: 'Enter message...',
-                          border: InputBorder.none,
+                      child: StreamBuilder<QuerySnapshot>(
+                          stream: _chatStream,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: Image.asset(
+                                  "assets/images/loading.gif",
+                                  height: 70,
+                                  width: 70,
+                                ),
+                              );
+                            }
+                            final messages = snapshot.data!.docs.reversed;
+                            List<Widget> messageWidgets = [];
+                            for (var message in messages) {
+                              final messageText =
+                                  decrypt(_chatId, message['text']);
+                              final messageSender = message['sender'];
+                              final messageWidget =
+                                  Text('$messageText from $messageSender');
+                              messageWidgets.add(messageWidget);
+                            }
+                            if (snapshot.hasData) {
+                              return ListView(
+                                reverse: true,
+                                children: messageWidgets,
+                              );
+                            }
+
+                            return const SizedBox();
+                          }),
+                    ),
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30.0),
+                          topRight: Radius.circular(30.0),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.send),
-                      onPressed: () {
-                        db.collection("messages").add(
-                          {
-                            'text': _textController.text,
-                            'sender': auth.currentUser!.uid,
-                            'chatId': widget.chatId,
-                          },
-                        );
-                        _textController.clear();
-                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0, vertical: 8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Expanded(
+                              child: TextField(
+                                controller: _textController,
+                                decoration: const InputDecoration(
+                                  hintText: 'Enter message...',
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.send),
+                              onPressed: () {
+                                db.collection("messages").add(
+                                  {
+                                    'text':
+                                        encrypt(_chatId, _textController.text),
+                                    'sender': auth.currentUser!.uid,
+                                    'recipient': widget.userId,
+                                    'chatId': _chatId,
+                                    'type': 'text',
+                                    'status': 'sent',
+                                    'timestamp': DateTime.now(),
+                                    'participants': [
+                                      auth.currentUser!.uid,
+                                      widget.userId
+                                    ]
+                                  },
+                                );
+                                _textController.clear();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
+            );
+          }
+
+          return const SizedBox();
+        });
   }
 }

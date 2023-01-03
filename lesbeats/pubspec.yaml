@@ -64,6 +64,8 @@ dependencies:
   open_filex: ^4.3.2
   just_audio_background: ^0.0.1-beta.8
   url_launcher: ^6.1.7
+  encrypt: ^5.0.1
+  chat_bubbles: ^1.4.0
 
 dev_dependencies:
   flutter_test:

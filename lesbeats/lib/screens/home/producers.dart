@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
+import 'package:lesbeats/screens/chats/chat.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 
 import '../../services/stream/follow.dart';
@@ -174,19 +175,20 @@ class _MyProducerTileState extends State<MyProducerTile> {
                     ),
                     Row(
                       children: [
-                        IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.message,
-                              color: Theme.of(context).primaryColor,
-                            )),
+                        OpenContainer(
+                            closedElevation: 0,
+                            closedBuilder: ((context, action) => Icon(
+                                  Icons.message,
+                                  color: Theme.of(context).primaryColor,
+                                )),
+                            openBuilder: ((context, action) =>
+                                MyChat(userId: widget.doc["uid"]))),
                         const SizedBox(
-                          width: 10,
+                          width: 20,
                         ),
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                elevation: 0,
-                                backgroundColor: (following)
+                        OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                                foregroundColor: (following)
                                     ? Colors.grey
                                     : Theme.of(context).primaryColor),
                             onPressed: () {

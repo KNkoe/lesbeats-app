@@ -1,3 +1,5 @@
+import 'package:encrypt/encrypt.dart';
+
 String numberFormat(dynamic n) {
   String num = n.toString();
   int len = num.length;
@@ -15,4 +17,26 @@ String numberFormat(dynamic n) {
 
 bool isNumeric(String s) {
   return double.tryParse(s) != null;
+}
+
+// Encrypts the message using the given key
+String encrypt(String key, String message) {
+  final keyBytes = Key.fromUtf8(key.substring(0, 32));
+  final iv = IV.fromLength(16);
+
+  final encrypter = Encrypter(AES(keyBytes));
+
+  final encrypted = encrypter.encrypt(message, iv: iv);
+
+  return encrypted.base64;
+}
+
+// Decrypts the message using the given key
+String decrypt(String key, String cypher) {
+  final keyBytes = Key.fromUtf8(key.substring(0, 32));
+  final iv = IV.fromLength(16);
+  final encrypter = Encrypter(AES(keyBytes));
+  final decrypted = encrypter.decrypt(Encrypted.fromBase64(cypher), iv: iv);
+
+  return decrypted;
 }

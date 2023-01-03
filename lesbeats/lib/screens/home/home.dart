@@ -9,6 +9,7 @@ import 'package:iconify_flutter/icons/fluent.dart';
 import 'package:iconify_flutter/icons/ph.dart';
 
 import '../../main.dart';
+import '../../services/services.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -36,6 +37,14 @@ class _MyHomePageState extends State<MyHomePage> {
       default:
         return Container();
     }
+  }
+
+  final observer = LifecycleObserver();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(observer);
   }
 
   @override

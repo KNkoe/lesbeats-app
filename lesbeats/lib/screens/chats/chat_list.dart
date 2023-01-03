@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/bx.dart';
 import 'package:lesbeats/main.dart';
+import 'package:lesbeats/widgets/load.dart';
 
 import 'chat.dart';
 
@@ -92,93 +93,133 @@ class _MyChatListState extends State<MyChatList> {
                 return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: OpenContainer(
-                            closedBuilder: ((context, action) => Column(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                          bottom: 10, top: 10),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              const CircleAvatar(
-                                                minRadius: 30,
-                                                backgroundImage: AssetImage(
-                                                    "assets/images/rnb.jpg"),
-                                              ),
-                                              const SizedBox(
-                                                width: 20,
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                      String userId =
+                          snapshot.data!.docs[index].id.split('+')[0] ==
+                                  auth.currentUser!.uid
+                              ? snapshot.data!.docs[index].id.split('+')[1]
+                              : snapshot.data!.docs[index].id.split('+')[0];
+
+                      return StreamBuilder<DocumentSnapshot>(
+                          stream:
+                              db.collection("users").doc(userId).snapshots(),
+                          builder: (context, usersnapshot) {
+                            if (usersnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const ChatLoading();
+                            }
+
+                            if (usersnapshot.hasData) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: OpenContainer(
+                                    closedBuilder: ((context, action) => Column(
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  bottom: 10, top: 10),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
-                                                  const Padding(
-                                                    padding: EdgeInsets.only(
-                                                        bottom: 10, top: 20),
-                                                    child: Text(
-                                                      "Hello world",
-                                                      style: TextStyle(
-                                                          fontSize: 18),
-                                                    ),
+                                                  Row(
+                                                    children: [
+                                                      ClipOval(
+                                                        child: FadeInImage.assetNetwork(
+                                                            placeholder:
+                                                                "assets/images/placeholder.jpg",
+                                                            image: usersnapshot
+                                                                .data!
+                                                                .get(
+                                                                    "photoUrl")),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 20,
+                                                      ),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    bottom: 10,
+                                                                    top: 20),
+                                                            child: Text(
+                                                              usersnapshot.data!
+                                                                  .get(
+                                                                      "username"),
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .subtitle1,
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 10),
+                                                            height: 40,
+                                                            child: const Text(
+                                                              "The actual message send to this user",
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .fade,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black54),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
                                                   ),
-                                                  Container(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 10),
-                                                    height: 40,
-                                                    child: const Text(
-                                                      "The actual message send to this user",
-                                                      overflow:
-                                                          TextOverflow.fade,
-                                                      style: TextStyle(
-                                                          color:
-                                                              Colors.black54),
-                                                    ),
-                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .all(10),
+                                                          decoration:
+                                                              const BoxDecoration(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  shape: BoxShape
+                                                                      .circle),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(6),
+                                                          child: Badge(
+                                                            showBadge: false,
+                                                            badgeColor: Theme
+                                                                    .of(context)
+                                                                .indicatorColor,
+                                                            child: const Text(
+                                                              "2",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          )),
+                                                      const Text("15:09")
+                                                    ],
+                                                  )
                                                 ],
-                                              )
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Container(
-                                                  margin:
-                                                      const EdgeInsets.all(10),
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                          color: Colors.white,
-                                                          shape:
-                                                              BoxShape.circle),
-                                                  padding:
-                                                      const EdgeInsets.all(6),
-                                                  child: Badge(
-                                                    showBadge: false,
-                                                    badgeColor:
-                                                        Theme.of(context)
-                                                            .indicatorColor,
-                                                    child: const Text(
-                                                      "2",
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    ),
-                                                  )),
-                                              const Text("15:09")
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                            openBuilder: ((context, action) => MyChat(
-                                chatId: snapshot.data!.docs[index]["chatId"]))),
-                      );
+                                              ),
+                                            ),
+                                          ],
+                                        )),
+                                    openBuilder: ((context, action) =>
+                                        MyChat(userId: userId))),
+                              );
+                            }
+
+                            return const SizedBox();
+                          });
                     });
               }
 

@@ -44,10 +44,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
   }
 
   late final Uri emailLaunchUri;
+  late final Uri helpAndFeedback;
 
-  Future<void> _launchUrl() async {
+  Future<void> _launchEmail() async {
     if (!await launchUrl(emailLaunchUri)) {
       throw 'Could not launch $emailLaunchUri';
+    }
+  }
+
+  Future<void> _launchUrl() async {
+    if (!await launchUrl(helpAndFeedback)) {
+      throw 'Could not launch $helpAndFeedback';
     }
   }
 
@@ -56,11 +63,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
     super.initState();
     emailLaunchUri = Uri(
       scheme: 'mailto',
-      path: 'katleholnkoe@gmail.com',
+      path: 'lesbeats0@gmail.com',
       query: encodeQueryParameters(<String, String>{
         'subject': 'Lesbeats: Feedback or Suggestions',
       }),
     );
+
+    helpAndFeedback =
+        Uri.parse("http://lesbeats.nicepage.io/Lesbeats.html#sec-8ab1");
   }
 
   @override
@@ -304,7 +314,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         const Text(
                             "Lesbeats is developed by Katleho Nkoe, a solo developer based in Maseru Lesotho. With a passion for music and technology, Katleho created Lesbeats to provide a simple and intuitive way for producers to sell their beats. If you have any feedback or suggestions, Jane would love to hear from you! You can contact her at "),
                         GestureDetector(
-                          onTap: _launchUrl,
+                          onTap: _launchEmail,
                           child: const Text(
                             "Katleholnkoe@gmail.com",
                             style: TextStyle(
