@@ -7,6 +7,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lesbeats/screens/chats/chat.dart';
 import 'package:lesbeats/widgets/format.dart';
+import 'package:lesbeats/wrapper.dart';
 
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -194,12 +195,23 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                         ElevatedButton(
                                             style: confirmButtonStyle,
                                             onPressed: () async {
-                                              await auth.signOut().then(
-                                                  (value) => Navigator.of(
-                                                          context)
-                                                      .pushNamedAndRemoveUntil(
-                                                          "/",
-                                                          (route) => false));
+                                              db
+                                                  .collection("users")
+                                                  .doc(auth.currentUser!.uid)
+                                                  .set({"online": false},
+                                                      SetOptions(merge: true));
+                                              await auth
+                                                  .signOut()
+                                                  .then((value) {
+                                                Navigator.popUntil(
+                                                    context, (route) => false);
+
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: ((context) =>
+                                                            const Wrapper())));
+                                              });
 
                                               try {
                                                 final GoogleSignIn

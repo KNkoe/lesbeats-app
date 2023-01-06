@@ -1,6 +1,10 @@
+import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:intl/intl.dart';
 import 'package:lesbeats/main.dart';
+import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/format.dart';
 
 class MyChat extends StatefulWidget {
@@ -23,9 +27,12 @@ class _MyChatState extends State<MyChat> {
         ? '${auth.currentUser!.uid}+${widget.userId}'
         : '${widget.userId}+${auth.currentUser!.uid}';
 
+    debugPrint("CHATID: $_chatId");
+
     _chatStream = db
         .collection('messages')
         .where('chatId', isEqualTo: _chatId)
+        .orderBy("timestamp", descending: true)
         .snapshots();
   }
 
@@ -64,6 +71,7 @@ class _MyChatState extends State<MyChat> {
                     ),
                     Text(usersnapshot.data!.get("username"),
                         style: Theme.of(context).textTheme.subtitle1),
+                    if (usersnapshot.data!.get("online")) online(context)
                   ],
                 ),
                 iconTheme: IconThemeData(
@@ -93,19 +101,69 @@ class _MyChatState extends State<MyChat> {
                                 ),
                               );
                             }
-                            final messages = snapshot.data!.docs.reversed;
-                            List<Widget> messageWidgets = [];
-                            for (var message in messages) {
-                              final messageText =
-                                  decrypt(_chatId, message['text']);
-                              final messageSender = message['sender'];
-                              final messageWidget =
-                                  Text('$messageText from $messageSender');
-                              messageWidgets.add(messageWidget);
-                            }
+
                             if (snapshot.hasData) {
+                              final messages = snapshot.data!.docs.reversed;
+                              List<Widget> messageWidgets = [];
+
+                              for (var message in messages) {
+                                final messageText =
+                                    decrypt(_chatId, message['text']);
+                                final messageSender = message['sender'];
+                                final Timestamp timestamp =
+                                    message['timestamp'];
+                                final status = message['status'] == 'seen';
+
+                                if (!status &&
+                                    messageSender != auth.currentUser!.uid) {
+                                  message.reference.set({"status": 'seen'},
+                                      SetOptions(merge: true));
+                                }
+
+                                final formattedTimestamp = DateFormat.yMd()
+                                    .add_jm()
+                                    .format(timestamp.toDate());
+
+                                final messageWidget = Column(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          messageSender == auth.currentUser!.uid
+                                              ? CrossAxisAlignment.end
+                                              : CrossAxisAlignment.start,
+                                      children: [
+                                        BubbleSpecialThree(
+                                          isSender: messageSender ==
+                                              auth.currentUser!.uid,
+                                          text: messageText,
+                                          color: messageSender ==
+                                                  auth.currentUser!.uid
+                                              ? Theme.of(context).primaryColor
+                                              : const Color(0xFFE8E8EE),
+                                          tail: true,
+                                          seen: status,
+                                          sent: !status,
+                                          textStyle: TextStyle(
+                                              color: messageSender ==
+                                                      auth.currentUser!.uid
+                                                  ? Colors.white
+                                                  : Colors.black87,
+                                              fontSize: 16),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                              '${formattedTimestamp.split(" ")[1]} ${formattedTimestamp.split(" ")[2]}'),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                );
+                                messageWidgets.add(messageWidget);
+                              }
                               return ListView(
-                                reverse: true,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
                                 children: messageWidgets,
                               );
                             }
@@ -114,9 +172,10 @@ class _MyChatState extends State<MyChat> {
                           }),
                     ),
                     Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).backgroundColor,
+                        border: Border.all(color: Colors.black12),
+                        borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(30.0),
                           topRight: Radius.circular(30.0),
                         ),
@@ -126,35 +185,47 @@ class _MyChatState extends State<MyChat> {
                             horizontal: 24.0, vertical: 8.0),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
+                          children: [
                             Expanded(
                               child: TextField(
                                 controller: _textController,
                                 decoration: const InputDecoration(
-                                  hintText: 'Enter message...',
-                                  border: InputBorder.none,
-                                ),
+                                    hintText: 'Enter message...',
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none),
                               ),
                             ),
                             IconButton(
                               icon: const Icon(Icons.send),
                               onPressed: () {
-                                db.collection("messages").add(
-                                  {
-                                    'text':
-                                        encrypt(_chatId, _textController.text),
-                                    'sender': auth.currentUser!.uid,
-                                    'recipient': widget.userId,
-                                    'chatId': _chatId,
-                                    'type': 'text',
-                                    'status': 'sent',
-                                    'timestamp': DateTime.now(),
-                                    'participants': [
-                                      auth.currentUser!.uid,
-                                      widget.userId
-                                    ]
-                                  },
-                                );
+                                db.collection("messages").add({
+                                  'text':
+                                      encrypt(_chatId, _textController.text),
+                                  'sender': auth.currentUser!.uid,
+                                  'recipient': widget.userId,
+                                  'chatId': _chatId,
+                                  'type': 'text',
+                                  'status': 'sent',
+                                  'timestamp': DateTime.now(),
+                                  'participants': [
+                                    auth.currentUser!.uid,
+                                    widget.userId
+                                  ]
+                                });
+                                db.collection("messages").doc(_chatId).set({
+                                  'text':
+                                      encrypt(_chatId, _textController.text),
+                                  'sender': auth.currentUser!.uid,
+                                  'recipient': widget.userId,
+                                  'type': 'text',
+                                  'chatId': 'last message',
+                                  'status': 'sent',
+                                  'timestamp': DateTime.now(),
+                                  'participants': [
+                                    auth.currentUser!.uid,
+                                    widget.userId
+                                  ]
+                                });
                                 _textController.clear();
                               },
                             ),

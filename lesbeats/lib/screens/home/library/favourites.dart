@@ -51,27 +51,17 @@ class _MyFavouritesState extends State<MyFavourites> {
           }
 
           if (snapshot.snapshot1.hasData) {
-            if (snapshot.snapshot1.data!.size == 0) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Lottie.network(
-                        "https://assets1.lottiefiles.com/private_files/lf30_e3pteeho.json"),
-                    const Text("No favourites")
-                  ],
-                ),
-              );
-            }
-            favorites.clear();
             if (snapshot.snapshot2.hasData) {
+              favorites.clear();
               final trackMap = snapshot.snapshot2.data!.docs.toList().asMap();
 
               for (var element in snapshot.snapshot1.data!.docs) {
                 var result = snapshot.snapshot2.data!.docs
                     .where((value) => value["id"] == element["id"]);
 
-                favorites.add(result.first);
+                if (result.isNotEmpty) {
+                  favorites.add(result.first);
+                }
               }
 
               return Expanded(
@@ -84,6 +74,19 @@ class _MyFavouritesState extends State<MyFavourites> {
                     (element) =>
                         favorites[index]["id"] == trackMap[element]!.get("id"),
                   );
+
+                  if (favorites.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Lottie.network(
+                              "https://assets1.lottiefiles.com/private_files/lf30_e3pteeho.json"),
+                          const Text("No favourites")
+                        ],
+                      ),
+                    );
+                  }
 
                   return MyAudioTile(
                     snapshot: snapshot.snapshot2,

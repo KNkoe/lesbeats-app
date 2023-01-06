@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 
 InputDecoration dialogInputdecoration = InputDecoration(
     floatingLabelBehavior: FloatingLabelBehavior.never,

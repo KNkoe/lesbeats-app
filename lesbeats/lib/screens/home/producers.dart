@@ -68,39 +68,31 @@ class MyProducerTile extends StatefulWidget {
 
 class _MyProducerTileState extends State<MyProducerTile> {
   bool following = false;
+  int followers = 0;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    getFollow();
-    getFollowers();
-  }
-
-  getFollow() {
+  void initState() {
+    super.initState();
     db
         .collection("users")
         .doc(auth.currentUser!.uid)
         .collection("following")
         .doc(widget.doc["uid"])
-        .get()
-        .then((doc) {
+        .snapshots()
+        .listen((doc) {
       if (mounted) {
         setState(() {
           following = doc.exists;
         });
       }
     });
-  }
 
-  int followers = 0;
-
-  getFollowers() {
     db
         .collection("users")
         .doc(widget.doc["uid"])
         .collection("followers")
-        .get()
-        .then((value) {
+        .snapshots()
+        .listen((value) {
       if (mounted) {
         setState(() {
           followers = value.size;
