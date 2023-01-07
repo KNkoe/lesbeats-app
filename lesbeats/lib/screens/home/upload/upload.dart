@@ -528,6 +528,10 @@ class _UploadBeatState extends State<UploadBeat> {
                                         onChanged: (value) {
                                           setState(() {
                                             _enableDownload = value!;
+
+                                            if (_enableDownload) {
+                                              _priceController.clear();
+                                            }
                                           });
                                         }),
                                     const SizedBox(

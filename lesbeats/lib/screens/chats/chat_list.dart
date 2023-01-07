@@ -1,12 +1,15 @@
 import 'package:animations/animations.dart';
-import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/bx.dart';
+// ignore: depend_on_referenced_packages
+import 'package:intl/intl.dart';
 import 'package:lesbeats/main.dart';
+import 'package:lesbeats/widgets/format.dart';
 import 'package:lesbeats/widgets/load.dart';
 
+import '../../widgets/decoration.dart';
 import 'chat.dart';
 
 class MyChatList extends StatefulWidget {
@@ -24,6 +27,7 @@ class _MyChatListState extends State<MyChatList> {
     messages = db
         .collection("messages")
         .where("participants", arrayContains: auth.currentUser!.uid)
+        .where("chatId", isEqualTo: "last message")
         .snapshots();
     super.initState();
   }
@@ -39,43 +43,43 @@ class _MyChatListState extends State<MyChatList> {
           iconTheme:
               IconThemeData(color: Theme.of(context).primaryIconTheme.color),
           toolbarHeight: 50,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(80),
-            child: Column(
-              children: [
-                const Divider(),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  height: 70,
-                  child: TextField(
-                    decoration: InputDecoration(
-                        prefixIcon: const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Iconify(
-                            Bx.search,
-                            color: Colors.black38,
-                          ),
-                        ),
-                        filled: true,
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                        fillColor:
-                            Theme.of(context).primaryColor.withOpacity(0.2),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide:
-                                const BorderSide(color: Colors.transparent)),
-                        label: const Text(
-                          "Search",
-                          style: TextStyle(
-                            color: Colors.black38,
-                          ),
-                        )),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // bottom: PreferredSize(
+          //   preferredSize: const Size.fromHeight(80),
+          //   child: Column(
+          //     children: [
+          //       const Divider(),
+          //       Container(
+          //         padding:
+          //             const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          //         height: 70,
+          //         child: TextField(
+          //           decoration: InputDecoration(
+          //               prefixIcon: const Padding(
+          //                 padding: EdgeInsets.all(10),
+          //                 child: Iconify(
+          //                   Bx.search,
+          //                   color: Colors.black38,
+          //                 ),
+          //               ),
+          //               filled: true,
+          //               floatingLabelBehavior: FloatingLabelBehavior.never,
+          //               fillColor:
+          //                   Theme.of(context).primaryColor.withOpacity(0.2),
+          //               enabledBorder: OutlineInputBorder(
+          //                   borderRadius: BorderRadius.circular(10),
+          //                   borderSide:
+          //                       const BorderSide(color: Colors.transparent)),
+          //               label: const Text(
+          //                 "Search",
+          //                 style: TextStyle(
+          //                   color: Colors.black38,
+          //                 ),
+          //               )),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ),
         body: StreamBuilder<QuerySnapshot>(
             stream: messages,
@@ -90,140 +94,137 @@ class _MyChatListState extends State<MyChatList> {
                 );
               }
               if (snapshot.hasData) {
+                debugPrint("HAS DATA: ${snapshot.data!.docs.length}");
                 return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
-                      String userId =
-                          snapshot.data!.docs[index].id.split('+')[0] ==
+                      final String userId =
+                          snapshot.data!.docs[index].get("sender") ==
                                   auth.currentUser!.uid
-                              ? snapshot.data!.docs[index].id.split('+')[1]
-                              : snapshot.data!.docs[index].id.split('+')[0];
+                              ? snapshot.data!.docs[index].get("recipient")
+                              : snapshot.data!.docs[index].get("sender");
 
-                      return StreamBuilder<DocumentSnapshot>(
-                          stream:
-                              db.collection("users").doc(userId).snapshots(),
-                          builder: (context, usersnapshot) {
-                            if (usersnapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const ChatLoading();
-                            }
-
-                            if (usersnapshot.hasData) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: OpenContainer(
-                                    closedBuilder: ((context, action) => Column(
-                                          children: [
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  bottom: 10, top: 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      ClipOval(
-                                                        child: FadeInImage.assetNetwork(
-                                                            placeholder:
-                                                                "assets/images/placeholder.jpg",
-                                                            image: usersnapshot
-                                                                .data!
-                                                                .get(
-                                                                    "photoUrl")),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 20,
-                                                      ),
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    bottom: 10,
-                                                                    top: 20),
-                                                            child: Text(
-                                                              usersnapshot.data!
-                                                                  .get(
-                                                                      "username"),
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .subtitle1,
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    right: 10),
-                                                            height: 40,
-                                                            child: const Text(
-                                                              "The actual message send to this user",
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .fade,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black54),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Column(
-                                                    children: [
-                                                      Container(
-                                                          margin:
-                                                              const EdgeInsets
-                                                                  .all(10),
-                                                          decoration:
-                                                              const BoxDecoration(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  shape: BoxShape
-                                                                      .circle),
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(6),
-                                                          child: Badge(
-                                                            showBadge: false,
-                                                            badgeColor: Theme
-                                                                    .of(context)
-                                                                .indicatorColor,
-                                                            child: const Text(
-                                                              "2",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                          )),
-                                                      const Text("15:09")
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        )),
-                                    openBuilder: ((context, action) =>
-                                        MyChat(userId: userId))),
-                              );
-                            }
-
-                            return const SizedBox();
-                          });
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: OpenContainer(
+                            closedElevation: 0,
+                            closedBuilder: ((context, action) => Chat(
+                                  userId: userId,
+                                  snapshot: snapshot.data!.docs[index],
+                                )),
+                            openBuilder: ((context, action) =>
+                                MyChat(userId: userId))),
+                      );
                     });
               }
 
               return const SizedBox();
             }));
+  }
+}
+
+class Chat extends StatefulWidget {
+  const Chat({Key? key, required this.userId, required this.snapshot})
+      : super(key: key);
+
+  final String userId;
+  final DocumentSnapshot snapshot;
+
+  @override
+  State<Chat> createState() => _ChatState();
+}
+
+class _ChatState extends State<Chat> {
+  late final Stream<DocumentSnapshot> _userStream;
+  late final String _chatId;
+
+  @override
+  void initState() {
+    super.initState();
+    _chatId = auth.currentUser!.uid.hashCode >= widget.userId.hashCode
+        ? '${auth.currentUser!.uid}+${widget.userId}'
+        : '${widget.userId}+${auth.currentUser!.uid}';
+    _userStream = db.collection("users").doc(widget.userId).snapshots();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<DocumentSnapshot>(
+        stream: _userStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const ChatLoading();
+          }
+
+          if (snapshot.hasData) {
+            final Timestamp timestamp = widget.snapshot['timestamp'];
+            final messageSender = widget.snapshot['sender'];
+            final formattedTimestamp =
+                DateFormat.yMd().add_jm().format(timestamp.toDate());
+            final status = widget.snapshot['status'] == 'seen';
+
+            return ListTile(
+              contentPadding: const EdgeInsets.symmetric(vertical: 10),
+              leading: Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  ClipOval(
+                    child: FadeInImage.assetNetwork(
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
+                        placeholder: "assets/images/placeholder.jpg",
+                        image: snapshot.data!.get("photoUrl")),
+                  ),
+                  if (snapshot.data!.get("online")) online(context)
+                ],
+              ),
+              title: Text(
+                snapshot.data!.get("username"),
+              ),
+              subtitle: Row(
+                children: [
+                  if (messageSender == auth.currentUser!.uid)
+                    status
+                        ? Icon(
+                            Icons.done_all,
+                            color: Theme.of(context).primaryColor,
+                          )
+                        : const Icon(Icons.check),
+                  if (messageSender == auth.currentUser!.uid)
+                    const SizedBox(
+                      width: 10,
+                    ),
+                  Text(
+                    decrypt(_chatId, widget.snapshot.get("text")),
+                    overflow: TextOverflow.fade,
+                  ),
+                ],
+              ),
+              trailing: SizedBox(
+                height: 60,
+                width: 50,
+                child: Column(
+                  children: [
+                    Text(
+                        '${formattedTimestamp.split(" ")[1]} ${formattedTimestamp.split(" ")[2]}'),
+                    if (messageSender != auth.currentUser!.uid && !status)
+                      Container(
+                        height: 10,
+                        width: 10,
+                        margin: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context).primaryColor),
+                      )
+                  ],
+                ),
+              ),
+            );
+          }
+
+          return const SizedBox();
+        });
   }
 }

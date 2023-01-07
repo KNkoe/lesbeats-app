@@ -29,8 +29,12 @@ class MyFollowers extends StatelessWidget {
           : ListView.builder(
               itemCount: snapshot!.size,
               physics: const BouncingScrollPhysics(),
-              itemBuilder: ((context, index) =>
-                  MyFollowerTile(doc: snapshot!.docs[index]))),
+              itemBuilder: ((context, index) {
+                if (snapshot!.docs[index]["uid"] != auth.currentUser!.uid) {
+                  return MyFollowerTile(doc: snapshot!.docs[index]);
+                }
+                return const SizedBox();
+              })),
     );
   }
 }

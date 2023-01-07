@@ -20,6 +20,8 @@ class _MyChatState extends State<MyChat> {
   late final Stream<QuerySnapshot> _chatStream;
   late String _chatId;
 
+  final double pi = 3.1415926535897932;
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +58,7 @@ class _MyChatState extends State<MyChat> {
           if (usersnapshot.hasData) {
             return Scaffold(
               appBar: AppBar(
+                automaticallyImplyLeading: false,
                 title: Row(
                   children: [
                     ClipOval(
@@ -78,8 +81,14 @@ class _MyChatState extends State<MyChat> {
                   color: Theme.of(context).textTheme.headline6!.color,
                 ),
                 actions: [
-                  IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.more_vert))
+                  Transform.rotate(
+                    angle: (pi / 180) * 270,
+                    child: IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.arrow_back_ios_new)),
+                  )
                 ],
               ),
               body: SafeArea(
@@ -110,14 +119,20 @@ class _MyChatState extends State<MyChat> {
                                 final messageText =
                                     decrypt(_chatId, message['text']);
                                 final messageSender = message['sender'];
+                                final messageRecipient = message['recipient'];
                                 final Timestamp timestamp =
                                     message['timestamp'];
                                 final status = message['status'] == 'seen';
 
+                                debugPrint("STATUS : $status");
+
                                 if (!status &&
-                                    messageSender != auth.currentUser!.uid) {
+                                    messageRecipient == auth.currentUser!.uid) {
                                   message.reference.set({"status": 'seen'},
                                       SetOptions(merge: true));
+                                  db.collection("messages").doc(_chatId).set({
+                                    'status': 'seen',
+                                  }, SetOptions(merge: true));
                                 }
 
                                 final formattedTimestamp = DateFormat.yMd()
@@ -141,8 +156,12 @@ class _MyChatState extends State<MyChat> {
                                               ? Theme.of(context).primaryColor
                                               : const Color(0xFFE8E8EE),
                                           tail: true,
-                                          seen: status,
-                                          sent: !status,
+                                          seen: status &&
+                                              messageSender ==
+                                                  auth.currentUser!.uid,
+                                          sent: !status &&
+                                              messageSender ==
+                                                  auth.currentUser!.uid,
                                           textStyle: TextStyle(
                                               color: messageSender ==
                                                       auth.currentUser!.uid
@@ -198,34 +217,38 @@ class _MyChatState extends State<MyChat> {
                             IconButton(
                               icon: const Icon(Icons.send),
                               onPressed: () {
-                                db.collection("messages").add({
-                                  'text':
-                                      encrypt(_chatId, _textController.text),
-                                  'sender': auth.currentUser!.uid,
-                                  'recipient': widget.userId,
-                                  'chatId': _chatId,
-                                  'type': 'text',
-                                  'status': 'sent',
-                                  'timestamp': DateTime.now(),
-                                  'participants': [
-                                    auth.currentUser!.uid,
-                                    widget.userId
-                                  ]
-                                });
-                                db.collection("messages").doc(_chatId).set({
-                                  'text':
-                                      encrypt(_chatId, _textController.text),
-                                  'sender': auth.currentUser!.uid,
-                                  'recipient': widget.userId,
-                                  'type': 'text',
-                                  'chatId': 'last message',
-                                  'status': 'sent',
-                                  'timestamp': DateTime.now(),
-                                  'participants': [
-                                    auth.currentUser!.uid,
-                                    widget.userId
-                                  ]
-                                });
+                                if (_textController.text.isNotEmpty) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                  db.collection("messages").add({
+                                    'text':
+                                        encrypt(_chatId, _textController.text),
+                                    'sender': auth.currentUser!.uid,
+                                    'recipient': widget.userId,
+                                    'chatId': _chatId,
+                                    'type': 'text',
+                                    'status': 'sent',
+                                    'timestamp': DateTime.now(),
+                                    'participants': [
+                                      auth.currentUser!.uid,
+                                      widget.userId
+                                    ]
+                                  });
+                                  db.collection("messages").doc(_chatId).set({
+                                    'text':
+                                        encrypt(_chatId, _textController.text),
+                                    'sender': auth.currentUser!.uid,
+                                    'recipient': widget.userId,
+                                    'type': 'text',
+                                    'chatId': 'last message',
+                                    'status': 'sent',
+                                    'timestamp': DateTime.now(),
+                                    'participants': [
+                                      auth.currentUser!.uid,
+                                      widget.userId
+                                    ]
+                                  });
+                                }
+
                                 _textController.clear();
                               },
                             ),

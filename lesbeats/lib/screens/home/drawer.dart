@@ -218,13 +218,30 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         widget._scaffoldKey.currentState!.closeDrawer();
                       },
                       title: const Text("Messages"),
-                      leading: Badge(
-                          badgeColor: Theme.of(context).indicatorColor,
-                          badgeContent: const Text(
-                            "4",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          child: const Iconify(Ri.chat_1_fill)),
+                      leading: StreamBuilder<QuerySnapshot>(
+                          stream: db
+                              .collection("messages")
+                              .where("recipient",
+                                  isEqualTo: auth.currentUser!.uid)
+                              .where("chatId", isEqualTo: "last message")
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              if (snapshot.data!.size == 0) {
+                                return const SizedBox();
+                              }
+
+                              return Badge(
+                                  badgeColor: Theme.of(context).indicatorColor,
+                                  badgeContent: Text(
+                                    snapshot.data!.size.toString(),
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                  child: const Iconify(Ri.chat_1_fill));
+                            }
+
+                            return const SizedBox();
+                          }),
                     ),
                     const Divider(),
                     ListTile(

@@ -22,10 +22,28 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   late final Stream<QuerySnapshot> _usersStream;
+  late final Stream<QuerySnapshot> _mostFollowedStream;
 
   @override
   void initState() {
     _usersStream = db.collection('users').snapshots();
+
+    _usersStream.listen((element) async {
+      for (var element in element.docs) {
+        int followers = 0;
+        await element.reference.collection("followers").get().then((value) {
+          followers += value.size;
+        });
+
+        element.reference
+            .set({"followers": followers}, SetOptions(merge: true));
+      }
+    });
+
+    _mostFollowedStream = db
+        .collection("users")
+        .orderBy("followers", descending: true)
+        .snapshots();
     super.initState();
   }
 
@@ -68,7 +86,7 @@ class _DashboardState extends State<Dashboard> {
                     topRight: Radius.circular(50)),
                 color: Theme.of(context).backgroundColor),
             child: StreamBuilder<QuerySnapshot>(
-                stream: _usersStream,
+                stream: _mostFollowedStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Column(

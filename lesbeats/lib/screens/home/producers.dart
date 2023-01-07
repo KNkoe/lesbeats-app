@@ -16,17 +16,35 @@ class MyProducers extends StatefulWidget {
 
 class _MyArtistsState extends State<MyProducers> {
   late final Stream<QuerySnapshot> _usersStream;
+  late final Stream<QuerySnapshot> _mostFollowedStream;
 
   @override
   void initState() {
     _usersStream = db.collection('users').snapshots();
+
+    _usersStream.listen((element) async {
+      for (var element in element.docs) {
+        int followers = 0;
+        await element.reference.collection("followers").get().then((value) {
+          followers += value.size;
+        });
+
+        element.reference
+            .set({"followers": followers}, SetOptions(merge: true));
+      }
+    });
+
+    _mostFollowedStream = db
+        .collection("users")
+        .orderBy("followers", descending: true)
+        .snapshots();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: _usersStream,
+        stream: _mostFollowedStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(

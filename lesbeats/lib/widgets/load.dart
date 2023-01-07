@@ -61,6 +61,7 @@ class ChatLoading extends StatelessWidget {
             controller.repeat();
           }),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -84,7 +85,7 @@ class ChatLoading extends StatelessWidget {
                 ],
               ),
               const SizedBox(
-                width: 10,
+                height: 10,
               ),
               Container(
                 height: 8,
