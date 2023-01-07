@@ -15,6 +15,7 @@ import 'package:lesbeats/services/player/player.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:lottie/lottie.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 showUpload(BuildContext context) => showDialog(
@@ -267,6 +268,16 @@ class _UploadBeatState extends State<UploadBeat> {
     }
   }
 
+  var _openResult = 'Unknown';
+
+  Future<void> openFile(String filePath) async {
+    final result = await OpenFilex.open(filePath);
+
+    setState(() {
+      _openResult = "type=${result.type}  message=${result.message}";
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -409,7 +420,7 @@ class _UploadBeatState extends State<UploadBeat> {
                         OutlinedButton.icon(
                           icon: const Icon(Icons.play_circle),
                           onPressed: () {
-                            playOffline(context, audio!);
+                            openFile(audio!.path!);
                           },
                           label: Text(
                             title == null

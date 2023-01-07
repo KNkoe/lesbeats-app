@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lesbeats/screens/chats/chat.dart';
+import 'package:lesbeats/services/stream/report.dart';
 import 'package:lesbeats/widgets/format.dart';
 import 'package:lesbeats/wrapper.dart';
 
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../main.dart';
 import '../../services/stream/audio_stream.dart';
@@ -52,20 +52,6 @@ class _MyProfilePageState extends State<MyProfilePage> {
   late final Stream<QuerySnapshot> _followingStream;
 
   bool following = false;
-  late final Uri emailLaunchUri;
-
-  String? encodeQueryParameters(Map<String, String> params) {
-    return params.entries
-        .map((MapEntry<String, String> e) =>
-            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-        .join('&');
-  }
-
-  Future<void> _launchEmail() async {
-    if (!await launchUrl(emailLaunchUri)) {
-      throw 'Could not launch $emailLaunchUri';
-    }
-  }
 
   @override
   void initState() {
@@ -103,14 +89,6 @@ class _MyProfilePageState extends State<MyProfilePage> {
         .then((doc) {
       following = doc.exists;
     });
-
-    emailLaunchUri = Uri(
-      scheme: 'mailto',
-      path: 'lesbeats0@gmail.com',
-      query: encodeQueryParameters(<String, String>{
-        'subject': 'Report User ${widget.uid} (DO NOT EDIT SUBJECT)',
-      }),
-    );
   }
 
   @override
@@ -243,7 +221,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                       PopupMenuItem(
                           onTap: () {
                             Future.delayed(Duration.zero, () {
-                              _launchEmail();
+                              report(widget.uid, "User");
                             });
                           },
                           child: const Text("Report account"))

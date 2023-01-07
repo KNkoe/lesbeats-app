@@ -7,6 +7,7 @@ import 'package:lesbeats/screens/home/features.dart';
 import 'package:lesbeats/screens/home/edit_track.dart';
 import 'package:lesbeats/services/stream/follow.dart';
 import 'package:lesbeats/services/stream/like.dart';
+import 'package:lesbeats/services/stream/report.dart';
 import 'package:lesbeats/widgets/format.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -276,7 +277,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                             color: Theme.of(context).textTheme.bodyText1!.color,
                           ),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20).copyWith(
+                              borderRadius: BorderRadius.circular(10).copyWith(
                                   topRight: const Radius.circular(0))),
                           itemBuilder: ((context) => [
                                 if (download)
@@ -398,27 +399,32 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                       )),
                                 const PopupMenuItem(
                                     height: 2, child: Divider()),
-                                PopupMenuItem(
-                                    child: Row(
-                                  children: const [
-                                    Icon(Icons.share),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text("Share"),
-                                  ],
-                                )),
+                                // PopupMenuItem(
+                                //     child: Row(
+                                //   children: const [
+                                //     Icon(Icons.share),
+                                //     SizedBox(
+                                //       width: 10,
+                                //     ),
+                                //     Text("Share"),
+                                //   ],
+                                // )),
                                 if (artistId != auth.currentUser!.uid)
                                   PopupMenuItem(
+                                      onTap: () {
+                                        Future.delayed(Duration.zero, () {
+                                          report(id, "Beat");
+                                        });
+                                      },
                                       child: Row(
-                                    children: const [
-                                      Icon(Icons.report),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text("Report"),
-                                    ],
-                                  )),
+                                        children: const [
+                                          Icon(Icons.report),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text("Report"),
+                                        ],
+                                      )),
                               ])),
                     ),
                     Row(

@@ -22,6 +22,10 @@ class _MyUploadsState extends State<MyUploads> {
         .where("artistId", isEqualTo: auth.currentUser!.uid)
         .orderBy("uploadedAt", descending: true)
         .snapshots();
+
+    _audioStream.listen((value) {
+      setState(() {});
+    });
   }
 
   @override

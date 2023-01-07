@@ -45,6 +45,7 @@ class MyAudioStream extends StatelessWidget {
                   itemCount: snapshot.data!.size,
                   itemBuilder: ((context, index) {
                     return MyAudioTile(
+                        key: UniqueKey(),
                         snapshot: snapshot,
                         index: index,
                         isProfileOpened: isProfileOpened);
