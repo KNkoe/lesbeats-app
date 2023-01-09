@@ -12,6 +12,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:lesbeats/services/player/common.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
+import 'package:lesbeats/services/stream/report.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -361,7 +362,9 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                       color: Colors.white),
                                 ),
                                 IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      report(widget.tags!["artistId"]!, "Beat");
+                                    },
                                     icon: const Icon(
                                       Icons.more_horiz,
                                       color: Colors.white,

@@ -1,9 +1,11 @@
+import 'package:animations/animations.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 import 'package:lesbeats/main.dart';
+import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/format.dart';
 
@@ -59,23 +61,28 @@ class _MyChatState extends State<MyChat> {
             return Scaffold(
               appBar: AppBar(
                 automaticallyImplyLeading: false,
-                title: Row(
-                  children: [
-                    ClipOval(
-                      child: FadeInImage.assetNetwork(
-                          placeholder: "assets/images/placeholder.jpg",
-                          height: 40,
-                          fit: BoxFit.cover,
-                          width: 40,
-                          image: usersnapshot.data!.get("photoUrl")),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(usersnapshot.data!.get("username"),
-                        style: Theme.of(context).textTheme.subtitle1),
-                    if (usersnapshot.data!.get("online")) online(context)
-                  ],
+                title: OpenContainer(
+                  closedElevation: 0,
+                  closedBuilder: (context, action) => Row(
+                    children: [
+                      ClipOval(
+                        child: FadeInImage.assetNetwork(
+                            placeholder: "assets/images/placeholder.jpg",
+                            height: 40,
+                            fit: BoxFit.cover,
+                            width: 40,
+                            image: usersnapshot.data!.get("photoUrl")),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(usersnapshot.data!.get("username"),
+                          style: Theme.of(context).textTheme.subtitle1),
+                      if (usersnapshot.data!.get("online")) online(context)
+                    ],
+                  ),
+                  openBuilder: (context, action) =>
+                      MyProfilePage(usersnapshot.data!.get("uid")),
                 ),
                 iconTheme: IconThemeData(
                   color: Theme.of(context).textTheme.headline6!.color,

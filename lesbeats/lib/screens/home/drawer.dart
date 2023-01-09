@@ -227,12 +227,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               .snapshots(),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              if (snapshot.data!.size == 0) {
-                                return const SizedBox();
-                              }
-
                               return Badge(
-                                  badgeColor: Theme.of(context).indicatorColor,
+                                  elevation: (snapshot.data!.size == 0) ? 0 : 2,
+                                  badgeColor: (snapshot.data!.size == 0)
+                                      ? Colors.transparent
+                                      : Theme.of(context).indicatorColor,
                                   badgeContent: Text(
                                     snapshot.data!.size.toString(),
                                     style: const TextStyle(color: Colors.white),
@@ -240,7 +239,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   child: const Iconify(Ri.chat_1_fill));
                             }
 
-                            return const SizedBox();
+                            return const Iconify(Ri.chat_1_fill);
                           }),
                     ),
                     const Divider(),
@@ -329,7 +328,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           height: 20,
                         ),
                         const Text(
-                            "Lesbeats is developed by Katleho Nkoe, a solo developer based in Maseru Lesotho. With a passion for music and technology, Katleho created Lesbeats to provide a simple and intuitive way for producers to sell their beats. If you have any feedback or suggestions, Jane would love to hear from you! You can contact her at "),
+                            "Lesbeats is developed by Katleho Nkoe, a solo developer based in Maseru Lesotho. With a passion for music and technology, Katleho created Lesbeats to provide a simple and intuitive way for producers to sell their beats. If you have any feedback or suggestions, Katleho would love to hear from you! You can contact him at "),
                         GestureDetector(
                           onTap: _launchEmail,
                           child: const Text(

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'package:lesbeats/screens/home/home.dart';
@@ -242,6 +243,10 @@ class _MySignupPageState extends State<MySignupPage> {
                                         'Please enter your email'),
                                     Validators.email('Invalid email address'),
                                   ]),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.deny(
+                                        RegExp(r"\s\b|\b\s"))
+                                  ],
                                   decoration: const InputDecoration(
                                     floatingLabelBehavior:
                                         FloatingLabelBehavior.never,

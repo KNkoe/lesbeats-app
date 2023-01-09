@@ -183,43 +183,45 @@ class _MyProducerTileState extends State<MyProducerTile> {
                         ),
                       ],
                     ),
-                    Row(
-                      children: [
-                        OpenContainer(
-                            closedElevation: 0,
-                            closedBuilder: ((context, action) => Icon(
-                                  Icons.message,
-                                  color: Theme.of(context).primaryColor,
-                                )),
-                            openBuilder: ((context, action) =>
-                                MyChat(userId: widget.doc["uid"]))),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                                foregroundColor: (following)
-                                    ? Colors.grey
-                                    : Theme.of(context).primaryColor),
-                            onPressed: () {
-                              if (following) {
-                                unfollow(
-                                    auth.currentUser!.uid, widget.doc["uid"]);
+                    if (widget.doc["uid"] != auth.currentUser!.uid)
+                      Row(
+                        children: [
+                          OpenContainer(
+                              closedElevation: 0,
+                              closedBuilder: ((context, action) => Icon(
+                                    Icons.message,
+                                    color: Theme.of(context).primaryColor,
+                                  )),
+                              openBuilder: ((context, action) =>
+                                  MyChat(userId: widget.doc["uid"]))),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                  foregroundColor: (following)
+                                      ? Colors.grey
+                                      : Theme.of(context).primaryColor),
+                              onPressed: () {
+                                if (following) {
+                                  unfollow(
+                                      auth.currentUser!.uid, widget.doc["uid"]);
 
-                                setState(() {
-                                  following = false;
-                                });
-                              } else {
-                                follow(
-                                    auth.currentUser!.uid, widget.doc["uid"]);
-                                setState(() {
-                                  following = true;
-                                });
-                              }
-                            },
-                            child: Text((following) ? "Following" : "Follow")),
-                      ],
-                    )
+                                  setState(() {
+                                    following = false;
+                                  });
+                                } else {
+                                  follow(
+                                      auth.currentUser!.uid, widget.doc["uid"]);
+                                  setState(() {
+                                    following = true;
+                                  });
+                                }
+                              },
+                              child:
+                                  Text((following) ? "Following" : "Follow")),
+                        ],
+                      )
                   ],
                 ),
               )),

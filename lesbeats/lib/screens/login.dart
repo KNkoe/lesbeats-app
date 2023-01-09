@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
@@ -221,6 +222,10 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                 Validators.required('Email is required'),
                                 Validators.email('Invalid email address'),
                               ]),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.deny(
+                                    RegExp(r"\s\b|\b\s"))
+                              ],
                               decoration: const InputDecoration(
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.never,

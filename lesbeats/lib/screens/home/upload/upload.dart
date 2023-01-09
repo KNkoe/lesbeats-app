@@ -11,23 +11,61 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lesbeats/main.dart';
-import 'package:lesbeats/services/player/player.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:lottie/lottie.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-showUpload(BuildContext context) => showDialog(
-    context: context,
-    barrierColor: Colors.transparent,
-    builder: (context) => Scaffold(
-          backgroundColor: Colors.transparent,
-          body: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-            child: const UploadBeat(),
-          ),
-        ));
+showUpload(BuildContext context) async {
+  int count = 0;
+
+  await db
+      .collection("tracks")
+      .where("artistId", isEqualTo: auth.currentUser!.uid)
+      .get()
+      .then((value) {
+    count = value.size;
+  });
+
+  return showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (context) => Scaffold(
+            backgroundColor: Colors.transparent,
+            body: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+              child: count >= 20
+                  ? AlertDialog(
+                      title: Column(
+                        children: [
+                          Text(
+                            "You have reached the maximum upload size of 20 beats. ",
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "Uploads more than 20 will be enabled for premium users. This is to be able to cover storage costs.",
+                            style: Theme.of(context).textTheme.subtitle1,
+                          )
+                        ],
+                      ),
+                      actionsAlignment: MainAxisAlignment.center,
+                      actions: [
+                        OutlinedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: cancelButtonStyle,
+                            child: const Text("Close"))
+                      ],
+                    )
+                  : const UploadBeat(),
+            ),
+          ));
+}
 
 class UploadBeat extends StatefulWidget {
   const UploadBeat({
@@ -421,6 +459,7 @@ class _UploadBeatState extends State<UploadBeat> {
                           icon: const Icon(Icons.play_circle),
                           onPressed: () {
                             openFile(audio!.path!);
+                            debugPrint(_openResult);
                           },
                           label: Text(
                             title == null

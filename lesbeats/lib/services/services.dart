@@ -6,10 +6,9 @@ class LifecycleObserver extends WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      db
-          .collection("users")
-          .doc(auth.currentUser!.uid)
-          .set({'online': false}, SetOptions(merge: true));
+      db.collection("users").doc(auth.currentUser!.uid).set(
+          {'online': false, 'last seen': DateTime.now()},
+          SetOptions(merge: true));
       debugPrint('The app is paused');
     } else if (state == AppLifecycleState.resumed) {
       db
@@ -18,16 +17,14 @@ class LifecycleObserver extends WidgetsBindingObserver {
           .set({'online': true}, SetOptions(merge: true));
       debugPrint('The app is resumed');
     } else if (state == AppLifecycleState.inactive) {
-      db
-          .collection("users")
-          .doc(auth.currentUser!.uid)
-          .set({'online': false}, SetOptions(merge: true));
+      db.collection("users").doc(auth.currentUser!.uid).set(
+          {'online': false, 'last seen': DateTime.now()},
+          SetOptions(merge: true));
       debugPrint('The app is inactive');
     } else if (state == AppLifecycleState.detached) {
-      db
-          .collection("users")
-          .doc(auth.currentUser!.uid)
-          .set({'online': false}, SetOptions(merge: true));
+      db.collection("users").doc(auth.currentUser!.uid).set(
+          {'online': false, 'last seen': DateTime.now()},
+          SetOptions(merge: true));
       debugPrint('The app is detached');
     }
   }

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 import 'package:lesbeats/main.dart';
+import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/widgets/format.dart';
 import 'package:lesbeats/widgets/load.dart';
+import 'package:lesbeats/widgets/responsive.dart';
 
 import '../../widgets/decoration.dart';
 import 'chat.dart';
@@ -92,7 +94,6 @@ class _MyChatListState extends State<MyChatList> {
                 );
               }
               if (snapshot.hasData) {
-                debugPrint("HAS DATA: ${snapshot.data!.docs.length}");
                 return ListView.builder(
                     physics: const BouncingScrollPhysics(),
                     itemCount: snapshot.data!.docs.length,
@@ -164,19 +165,24 @@ class _ChatState extends State<Chat> {
 
             return ListTile(
               contentPadding: const EdgeInsets.symmetric(vertical: 10),
-              leading: Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  ClipOval(
-                    child: FadeInImage.assetNetwork(
-                        height: 60,
-                        width: 60,
-                        fit: BoxFit.cover,
-                        placeholder: "assets/images/placeholder.jpg",
-                        image: snapshot.data!.get("photoUrl")),
-                  ),
-                  if (snapshot.data!.get("online")) online(context)
-                ],
+              leading: OpenContainer(
+                closedElevation: 0,
+                closedBuilder: (context, action) => Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    ClipOval(
+                      child: FadeInImage.assetNetwork(
+                          height: 60,
+                          width: 60,
+                          fit: BoxFit.cover,
+                          placeholder: "assets/images/placeholder.jpg",
+                          image: snapshot.data!.get("photoUrl")),
+                    ),
+                    if (snapshot.data!.get("online")) online(context)
+                  ],
+                ),
+                openBuilder: (context, action) =>
+                    MyProfilePage(snapshot.data!.get("uid")),
               ),
               title: Text(
                 snapshot.data!.get("username"),
@@ -194,9 +200,13 @@ class _ChatState extends State<Chat> {
                     const SizedBox(
                       width: 10,
                     ),
-                  Text(
-                    decrypt(_chatId, widget.snapshot.get("text")),
-                    overflow: TextOverflow.fade,
+                  SizedBox(
+                    width: screenSize(context).width * 0.45,
+                    child: Text(
+                      decrypt(_chatId, widget.snapshot.get("text")),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                 ],
               ),

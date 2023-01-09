@@ -30,10 +30,7 @@ class MyFollowers extends StatelessWidget {
               itemCount: snapshot!.size,
               physics: const BouncingScrollPhysics(),
               itemBuilder: ((context, index) {
-                if (snapshot!.docs[index]["uid"] != auth.currentUser!.uid) {
-                  return MyFollowerTile(doc: snapshot!.docs[index]);
-                }
-                return const SizedBox();
+                return MyFollowerTile(doc: snapshot!.docs[index]);
               })),
     );
   }
