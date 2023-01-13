@@ -131,7 +131,8 @@ class _MyChatState extends State<MyChat> {
                                     message['timestamp'];
                                 final status = message['status'] == 'seen';
 
-                                debugPrint("STATUS : $status");
+                                debugPrint(
+                                    "STATUS : $status $messageRecipient");
 
                                 if (!status &&
                                     messageRecipient == auth.currentUser!.uid) {

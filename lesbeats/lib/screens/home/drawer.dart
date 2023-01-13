@@ -227,6 +227,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               .snapshots(),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
+                              debugPrint(snapshot.data!.docs.last["sender"]);
                               return Badge(
                                   elevation: (snapshot.data!.size == 0) ? 0 : 2,
                                   badgeColor: (snapshot.data!.size == 0)

@@ -112,22 +112,11 @@ class _MyDownloadState extends State<MyDownload> {
                 ),
               ],
             )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Download ",
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-                Text(
-                  widget.title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-              ],
+          : Text(
+              "Download - ${widget.title}",
+              style: const TextStyle(
+                fontSize: 18,
+              ),
             ),
       actionsAlignment: MainAxisAlignment.spaceAround,
       actions: [
