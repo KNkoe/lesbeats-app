@@ -55,9 +55,9 @@ class _MySearchScreenState extends State<MySearchScreen> {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text(
+          title: Text(
             "Search",
-            style: TextStyle(color: Colors.black),
+            style: Theme.of(context).textTheme.headline6!,
           ),
         ),
         body: SizedBox(

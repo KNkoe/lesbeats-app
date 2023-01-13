@@ -53,6 +53,7 @@ class _MyGenresState extends State<MyGenres> {
                 .map((genre) => Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: OpenContainer(
+                          closedColor: Colors.transparent,
                           closedBuilder: ((context, action) => ListTile(
                                 leading: const Icon(Icons.folder),
                                 title: Text(genre),

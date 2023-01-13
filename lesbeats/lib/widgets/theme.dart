@@ -12,9 +12,11 @@ ThemeData lightTheme = ThemeData(
     dialogTheme: const DialogTheme(actionsPadding: EdgeInsets.only(bottom: 20)),
     primaryColor: const Color(0xff2a9d8f),
     backgroundColor: Colors.white,
+    drawerTheme: const DrawerThemeData(backgroundColor: Colors.white),
     bottomSheetTheme: const BottomSheetThemeData(
       backgroundColor: Colors.white,
     ),
+    dialogBackgroundColor: Colors.white,
     cardColor: const Color(0xff2a9d8f),
     indicatorColor: const Color(0xffe76f51),
     primaryIconTheme: const IconThemeData(color: Color(0xff264653)),
@@ -65,6 +67,8 @@ ThemeData darkTheme = ThemeData(
     bottomSheetTheme: const BottomSheetThemeData(
       backgroundColor: Color(0xff264653),
     ),
+    dialogBackgroundColor: const Color(0xff264653),
+    drawerTheme: const DrawerThemeData(backgroundColor: Color(0xff264653)),
     appBarTheme:
         const AppBarTheme(backgroundColor: Color(0xff264653), elevation: 0),
     backgroundColor: const Color(0xff264653),

@@ -200,7 +200,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         Get.to(() => const MyTrendingPage());
                         widget._scaffoldKey.currentState!.closeDrawer();
                       },
-                      leading: const Iconify(Ion.rocket),
+                      leading: Iconify(
+                        Ion.rocket,
+                        color: Theme.of(context).textTheme.headline1!.color,
+                      ),
                       title: const Text("Trending"),
                     ),
                     ListTile(
@@ -208,7 +211,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         Get.to(() => const MyGenre());
                         widget._scaffoldKey.currentState!.closeDrawer();
                       },
-                      leading: const Iconify(Bx.bxs_music),
+                      leading: Iconify(
+                        Bx.bxs_music,
+                        color: Theme.of(context).textTheme.headline1!.color,
+                      ),
                       title: const Text("Genres"),
                     ),
                     const Divider(),
@@ -237,10 +243,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     snapshot.data!.size.toString(),
                                     style: const TextStyle(color: Colors.white),
                                   ),
-                                  child: const Iconify(Ri.chat_1_fill));
+                                  child: Iconify(
+                                    Ri.chat_1_fill,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .headline1!
+                                        .color,
+                                  ));
                             }
 
-                            return const Iconify(Ri.chat_1_fill);
+                            return Iconify(
+                              Ri.chat_1_fill,
+                              color:
+                                  Theme.of(context).textTheme.headline1!.color,
+                            );
                           }),
                     ),
                     const Divider(),
@@ -249,9 +265,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         Get.to(() => const MyUploads());
                         widget._scaffoldKey.currentState!.closeDrawer();
                       },
-                      leading: const Icon(
+                      leading: Icon(
                         Icons.upload,
-                        color: Colors.black,
+                        color: Theme.of(context).textTheme.headline1!.color,
                       ),
                       title: const Text("Upload"),
                     ),
@@ -270,9 +286,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         Get.to(() => const MyDownloads());
                         widget._scaffoldKey.currentState!.closeDrawer();
                       },
-                      leading: const Icon(
+                      leading: Icon(
                         Icons.download,
-                        color: Colors.black,
+                        color: Theme.of(context).textTheme.headline1!.color,
                       ),
                       title: const Text("Downloads"),
                     ),
@@ -287,60 +303,75 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     // ),
                     ListTile(
                       onTap: () {},
-                      leading: const Icon(Icons.share),
+                      leading: Icon(
+                        Icons.share,
+                        color: Theme.of(context).textTheme.subtitle1!.color,
+                      ),
                       title: const Text("Tell a friend"),
                     ),
                     ListTile(
                       onTap: _launchUrl,
-                      leading: const Icon(Icons.help),
+                      leading: Icon(
+                        Icons.help,
+                        color: Theme.of(context).textTheme.subtitle1!.color,
+                      ),
                       title: const Text("Help and Feedback"),
                     ),
-                    AboutListTile(
-                      icon: const Icon(Icons.info),
-                      applicationName: "Lesbeats",
-                      applicationIcon: const Image(
-                          height: 30,
-                          width: 30,
-                          image: AssetImage("assets/icon/_logo.png")),
-                      applicationVersion: "1.0.0",
-                      aboutBoxChildren: [
-                        const Text("A goto place to buy and sell beats online"),
-                        const SizedBox(
-                          height: 20,
+                    ListTileTheme(
+                      child: AboutListTile(
+                        icon: Icon(
+                          Icons.info,
+                          color: Theme.of(context).textTheme.subtitle1!.color,
                         ),
-                        const Text("Features"),
-                        const Divider(),
-                        const Text("- A library of music tracks"),
-                        const Text("- Personalization"),
-                        const Text("- Social integration"),
-                        const Text("- Producer profiles"),
-                        const Text("- Playback control"),
-                        const Text("- Offline playback"),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Text("Coming soon"),
-                        const Divider(),
-                        const Text("- In-app purchases"),
-                        const Text("- Music recommendations"),
-                        const Text("- Background playback"),
-                        const Text("- Audio quality options"),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Text(
-                            "Lesbeats is developed by Katleho Nkoe, a solo developer based in Maseru Lesotho. With a passion for music and technology, Katleho created Lesbeats to provide a simple and intuitive way for producers to sell their beats. If you have any feedback or suggestions, Katleho would love to hear from you! You can contact him at "),
-                        GestureDetector(
-                          onTap: _launchEmail,
-                          child: const Text(
-                            "Katleholnkoe@gmail.com",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                decoration: TextDecoration.underline),
+                        applicationName: "Lesbeats",
+                        applicationIcon: const Image(
+                            height: 30,
+                            width: 30,
+                            image: AssetImage("assets/icon/_logo.png")),
+                        applicationVersion: "1.0.0",
+                        aboutBoxChildren: [
+                          const Text(
+                              "A goto place to buy and sell beats online"),
+                          const SizedBox(
+                            height: 20,
                           ),
-                        )
-                      ],
-                      child: const Text("About"),
+                          const Text("Features"),
+                          const Divider(),
+                          const Text("- A library of music tracks"),
+                          const Text("- Personalization"),
+                          const Text("- Social integration"),
+                          const Text("- Producer profiles"),
+                          const Text("- Playback control"),
+                          const Text("- Offline playback"),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text("Coming soon"),
+                          const Divider(),
+                          const Text("- In-app purchases"),
+                          const Text("- Music recommendations"),
+                          const Text("- Background playback"),
+                          const Text("- Audio quality options"),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          const Text(
+                              "Lesbeats is developed by Katleho Nkoe, a solo developer based in Maseru Lesotho. With a passion for music and technology, Katleho created Lesbeats to provide a simple and intuitive way for producers to sell their beats. If you have any feedback or suggestions, Katleho would love to hear from you! You can contact him at "),
+                          GestureDetector(
+                            onTap: _launchEmail,
+                            child: const Text(
+                              "Katleholnkoe@gmail.com",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline),
+                            ),
+                          )
+                        ],
+                        child: Text(
+                          "About",
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                      ),
                     ),
                   ],
                 ),

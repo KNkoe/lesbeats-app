@@ -124,7 +124,8 @@ class _MyProducerTileState extends State<MyProducerTile> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: OpenContainer(
-          transitionDuration: const Duration(milliseconds: 100),
+          closedColor: Colors.transparent,
+          closedElevation: 0,
           closedBuilder: ((context, action) => Padding(
                 padding: const EdgeInsets.all(10),
                 child: Row(
@@ -188,6 +189,7 @@ class _MyProducerTileState extends State<MyProducerTile> {
                         children: [
                           OpenContainer(
                               closedElevation: 0,
+                              closedColor: Colors.transparent,
                               closedBuilder: ((context, action) => Icon(
                                     Icons.message,
                                     color: Theme.of(context).primaryColor,

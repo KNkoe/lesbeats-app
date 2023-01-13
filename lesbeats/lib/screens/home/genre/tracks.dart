@@ -50,14 +50,6 @@ class _MyTracksState extends State<MyTracks> {
               Icons.arrow_back,
               color: Theme.of(context).textTheme.headline6!.color,
             )),
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.search,
-                color: Theme.of(context).textTheme.headline6!.color,
-              ))
-        ],
       ),
       body: MyAudioStream(stream: _audioStream),
     );

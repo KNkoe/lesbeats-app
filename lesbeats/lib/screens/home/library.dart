@@ -30,9 +30,9 @@ class _MyLibraryState extends State<MyLibrary> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text(
+        title: Text(
           "My Library",
-          style: TextStyle(color: Colors.black),
+          style: Theme.of(context).textTheme.headline6!,
         ),
       ),
       body: Padding(

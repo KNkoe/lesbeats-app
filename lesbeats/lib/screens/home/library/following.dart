@@ -97,6 +97,7 @@ class _FollowingTileState extends State<FollowingTile> {
           if (snapshot.hasData && snapshot.data!.exists) {
             return OpenContainer(
               closedElevation: 0,
+              closedColor: Colors.transparent,
               closedBuilder: (context, action) => Column(
                 children: [
                   ClipOval(

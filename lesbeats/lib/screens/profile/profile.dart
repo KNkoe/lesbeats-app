@@ -94,7 +94,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 1,
         automaticallyImplyLeading:
@@ -130,7 +130,10 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                 .then((_) => setState(() {}));
                           },
                           title: const Text("Edit profile"),
-                          leading: const Icon(Icons.edit_attributes),
+                          leading: Icon(
+                            Icons.edit_attributes,
+                            color: Theme.of(context).textTheme.bodyText1!.color,
+                          ),
                         ),
                       ),
                       const PopupMenuItem(child: Divider()),
@@ -209,7 +212,10 @@ class _MyProfilePageState extends State<MyProfilePage> {
                         },
                         minLeadingWidth: 2,
                         title: const Text("Log out"),
-                        leading: const Icon(Icons.logout_rounded),
+                        leading: Icon(
+                          Icons.logout_rounded,
+                          color: Theme.of(context).textTheme.bodyText1!.color,
+                        ),
                       ))
                     ])),
           if (widget.uid != auth.currentUser!.uid)
@@ -352,6 +358,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                       ),
                                     ),
                                     OpenContainer(
+                                        closedColor: Colors.transparent,
                                         closedElevation: 0,
                                         closedBuilder: ((context, action) =>
                                             Padding(
@@ -382,6 +389,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                               follow: "Followers",
                                             ))),
                                     OpenContainer(
+                                        closedColor: Colors.transparent,
                                         closedElevation: 0,
                                         closedBuilder: ((context, action) =>
                                             Padding(
@@ -453,6 +461,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                     if (widget.uid != auth.currentUser!.uid)
                                       OpenContainer(
                                           closedElevation: 0,
+                                          closedColor: Colors.transparent,
                                           closedBuilder: ((context, action) =>
                                               OutlinedButton.icon(
                                                   onPressed: null,

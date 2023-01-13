@@ -155,14 +155,17 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return OpenContainer(
+        closedColor: Colors.transparent,
         closedBuilder: (context, fuction) => Container(
-              decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-                BoxShadow(
-                    offset: Offset(0, -4),
-                    blurRadius: 5,
-                    spreadRadius: 2,
-                    color: Colors.black12)
-              ]),
+              decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  boxShadow: const [
+                    BoxShadow(
+                        offset: Offset(0, -4),
+                        blurRadius: 5,
+                        spreadRadius: 2,
+                        color: Colors.black12)
+                  ]),
               height: 115,
               child: Column(
                 children: [
@@ -226,6 +229,7 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                         )
                                       : OpenContainer(
                                           closedElevation: 0,
+                                          closedColor: Colors.transparent,
                                           closedBuilder: ((context, action) =>
                                               Text(
                                                 widget.tags!["artist"]!,
@@ -355,20 +359,44 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                       Icons.arrow_back,
                                       color: Colors.white,
                                     )),
-                                const Text(
-                                  "Now Playing",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      report(widget.tags!["artistId"]!, "Beat");
-                                    },
-                                    icon: const Icon(
-                                      Icons.more_horiz,
-                                      color: Colors.white,
-                                    ))
+                                Text("Now Playing",
+                                    style:
+                                        Theme.of(context).textTheme.headline6),
+                                PopupMenuButton(
+                                    icon: Icon(
+                                      Icons.more_vert,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .headline1!
+                                          .color,
+                                    ),
+                                    itemBuilder: ((context) => [
+                                          if (widget.tags!["artistId"]! !=
+                                              auth.currentUser!.uid)
+                                            PopupMenuItem(
+                                                onTap: () {
+                                                  Future.delayed(Duration.zero,
+                                                      () {
+                                                    report(widget.tags!["id"]!,
+                                                        "Beat");
+                                                  });
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.report,
+                                                      color: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText1!
+                                                          .color,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    const Text("Report"),
+                                                  ],
+                                                )),
+                                        ]))
                               ],
                             ),
                             const SizedBox(

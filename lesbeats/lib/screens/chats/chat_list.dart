@@ -36,9 +36,10 @@ class _MyChatListState extends State<MyChatList> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
+          title: Text(
             "Inbox",
-            style: TextStyle(color: Colors.black),
+            style:
+                TextStyle(color: Theme.of(context).textTheme.headline1!.color!),
           ),
           iconTheme:
               IconThemeData(color: Theme.of(context).primaryIconTheme.color),
@@ -107,6 +108,7 @@ class _MyChatListState extends State<MyChatList> {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: OpenContainer(
+                            closedColor: Colors.transparent,
                             closedElevation: 0,
                             closedBuilder: ((context, action) => Chat(
                                   userId: userId,
@@ -166,6 +168,7 @@ class _ChatState extends State<Chat> {
             return ListTile(
               contentPadding: const EdgeInsets.symmetric(vertical: 10),
               leading: OpenContainer(
+                closedColor: Colors.transparent,
                 closedElevation: 0,
                 closedBuilder: (context, action) => Stack(
                   alignment: Alignment.bottomCenter,
@@ -184,9 +187,8 @@ class _ChatState extends State<Chat> {
                 openBuilder: (context, action) =>
                     MyProfilePage(snapshot.data!.get("uid")),
               ),
-              title: Text(
-                snapshot.data!.get("username"),
-              ),
+              title: Text(snapshot.data!.get("username"),
+                  style: Theme.of(context).textTheme.subtitle2),
               subtitle: Row(
                 children: [
                   if (messageSender == auth.currentUser!.uid)
@@ -195,18 +197,23 @@ class _ChatState extends State<Chat> {
                             Icons.done_all,
                             color: Theme.of(context).primaryColor,
                           )
-                        : const Icon(Icons.check),
+                        : Icon(
+                            Icons.check,
+                            color: Theme.of(context).primaryColor,
+                          ),
                   if (messageSender == auth.currentUser!.uid)
                     const SizedBox(
                       width: 10,
                     ),
                   SizedBox(
                     width: screenSize(context).width * 0.45,
-                    child: Text(
-                      decrypt(_chatId, widget.snapshot.get("text")),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
+                    child: Text(decrypt(_chatId, widget.snapshot.get("text")),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: Colors.white54)),
                   ),
                 ],
               ),

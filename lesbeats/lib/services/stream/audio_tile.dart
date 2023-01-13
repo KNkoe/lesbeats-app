@@ -302,12 +302,18 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
-                                        children: const [
-                                          Icon(Icons.download),
-                                          SizedBox(
+                                        children: [
+                                          Icon(
+                                            Icons.download,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .color,
+                                          ),
+                                          const SizedBox(
                                             width: 10,
                                           ),
-                                          Text("Download"),
+                                          const Text("Download"),
                                         ],
                                       )),
                                 if (artistId == auth.currentUser!.uid)
@@ -321,12 +327,18 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
-                                        children: const [
-                                          Icon(Icons.edit),
-                                          SizedBox(
+                                        children: [
+                                          Icon(
+                                            Icons.edit,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .color,
+                                          ),
+                                          const SizedBox(
                                             width: 10,
                                           ),
-                                          Text("Edit"),
+                                          const Text("Edit"),
                                         ],
                                       )),
                                 if (artistId == auth.currentUser!.uid)
@@ -343,12 +355,18 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
-                                        children: const [
-                                          Icon(Icons.delete),
-                                          SizedBox(
+                                        children: [
+                                          Icon(
+                                            Icons.delete,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .color,
+                                          ),
+                                          const SizedBox(
                                             width: 10,
                                           ),
-                                          Text("Delete"),
+                                          const Text("Delete"),
                                         ],
                                       )),
                                 if (artistId != auth.currentUser!.uid &&
@@ -356,12 +374,18 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                   PopupMenuItem(
                                       child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    children: const [
-                                      Icon(Icons.check_circle),
-                                      SizedBox(
+                                    children: [
+                                      Icon(
+                                        Icons.check_circle,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1!
+                                            .color,
+                                      ),
+                                      const SizedBox(
                                         width: 10,
                                       ),
-                                      Text("Buy"),
+                                      const Text("Buy"),
                                     ],
                                   )),
                                 if (artistId != auth.currentUser!.uid)
@@ -386,9 +410,15 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
-                                          Icon(following
-                                              ? Icons.thumb_down
-                                              : Icons.thumb_up),
+                                          Icon(
+                                            following
+                                                ? Icons.thumb_down
+                                                : Icons.thumb_up,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .color,
+                                          ),
                                           const SizedBox(
                                             width: 10,
                                           ),
@@ -417,12 +447,18 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                         });
                                       },
                                       child: Row(
-                                        children: const [
-                                          Icon(Icons.report),
-                                          SizedBox(
+                                        children: [
+                                          Icon(
+                                            Icons.report,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .color,
+                                          ),
+                                          const SizedBox(
                                             width: 10,
                                           ),
-                                          Text("Report"),
+                                          const Text("Report"),
                                         ],
                                       )),
                               ])),

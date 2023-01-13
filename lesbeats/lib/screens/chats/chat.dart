@@ -62,6 +62,7 @@ class _MyChatState extends State<MyChat> {
               appBar: AppBar(
                 automaticallyImplyLeading: false,
                 title: OpenContainer(
+                  closedColor: Colors.transparent,
                   closedElevation: 0,
                   closedBuilder: (context, action) => Row(
                     children: [
@@ -216,14 +217,21 @@ class _MyChatState extends State<MyChat> {
                             Expanded(
                               child: TextField(
                                 controller: _textController,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                     hintText: 'Enter message...',
+                                    hintStyle: TextStyle(
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1!
+                                            .color),
                                     border: InputBorder.none,
                                     enabledBorder: InputBorder.none),
                               ),
                             ),
                             IconButton(
                               icon: const Icon(Icons.send),
+                              color:
+                                  Theme.of(context).textTheme.headline1!.color,
                               onPressed: () {
                                 if (_textController.text.isNotEmpty) {
                                   FocusManager.instance.primaryFocus?.unfocus();
