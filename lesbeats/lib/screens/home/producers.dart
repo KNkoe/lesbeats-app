@@ -166,19 +166,9 @@ class _MyProducerTileState extends State<MyProducerTile> {
                             const SizedBox(
                               height: 10,
                             ),
-                            Row(
-                              children: [
-                                Text(
-                                  followers.toString(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black54),
-                                ),
-                                const Text(
-                                  " Followers",
-                                  style: TextStyle(color: Colors.black54),
-                                )
-                              ],
+                            Text(
+                              "$followers Followers",
+                              style: Theme.of(context).textTheme.subtitle2,
                             )
                           ],
                         ),

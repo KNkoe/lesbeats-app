@@ -224,8 +224,9 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                       ? Text(
                                           _artist == null ? "" : _artist!,
                                           overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              color: Colors.black54),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1,
                                         )
                                       : OpenContainer(
                                           closedElevation: 0,
@@ -234,8 +235,9 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                                               Text(
                                                 widget.tags!["artist"]!,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                    color: Colors.black54),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1,
                                               )),
                                           openBuilder: (context, action) =>
                                               MyProfilePage(

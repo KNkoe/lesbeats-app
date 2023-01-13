@@ -156,8 +156,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                           Text(
                                             "Are you sure you want to log out?",
                                             style: TextStyle(
-                                                fontWeight: FontWeight.normal,
-                                                color: Colors.black54),
+                                              fontWeight: FontWeight.normal,
+                                            ),
                                           ),
                                           SizedBox(
                                             height: 20,
