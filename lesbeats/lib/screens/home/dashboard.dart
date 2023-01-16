@@ -1,7 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/jam.dart';
 import 'package:lesbeats/main.dart';
@@ -10,6 +9,7 @@ import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 
 import 'activityfeed.dart';
+import 'enddrawer.dart';
 import 'producers.dart';
 import 'drawer.dart';
 
@@ -301,11 +301,7 @@ class _DashboardState extends State<Dashboard> {
                 })),
       ),
       drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
-      endDrawer: Drawer(
-        width: Get.width * 0.5,
-        elevation: 0,
-        child: Column(),
-      ),
+      endDrawer: const CustomEndDrawer(),
     );
   }
 }
