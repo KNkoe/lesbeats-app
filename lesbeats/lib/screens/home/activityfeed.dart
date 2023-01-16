@@ -30,13 +30,6 @@ class _ActivityFeedState extends State<ActivityFeed> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Text(
-            "Activity Feed",
-            style: Theme.of(context).textTheme.subtitle2,
-          ),
-        ),
         const SizedBox(
           height: 20,
         ),

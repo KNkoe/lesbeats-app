@@ -344,7 +344,8 @@ class _UploadBeatState extends State<UploadBeat> {
                             value!.isEmpty ? "Please enter track name" : null,
                         controller: _tracknameController,
                         decoration: dialogInputdecoration.copyWith(
-                            label: const Text("Track name")),
+                            labelText: "Track name",
+                            labelStyle: Theme.of(context).textTheme.bodyText1),
                       ),
                       const SizedBox(
                         height: 20,
@@ -352,8 +353,8 @@ class _UploadBeatState extends State<UploadBeat> {
                       TextFormField(
                         controller: _featureController,
                         decoration: dialogInputdecoration.copyWith(
-                          label: const Text("Feature"),
-                        ),
+                            labelText: "Feature",
+                            labelStyle: Theme.of(context).textTheme.bodyText1),
                       ),
                       const SizedBox(
                         height: 20,
@@ -382,6 +383,8 @@ class _UploadBeatState extends State<UploadBeat> {
                                     );
                                   } else if (snapshot.hasData) {
                                     return DropdownButtonFormField<String>(
+                                        dropdownColor:
+                                            Theme.of(context).backgroundColor,
                                         validator: (value) =>
                                             selectedGenre.isEmpty
                                                 ? "Please select a genre"
@@ -391,8 +394,9 @@ class _UploadBeatState extends State<UploadBeat> {
                                             .map((genre) =>
                                                 DropdownMenuItem<String>(
                                                     value: genre["title"],
-                                                    child:
-                                                        Text(genre["title"])))
+                                                    child: Text(
+                                                      genre["title"],
+                                                    )))
                                             .toList(),
                                         onChanged: (value) {
                                           setState(() {
@@ -481,8 +485,8 @@ class _UploadBeatState extends State<UploadBeat> {
                           Navigator.pop(context);
                         },
                         child: const Text("Cancel")),
-                    OutlinedButton(
-                        style: cancelButtonStyle,
+                    ElevatedButton(
+                        style: confirmButtonStyle,
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             if (audio != null) {
@@ -559,6 +563,10 @@ class _UploadBeatState extends State<UploadBeat> {
                                 keyboardType: TextInputType.phone,
                                 decoration: dialogInputdecoration.copyWith(
                                     prefixText: 'R ',
+                                    prefixStyle:
+                                        Theme.of(context).textTheme.bodyText1,
+                                    labelStyle:
+                                        Theme.of(context).textTheme.bodyText1,
                                     label: const Text("Price")),
                               ),
                               const SizedBox(
@@ -573,6 +581,8 @@ class _UploadBeatState extends State<UploadBeat> {
                                 child: Row(
                                   children: [
                                     Checkbox(
+                                        fillColor: MaterialStateProperty.all(
+                                            Theme.of(context).primaryColor),
                                         shape: const CircleBorder(),
                                         value: _enableDownload,
                                         onChanged: (value) {
@@ -603,6 +613,8 @@ class _UploadBeatState extends State<UploadBeat> {
                               Row(
                                 children: [
                                   Checkbox(
+                                      fillColor: MaterialStateProperty.all(
+                                          Theme.of(context).primaryColor),
                                       value: _agree,
                                       onChanged: (value) {
                                         setState(() {
@@ -622,7 +634,7 @@ class _UploadBeatState extends State<UploadBeat> {
                                     child: const Padding(
                                       padding: EdgeInsets.all(4.0),
                                       child: Text(
-                                        "terms and conditions",
+                                        "Terms and Conditions",
                                         style: TextStyle(
                                             fontWeight: FontWeight.normal,
                                             color: Colors.blue,

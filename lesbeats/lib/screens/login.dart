@@ -300,7 +300,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                             child: const Padding(
                               padding: EdgeInsets.all(8.0),
                               child: Text(
-                                "Forget password?",
+                                "Forgot password?",
                                 style: TextStyle(
                                     decoration: TextDecoration.underline,
                                     color: Colors.blue),

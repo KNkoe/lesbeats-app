@@ -252,6 +252,28 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(
                           height: 10,
                         ),
+                        if (!_viewAllArtists)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Activity Feed",
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      _scaffoldKey.currentState!
+                                          .openEndDrawer();
+                                    },
+                                    icon: Icon(Icons.filter_list,
+                                        color: Theme.of(context).primaryColor))
+                              ],
+                            ),
+                          ),
                         Expanded(
                             child: _viewAllArtists
                                 ? const MyProducers()
@@ -282,6 +304,7 @@ class _DashboardState extends State<Dashboard> {
       endDrawer: Drawer(
         width: Get.width * 0.5,
         elevation: 0,
+        child: Column(),
       ),
     );
   }

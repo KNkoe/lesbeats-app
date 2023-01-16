@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
 import 'package:lesbeats/screens/home/upload/upload.dart';
 import 'package:lesbeats/services/stream/audio_stream.dart';
+import 'package:lesbeats/widgets/decoration.dart';
 
 class MyUploads extends StatefulWidget {
   const MyUploads({super.key});
@@ -43,16 +44,13 @@ class _MyUploadsState extends State<MyUploads> {
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    elevation: 1,
-                    backgroundColor: Theme.of(context).backgroundColor),
+            child: OutlinedButton(
+                style: cancelButtonStyle,
                 onPressed: () {
                   showUpload(context);
                 },
                 child: const Text(
                   "Upload",
-                  style: TextStyle(color: Colors.black54),
                 )),
           )
         ],
@@ -68,9 +66,10 @@ class _MyUploadsState extends State<MyUploads> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Uploads",
-                    style: TextStyle(
-                        color: Colors.black26, fontWeight: FontWeight.bold)),
+                Text(
+                  "Uploads",
+                  style: Theme.of(context).textTheme.subtitle2,
+                ),
                 IconButton(
                     onPressed: () {},
                     icon: Icon(
