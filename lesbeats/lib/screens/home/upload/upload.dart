@@ -35,7 +35,7 @@ showUpload(BuildContext context) async {
             backgroundColor: Colors.transparent,
             body: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-              child: count >= 20
+              child: count >= 30
                   ? AlertDialog(
                       title: Column(
                         children: [

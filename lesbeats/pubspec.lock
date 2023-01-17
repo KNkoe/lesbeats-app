@@ -211,13 +211,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.17.2"
-  day_night_switcher:
-    dependency: "direct main"
-    description:
-      name: day_night_switcher
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0+1"
   diffutil_dart:
     dependency: transitive
     description:
@@ -225,6 +218,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
+  easy_dynamic_theme:
+    dependency: "direct main"
+    description:
+      name: easy_dynamic_theme
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.0"
   encrypt:
     dependency: "direct main"
     description:

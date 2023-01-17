@@ -29,8 +29,10 @@ class _MyArtistsState extends State<MyProducers> {
           followers += value.size;
         });
 
-        element.reference
-            .set({"followers": followers}, SetOptions(merge: true));
+        if (element.id == element.get("uid")) {
+          element.reference
+              .set({"followers": followers}, SetOptions(merge: true));
+        }
       }
     });
 
@@ -55,7 +57,7 @@ class _MyArtistsState extends State<MyProducers> {
                 itemBuilder: (context, index) {
                   if (snapshot.data!.docs[index]["uid"] !=
                       auth.currentUser!.uid) {
-                    if (index >= 10) {
+                    if (index > 10) {
                       return MyProducerTile(doc: snapshot.data!.docs[index]);
                     }
                   }

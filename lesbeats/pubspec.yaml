@@ -34,7 +34,6 @@ dependencies:
 
   google_fonts: ^3.0.1
   iconify_flutter: ^0.0.4
-  flutter_chat_ui: ^1.6.4
   file_picker: ^5.0.1
   image_picker: ^0.8.5+3
   audio_video_progress_bar: ^0.10.0
@@ -53,7 +52,6 @@ dependencies:
   cloud_firestore: ^4.3.0
   firebase_storage: ^11.0.9
   provider: ^6.0.3
-  day_night_switcher: ^0.2.0+1
   animations: ^2.0.5
   audiotagger: ^2.2.1
   google_sign_in: ^5.4.2
@@ -68,6 +66,7 @@ dependencies:
   chat_bubbles: ^1.4.0
   auto_size_text: ^3.0.0
   shared_preferences: ^2.0.16
+  easy_dynamic_theme: ^2.2.0
 
 dev_dependencies:
   flutter_test:

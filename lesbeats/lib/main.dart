@@ -10,6 +10,7 @@ import 'package:lesbeats/widgets/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:lesbeats/wrapper.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 
 final storage = FirebaseStorage.instance;
 final db = FirebaseFirestore.instance;
@@ -20,7 +21,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  runApp(const MyApp());
+  runApp(
+    EasyDynamicThemeWidget(
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -34,7 +39,7 @@ class MyApp extends StatelessWidget {
       title: 'Lesbeats',
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: EasyDynamicTheme.of(context).themeMode!,
       initialRoute: '/',
       routes: {
         '/': (context) => const Wrapper(),

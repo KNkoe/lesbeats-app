@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/bx.dart';
@@ -157,21 +157,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 20),
                                 child: SizedBox(
-                                  height: 50,
-                                  width: 70,
-                                  child: DayNightSwitcher(
-                                    dayBackgroundColor:
-                                        Theme.of(context).backgroundColor,
-                                    sunColor: Theme.of(context).indicatorColor,
-                                    isDarkModeEnabled: isDarkModeEnabled,
-                                    onStateChanged: (isDarkModeEnabled) {
-                                      setState(() {
-                                        this.isDarkModeEnabled =
-                                            isDarkModeEnabled;
-                                      });
-                                    },
-                                  ),
-                                ),
+                                    height: 50,
+                                    width: 70,
+                                    child: EasyDynamicThemeBtn()),
                               ),
                             ],
                           ),
