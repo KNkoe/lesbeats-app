@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
+import 'package:lesbeats/screens/home/checkout.dart';
 import 'package:lesbeats/screens/home/features.dart';
 import 'package:lesbeats/screens/home/edit_track.dart';
 import 'package:lesbeats/services/stream/follow.dart';
@@ -372,22 +373,27 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                 if (artistId != auth.currentUser!.uid &&
                                     price != 0)
                                   PopupMenuItem(
+                                      onTap: () {
+                                        Future.delayed(Duration.zero,
+                                            () => showcheckout(context));
+                                      },
                                       child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Icons.check_circle,
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1!
-                                            .color,
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      const Text("Buy"),
-                                    ],
-                                  )),
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.check_circle,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .color,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          const Text("Buy"),
+                                        ],
+                                      )),
                                 if (artistId != auth.currentUser!.uid)
                                   PopupMenuItem(
                                       onTap: () {
