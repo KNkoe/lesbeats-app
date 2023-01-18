@@ -350,27 +350,28 @@ class MiniPlayerState extends State<MiniPlayer> with WidgetsBindingObserver {
                               height: 40,
                             ),
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                IconButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    icon: const Icon(
-                                      Icons.arrow_back,
-                                      color: Colors.white,
-                                    )),
+                                Transform.rotate(
+                                  angle: -1.5708,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      icon: const Icon(
+                                        Icons.arrow_back_ios_new,
+                                        color: Colors.white,
+                                      )),
+                                ),
                                 Text("Now Playing",
-                                    style:
-                                        Theme.of(context).textTheme.headline6),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline6!
+                                        .copyWith(color: Colors.white)),
                                 PopupMenuButton(
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.more_vert,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .headline1!
-                                          .color,
+                                      color: Colors.white,
                                     ),
                                     itemBuilder: ((context) => [
                                           if (widget.tags!["artistId"]! !=

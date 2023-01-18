@@ -40,14 +40,14 @@ showUpload(BuildContext context) async {
                       title: Column(
                         children: [
                           Text(
-                            "You have reached the maximum upload size of 20 beats. ",
+                            "You have reached the maximum upload size of 30 beats. ",
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
-                            "Uploads more than 20 will be enabled for premium users. This is to be able to cover storage costs.",
+                            "Uploads more than 30 will be enabled for premium users. This is to be able to cover storage costs.",
                             style: Theme.of(context).textTheme.subtitle1,
                           )
                         ],

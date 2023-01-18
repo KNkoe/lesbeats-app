@@ -374,8 +374,16 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                     price != 0)
                                   PopupMenuItem(
                                       onTap: () {
-                                        Future.delayed(Duration.zero,
-                                            () => showcheckout(context));
+                                        Future.delayed(
+                                            Duration.zero,
+                                            () => showcheckout(
+                                                context,
+                                                title,
+                                                price,
+                                                id,
+                                                artistId,
+                                                snapshot.snapshot5
+                                                    .data!["username"]));
                                       },
                                       child: Row(
                                         mainAxisAlignment:
