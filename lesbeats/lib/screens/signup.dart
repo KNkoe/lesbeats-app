@@ -75,6 +75,7 @@ class _MySignupPageState extends State<MySignupPage> {
           "username": _usernameController.text,
           "email": _emailController.text,
           "photoUrl": photoUrl,
+          "online": true,
           "isVerified": false,
           "created at": DateTime.now()
         };

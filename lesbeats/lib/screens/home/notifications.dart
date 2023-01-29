@@ -57,19 +57,23 @@ class _MyNotificationsState extends State<MyNotifications> {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null && !kIsWeb) {
-        final pushNotification = {
-          "title": message.notification!.title,
-          "message": message.notification!.body,
-          "timestamp": DateTime.now(),
-          "read": false,
-          "type": message.notification!.title,
-          "url": message.notification!.web?.link,
-        };
-        db
-            .collection("users")
-            .doc(auth.currentUser!.uid)
-            .collection("notifications")
-            .add(pushNotification);
+        try {
+          final pushNotification = {
+            "title": message.notification!.title,
+            "message": message.notification!.body,
+            "timestamp": DateTime.now(),
+            "read": false,
+            "type": message.notification!.title,
+            "url": message.notification!.web?.link,
+          };
+          db
+              .collection("users")
+              .doc(auth.currentUser!.uid)
+              .collection("notifications")
+              .add(pushNotification);
+        } catch (e) {
+          debugPrint(e.toString());
+        }
       }
     });
   }

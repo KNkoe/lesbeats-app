@@ -1,4 +1,5 @@
 import 'package:encrypt/encrypt.dart';
+import 'dart:math';
 
 String numberFormat(dynamic n) {
   String num = n.toString();
@@ -39,4 +40,10 @@ String decrypt(String key, String cypher) {
   final decrypted = encrypter.decrypt(Encrypted.fromBase64(cypher), iv: iv);
 
   return decrypted;
+}
+
+String generateRandomString(int len) {
+  var r = Random();
+  return String.fromCharCodes(
+      List.generate(len, (index) => r.nextInt(33) + 89));
 }

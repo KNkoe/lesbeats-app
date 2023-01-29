@@ -55,13 +55,17 @@ class _MyFavouritesState extends State<MyFavourites> {
               favorites.clear();
               final trackMap = snapshot.snapshot2.data!.docs.toList().asMap();
 
-              for (var element in snapshot.snapshot1.data!.docs) {
-                var result = snapshot.snapshot2.data!.docs
-                    .where((value) => value["id"] == element["id"]);
+              try {
+                for (var element in snapshot.snapshot1.data!.docs) {
+                  var result = snapshot.snapshot2.data!.docs
+                      .where((value) => value["id"] == element["id"]);
 
-                if (result.isNotEmpty) {
-                  favorites.add(result.first);
+                  if (result.isNotEmpty) {
+                    favorites.add(result.first);
+                  }
                 }
+              } catch (e) {
+                debugPrint(e.toString());
               }
 
               return Expanded(

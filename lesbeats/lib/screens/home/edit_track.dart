@@ -173,21 +173,26 @@ class _MyUpdateTrackScreenState extends State<MyUpdateTrackScreen> {
         ElevatedButton(
             style: confirmButtonStyle,
             onPressed: () async {
-              if (_priceController.text.isNotEmpty) {
-                await db.collection("tracks").doc(widget.id).set(
-                    {"price": double.parse(_priceController.text)},
-                    SetOptions(merge: true));
-              }
+              try {
+                if (_priceController.text.isNotEmpty) {
+                  await db.collection("tracks").doc(widget.id).set(
+                      {"price": double.parse(_priceController.text)},
+                      SetOptions(merge: true));
+                }
 
-              if (_titleController.text.isNotEmpty) {
-                await db.collection("tracks").doc(widget.id).set(
-                    {"title": _titleController.text}, SetOptions(merge: true));
-              }
+                if (_titleController.text.isNotEmpty) {
+                  await db.collection("tracks").doc(widget.id).set(
+                      {"title": _titleController.text},
+                      SetOptions(merge: true));
+                }
 
-              await db.collection("tracks").doc(widget.id).set(
-                  {"download": _enableDownload},
-                  SetOptions(
-                      merge: true)).then((value) => Navigator.pop(context));
+                await db.collection("tracks").doc(widget.id).set(
+                    {"download": _enableDownload},
+                    SetOptions(
+                        merge: true)).then((value) => Navigator.pop(context));
+              } catch (e) {
+                debugPrint(e.toString());
+              }
             },
             child: const Text("Update"))
       ],

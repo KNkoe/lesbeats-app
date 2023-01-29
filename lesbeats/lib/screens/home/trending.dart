@@ -26,7 +26,9 @@ class _MyTrendingPageState extends State<MyTrendingPage> {
           plays += value.size;
         });
 
-        element.reference.set({"plays": plays}, SetOptions(merge: true));
+        if (element.exists) {
+          element.reference.set({"plays": plays}, SetOptions(merge: true));
+        }
       }
     });
 

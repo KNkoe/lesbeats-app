@@ -24,14 +24,17 @@ class _MyArtistsState extends State<MyProducers> {
 
     _usersStream.listen((element) async {
       for (var element in element.docs) {
-        int followers = 0;
-        await element.reference.collection("followers").get().then((value) {
-          followers += value.size;
-        });
-
-        if (element.id == element.get("uid")) {
-          element.reference
-              .set({"followers": followers}, SetOptions(merge: true));
+        try {
+          if (element.id == element.get("uid")) {
+            int followers = 0;
+            await element.reference.collection("followers").get().then((value) {
+              followers += value.size;
+            });
+            element.reference
+                .set({"followers": followers}, SetOptions(merge: true));
+          }
+        } catch (e) {
+          debugPrint(e.toString());
         }
       }
     });
@@ -55,11 +58,15 @@ class _MyArtistsState extends State<MyProducers> {
                 physics: const BouncingScrollPhysics(),
                 itemCount: snapshot.data!.size,
                 itemBuilder: (context, index) {
-                  if (snapshot.data!.docs[index]["uid"] !=
-                      auth.currentUser!.uid) {
-                    if (index > 10) {
-                      return MyProducerTile(doc: snapshot.data!.docs[index]);
+                  try {
+                    if (snapshot.data!.docs[index]["uid"] !=
+                        auth.currentUser!.uid) {
+                      if (index > 10) {
+                        return MyProducerTile(doc: snapshot.data!.docs[index]);
+                      }
                     }
+                  } catch (e) {
+                    debugPrint(e.toString());
                   }
                   return const SizedBox();
                 });

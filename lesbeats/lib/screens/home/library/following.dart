@@ -52,7 +52,13 @@ class _MyFollowingPageState extends State<MyFollowingPage> {
                   crossAxisCount: 2),
               itemCount: snapshot.data!.size,
               itemBuilder: (context, index) {
-                return FollowingTile(uid: snapshot.data!.docs[index]["uid"]);
+                try {
+                  return FollowingTile(uid: snapshot.data!.docs[index]["uid"]);
+                } catch (e) {
+                  debugPrint(e.toString());
+                }
+
+                return const SizedBox();
               },
             ));
           }

@@ -1,4 +1,7 @@
 import "package:flutter/material.dart";
+import 'package:lesbeats/main.dart';
+import 'package:lesbeats/services/payment.dart';
+import 'package:lesbeats/widgets/format.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 
@@ -35,7 +38,7 @@ class CheckOutScreen extends StatefulWidget {
 
 class _CheckOutScreenState extends State<CheckOutScreen> {
   bool _isCollapsed = false;
-  bool _isOTPsent = true;
+  bool _isOTPsent = false;
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
 
@@ -244,10 +247,48 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                           Radius.circular(10))),
                                   fixedSize: Size(
                                       screenSize(context).width * 0.8, 50)),
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {}
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  try {
+                                    String apiKey = "";
+                                    String clientSecret = "";
+                                    await db
+                                        .collection("miscellaneous")
+                                        .doc("AQmd8k0dJdqDmliNYBa1")
+                                        .get()
+                                        .then((value) {
+                                      apiKey = value.get("api_key");
+                                      clientSecret = value.get("client_secret");
+                                    });
+
+                                    PaymentAPI paymentAPI =
+                                        PaymentAPI(apiKey, clientSecret);
+
+                                    paymentAPI.generateChecksum(
+                                        generateRandomString(8),
+                                        auth.currentUser!.uid,
+                                        widget.price,
+                                        _phoneNumberController.text);
+                                  } catch (e) {
+                                    debugPrint(e.toString());
+                                  }
+                                }
                               },
-                              child: Text(_isOTPsent ? "Checkout" : "Send OTP"))
+                              child: const Text("Send OTP")),
+                          if (_isOTPsent)
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Theme.of(context).primaryColor,
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    fixedSize: Size(
+                                        screenSize(context).width * 0.8, 50)),
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {}
+                                },
+                                child: const Text("Checkout"))
                         ],
                       ),
                       const SizedBox(

@@ -35,8 +35,10 @@ class _DashboardState extends State<Dashboard> {
           followers += value.size;
         });
 
-        element.reference
-            .set({"followers": followers}, SetOptions(merge: true));
+        if (element.exists) {
+          element.reference
+              .set({"followers": followers}, SetOptions(merge: true));
+        }
       }
     });
 
