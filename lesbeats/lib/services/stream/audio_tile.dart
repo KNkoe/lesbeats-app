@@ -10,7 +10,6 @@ import 'package:lesbeats/services/stream/follow.dart';
 import 'package:lesbeats/services/stream/like.dart';
 import 'package:lesbeats/services/stream/report.dart';
 import 'package:lesbeats/widgets/format.dart';
-import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../main.dart';
@@ -46,11 +45,9 @@ class _MyAudioTileState extends State<MyAudioTile> {
   late String artistId;
   late String id;
   late bool download;
-
-  late final Stream<QuerySnapshot> downloadStream;
-  late final Stream<QuerySnapshot> salesStream;
-  late final Stream<QuerySnapshot> likeStream;
-  late final Stream<QuerySnapshot> playStream;
+  late int downloads;
+  late int plays;
+  late int likes;
 
   late final Stream<DocumentSnapshot> artistStream;
 
@@ -79,25 +76,24 @@ class _MyAudioTileState extends State<MyAudioTile> {
   void initState() {
     super.initState();
 
-    date = widget.snapshot.data!.docs[widget.index]["uploadedAt"];
-    cover = widget.snapshot.data!.docs[widget.index]["cover"];
-    path = widget.snapshot.data!.docs[widget.index]["path"];
-    title = widget.snapshot.data!.docs[widget.index]["title"];
-    price = widget.snapshot.data!.docs[widget.index]["price"];
-    feature = widget.snapshot.data!.docs[widget.index]["feature"];
-    genre = widget.snapshot.data!.docs[widget.index]["genre"];
-    artistId = widget.snapshot.data!.docs[widget.index]["artistId"];
-    id = widget.snapshot.data!.docs[widget.index]["id"];
-    download = widget.snapshot.data!.docs[widget.index]["download"];
+    try {
+      date = widget.snapshot.data!.docs[widget.index]["uploadedAt"];
+      cover = widget.snapshot.data!.docs[widget.index]["cover"];
+      path = widget.snapshot.data!.docs[widget.index]["path"];
+      title = widget.snapshot.data!.docs[widget.index]["title"];
+      price = widget.snapshot.data!.docs[widget.index]["price"];
+      feature = widget.snapshot.data!.docs[widget.index]["feature"];
+      genre = widget.snapshot.data!.docs[widget.index]["genre"];
+      artistId = widget.snapshot.data!.docs[widget.index]["artistId"];
+      id = widget.snapshot.data!.docs[widget.index]["id"];
+      download = widget.snapshot.data!.docs[widget.index]["download"];
+      downloads = widget.snapshot.data!.docs[widget.index]["downloads"];
+      plays = widget.snapshot.data!.docs[widget.index]["plays"];
+      likes = widget.snapshot.data!.docs[widget.index]["likes"];
+    } catch (e) {
+      debugPrint(e.toString());
+    }
 
-    downloadStream =
-        db.collection("tracks").doc(id).collection("downloads").snapshots();
-    playStream =
-        db.collection("tracks").doc(id).collection("plays").snapshots();
-    salesStream =
-        db.collection("tracks").doc(id).collection("sales").snapshots();
-    likeStream =
-        db.collection("tracks").doc(id).collection("likes").snapshots();
     artistStream = db.collection("users").doc(artistId).snapshots();
   }
 
@@ -126,36 +122,26 @@ class _MyAudioTileState extends State<MyAudioTile> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder5<QuerySnapshot, QuerySnapshot, QuerySnapshot,
-            QuerySnapshot, DocumentSnapshot>(
-        streams: StreamTuple5(
-            salesStream, playStream, downloadStream, likeStream, artistStream),
+    return StreamBuilder<DocumentSnapshot>(
+        stream: artistStream,
         builder: (context, snapshot) {
           Map<String, dynamic> play = {
             "uid": auth.currentUser!.uid,
             "timestamp": DateTime.now()
           };
 
-          if (snapshot.snapshot1.connectionState == ConnectionState.waiting ||
-              snapshot.snapshot2.connectionState == ConnectionState.waiting ||
-              snapshot.snapshot3.connectionState == ConnectionState.waiting ||
-              snapshot.snapshot4.connectionState == ConnectionState.waiting ||
-              snapshot.snapshot5.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const LoadTrack();
           }
 
-          if (snapshot.snapshot1.hasData &&
-              snapshot.snapshot2.hasData &&
-              snapshot.snapshot3.hasData &&
-              snapshot.snapshot4.hasData &&
-              snapshot.snapshot5.hasData) {
+          if (snapshot.hasData) {
             final Map<String, String> tags = {
               "id": id,
               "title": title,
               "cover": cover,
               "artist": feature.toString().isEmpty
-                  ? snapshot.snapshot5.data!["username"]
-                  : "${snapshot.snapshot5.data!["username"]} ft $feature",
+                  ? snapshot.data!["username"]
+                  : "${snapshot.data!["username"]} ft $feature",
               "artistId": artistId
             };
 
@@ -235,11 +221,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                         .textTheme
                                         .bodyText1!
                                         .copyWith(
-                                            decoration:
-                                                snapshot.snapshot1.data!.size >
-                                                        0
-                                                    ? TextDecoration.lineThrough
-                                                    : TextDecoration.none),
+                                            decoration: TextDecoration.none),
                                   )
                                 ],
                               ),
@@ -257,8 +239,8 @@ class _MyAudioTileState extends State<MyAudioTile> {
                               closedColor: Colors.transparent,
                               closedBuilder: ((context, action) => Text(
                                     feature.toString().isEmpty
-                                        ? snapshot.snapshot5.data!["username"]
-                                        : "${snapshot.snapshot5.data!["username"]} ft $feature",
+                                        ? snapshot.data!["username"]
+                                        : "${snapshot.data!["username"]} ft $feature",
                                     style: TextStyle(
                                         color: Theme.of(context).primaryColor),
                                   )),
@@ -295,7 +277,6 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                                         title: title,
                                                         id: id,
                                                         producer: snapshot
-                                                            .snapshot5
                                                             .data!["username"],
                                                         producerId: artistId,
                                                         downloadUrl: path)));
@@ -382,8 +363,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                                 price,
                                                 id,
                                                 artistId,
-                                                snapshot.snapshot5
-                                                    .data!["username"]));
+                                                snapshot.data!["username"]));
                                       },
                                       child: Row(
                                         mainAxisAlignment:
@@ -497,7 +477,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                   color: Colors.grey,
                                 ),
                                 Text(
-                                  numberFormat(snapshot.snapshot2.data!.size),
+                                  numberFormat(plays),
                                   style: const TextStyle(
                                     color: Colors.grey,
                                   ),
@@ -519,8 +499,8 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                             id: id,
                                             title: title,
                                             producerId: artistId,
-                                            producer: snapshot
-                                                .snapshot5.data!["username"],
+                                            producer:
+                                                snapshot.data!["username"],
                                             downloadUrl: path);
                                       }));
                                 },
@@ -534,8 +514,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                         color: Colors.grey,
                                       ),
                                       Text(
-                                        numberFormat(
-                                            snapshot.snapshot3.data!.size),
+                                        numberFormat(downloads),
                                         style: const TextStyle(
                                           color: Colors.grey,
                                         ),
@@ -575,8 +554,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                           : Colors.grey,
                                     ),
                                     Text(
-                                      numberFormat(
-                                          snapshot.snapshot4.data!.size),
+                                      numberFormat(likes),
                                       style: const TextStyle(
                                         color: Colors.grey,
                                       ),
