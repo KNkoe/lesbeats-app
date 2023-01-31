@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -102,15 +101,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           const SizedBox(
                             height: 20,
                           ),
-                          Container(
-                            height: 80,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(
-                                        auth.currentUser!.photoURL!))),
+                          ClipOval(
+                            child: FadeInImage.assetNetwork(
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.cover,
+                                placeholder: "assets/images/placeholder.jpg",
+                                image: auth.currentUser!.photoURL!),
                           ),
                           const SizedBox(
                             height: 10,
@@ -222,11 +219,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return Badge(
-                                  elevation: (snapshot.data!.size == 0) ? 0 : 2,
-                                  badgeColor: (snapshot.data!.size == 0)
-                                      ? Colors.transparent
-                                      : Theme.of(context).indicatorColor,
-                                  badgeContent: Text(
+                                  isLabelVisible: snapshot.data!.size != 0,
+                                  backgroundColor:
+                                      Theme.of(context).indicatorColor,
+                                  label: Text(
                                     snapshot.data!.size.toString(),
                                     style: const TextStyle(color: Colors.white),
                                   ),

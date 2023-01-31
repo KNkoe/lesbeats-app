@@ -264,11 +264,13 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                     PaymentAPI paymentAPI =
                                         PaymentAPI(apiKey, clientSecret);
 
-                                    paymentAPI.generateChecksum(
-                                        generateRandomString(8),
-                                        auth.currentUser!.uid,
-                                        widget.price,
-                                        _phoneNumberController.text);
+                                    paymentAPI
+                                        .generateChecksum(
+                                            generateRandomString(8),
+                                            auth.currentUser!.uid,
+                                            widget.price,
+                                            _phoneNumberController.text)
+                                        .then((value) => debugPrint(value));
                                   } catch (e) {
                                     debugPrint(e.toString());
                                   }

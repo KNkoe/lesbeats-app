@@ -17,10 +17,10 @@ import 'package:lottie/lottie.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-showUpload(BuildContext context) async {
+showUpload(BuildContext context) {
   int count = 0;
 
-  await db
+  db
       .collection("tracks")
       .where("artistId", isEqualTo: auth.currentUser!.uid)
       .get()
@@ -256,6 +256,7 @@ class _UploadBeatState extends State<UploadBeat> {
             "uploadedAt": DateTime.now(),
             "price": price,
             "download": _enableDownload,
+            "producer": auth.currentUser!.displayName
           }, SetOptions(merge: true));
         });
 

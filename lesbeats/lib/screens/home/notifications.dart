@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -100,11 +99,9 @@ class _MyNotificationsState extends State<MyNotifications> {
               child: PopupMenuButton(
                 child: Badge(
                     padding: const EdgeInsets.all(7),
-                    elevation: 0,
-                    badgeColor: unread == 0
-                        ? Colors.transparent
-                        : Theme.of(context).indicatorColor,
-                    badgeContent: unread == 0
+                    isLabelVisible: unread != 0,
+                    backgroundColor: Theme.of(context).indicatorColor,
+                    label: unread == 0
                         ? const SizedBox()
                         : Text(
                             numberFormat(unread),

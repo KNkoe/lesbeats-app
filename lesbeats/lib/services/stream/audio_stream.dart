@@ -17,40 +17,6 @@ class MyAudioStream extends StatefulWidget {
 
 class _MyAudioStreamState extends State<MyAudioStream> {
   @override
-  void initState() {
-    super.initState();
-    widget.stream.listen((element) async {
-      for (var element in element.docs) {
-        try {
-          if (element.id == element.get("id")) {
-            int downloads = 0;
-            int likes = 0;
-            int plays = 0;
-
-            await element.reference.collection("downloads").get().then((value) {
-              downloads += value.size;
-            });
-
-            await element.reference.collection("likes").get().then((value) {
-              likes += value.size;
-            });
-
-            await element.reference.collection("plays").get().then((value) {
-              plays += value.size;
-            });
-
-            element.reference.set(
-                {"downloads": downloads, "likes": likes, "plays": plays},
-                SetOptions(merge: true));
-          }
-        } catch (e) {
-          debugPrint(e.toString());
-        }
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
         stream: widget.stream,
