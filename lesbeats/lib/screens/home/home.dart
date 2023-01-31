@@ -5,8 +5,9 @@ import 'package:lesbeats/screens/home/library.dart';
 import 'package:lesbeats/screens/home/search.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:iconify_flutter/icons/bx.dart';
-import 'package:iconify_flutter/icons/fluent.dart';
+import 'package:iconify_flutter/icons/clarity.dart';
 import 'package:iconify_flutter/icons/ph.dart';
+import 'package:iconify_flutter/icons/mingcute.dart';
 
 import '../../main.dart';
 import '../../services/services.dart';
@@ -64,8 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
               BottomNavigationBarItem(
                 icon: Iconify(
                   selectedIndex == 0
-                      ? Fluent.home_32_filled
-                      : Fluent.home_32_regular,
+                      ? Mingcute.home_4_fill
+                      : Mingcute.home_4_line,
                   color: selectedIndex == 0
                       ? Theme.of(context)
                           .bottomNavigationBarTheme
@@ -79,8 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
               BottomNavigationBarItem(
                   icon: Iconify(
                     selectedIndex == 1
-                        ? Fluent.library_20_filled
-                        : Fluent.library_20_regular,
+                        ? Clarity.library_solid
+                        : Clarity.library_line,
                     color: selectedIndex == 1
                         ? Theme.of(context)
                             .bottomNavigationBarTheme
