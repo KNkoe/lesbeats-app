@@ -78,7 +78,7 @@ class _MyChatState extends State<MyChat> {
                         width: 10,
                       ),
                       Text(usersnapshot.data!.get("username"),
-                          style: Theme.of(context).textTheme.subtitle1),
+                          style: Theme.of(context).textTheme.titleMedium),
                       if (usersnapshot.data!.get("online")) online(context)
                     ],
                   ),
@@ -86,7 +86,7 @@ class _MyChatState extends State<MyChat> {
                       MyProfilePage(usersnapshot.data!.get("uid")),
                 ),
                 iconTheme: IconThemeData(
-                  color: Theme.of(context).textTheme.headline6!.color,
+                  color: Theme.of(context).textTheme.titleLarge!.color,
                 ),
                 actions: [
                   Transform.rotate(
@@ -201,7 +201,7 @@ class _MyChatState extends State<MyChat> {
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
+                        color: Theme.of(context).colorScheme.background,
                         border: Border.all(color: Colors.black12),
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(30.0),
@@ -222,7 +222,7 @@ class _MyChatState extends State<MyChat> {
                                     hintStyle: TextStyle(
                                         color: Theme.of(context)
                                             .textTheme
-                                            .subtitle1!
+                                            .titleMedium!
                                             .color),
                                     border: InputBorder.none,
                                     enabledBorder: InputBorder.none),
@@ -230,8 +230,10 @@ class _MyChatState extends State<MyChat> {
                             ),
                             IconButton(
                               icon: const Icon(Icons.send),
-                              color:
-                                  Theme.of(context).textTheme.headline1!.color,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .displayLarge!
+                                  .color,
                               onPressed: () {
                                 if (_textController.text.isNotEmpty) {
                                   FocusManager.instance.primaryFocus?.unfocus();
@@ -264,7 +266,6 @@ class _MyChatState extends State<MyChat> {
                                     ]
                                   });
                                 }
-
                                 _textController.clear();
                               },
                             ),
