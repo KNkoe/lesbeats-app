@@ -108,23 +108,26 @@ class _MyAudioTileState extends State<MyAudioTile> {
         trackStream.collection("likes").snapshots();
 
     producerStream.snapshots().listen((event) {
-      trackStream.set({"producer": event.get("username")},
-          SetOptions(merge: true)).then((value) => debugPrint("UPDATED"));
+      trackStream.set(
+          {"producer": event.get("username")},
+          SetOptions(
+              merge: true)).then((value) => debugPrint("UPDATED PRODUCER"));
     });
 
     playStream.listen((element) async {
       trackStream.set({"plays": element.size}, SetOptions(merge: true)).then(
-          (value) => debugPrint("UPDATED"));
+          (value) => debugPrint("UPDATED PLAYS"));
     });
 
     likeStream.listen((element) async {
       trackStream.set({"likes": element.size}, SetOptions(merge: true)).then(
-          (value) => debugPrint("UPDATED"));
+          (value) => debugPrint("UPDATED LIKES"));
     });
 
     downloadStream.listen((element) async {
-      trackStream.set({"downloads": element.size},
-          SetOptions(merge: true)).then((value) => debugPrint("UPDATED"));
+      trackStream
+          .set({"downloads": element.size}, SetOptions(merge: true)).then(
+              (value) => debugPrint("UPDATED DOWNLOADS"));
     });
 
     play = {"uid": auth.currentUser!.uid, "timestamp": DateTime.now()};

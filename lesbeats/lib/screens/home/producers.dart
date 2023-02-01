@@ -148,8 +148,8 @@ class _MyProducerTileState extends State<MyProducerTile> {
                               height: 70,
                               width: 70,
                               fit: BoxFit.cover,
-                              placeholder:
-                                  const AssetImage("assets/images/loading.gif"),
+                              placeholder: const AssetImage(
+                                  "assets/images/placeholder.jpg"),
                               image: NetworkImage(widget.doc["photoUrl"])),
                         ),
                         const SizedBox(

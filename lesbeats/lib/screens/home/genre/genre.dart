@@ -30,7 +30,7 @@ class _MyGenreState extends State<MyGenre> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           "Genres",
-          style: Theme.of(context).textTheme.headline6!,
+          style: Theme.of(context).textTheme.titleLarge!,
         ),
         leading: IconButton(
             onPressed: () {
@@ -38,7 +38,7 @@ class _MyGenreState extends State<MyGenre> {
             },
             icon: Icon(
               Icons.arrow_back,
-              color: Theme.of(context).textTheme.headline6!.color,
+              color: Theme.of(context).textTheme.titleLarge!.color,
             )),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -69,7 +69,7 @@ class _MyGenreState extends State<MyGenre> {
                                   color: Color.fromRGBO(0, 0, 0, 0.2),
                                 )
                               ],
-                              color: Theme.of(context).backgroundColor,
+                              color: Theme.of(context).colorScheme.background,
                               borderRadius: BorderRadius.circular(10)),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,7 +77,7 @@ class _MyGenreState extends State<MyGenre> {
                             children: [
                               Text(
                                 snapshot.data!.docs[index]["title"],
-                                style: Theme.of(context).textTheme.subtitle1,
+                                style: Theme.of(context).textTheme.titleMedium,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,

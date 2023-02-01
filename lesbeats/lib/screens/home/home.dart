@@ -5,9 +5,8 @@ import 'package:lesbeats/screens/home/library.dart';
 import 'package:lesbeats/screens/home/search.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
 import 'package:iconify_flutter/icons/bx.dart';
-import 'package:iconify_flutter/icons/clarity.dart';
 import 'package:iconify_flutter/icons/ph.dart';
-import 'package:iconify_flutter/icons/mingcute.dart';
+import 'package:fluentui_icons/fluentui_icons.dart';
 
 import '../../main.dart';
 import '../../services/services.dart';
@@ -51,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: destination(selectedIndex),
         bottomNavigationBar: BottomNavigationBar(
             onTap: (value) => setState(() {
@@ -63,10 +62,10 @@ class _MyHomePageState extends State<MyHomePage> {
             type: BottomNavigationBarType.fixed,
             items: [
               BottomNavigationBarItem(
-                icon: Iconify(
+                icon: Icon(
                   selectedIndex == 0
-                      ? Mingcute.home_4_fill
-                      : Mingcute.home_4_line,
+                      ? FluentSystemIcons.ic_fluent_home_filled
+                      : FluentSystemIcons.ic_fluent_home_regular,
                   color: selectedIndex == 0
                       ? Theme.of(context)
                           .bottomNavigationBarTheme
@@ -78,10 +77,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 label: "Home",
               ),
               BottomNavigationBarItem(
-                  icon: Iconify(
+                  icon: Icon(
                     selectedIndex == 1
-                        ? Clarity.library_solid
-                        : Clarity.library_line,
+                        ? FluentSystemIcons.ic_fluent_library_filled
+                        : FluentSystemIcons.ic_fluent_library_regular,
                     color: selectedIndex == 1
                         ? Theme.of(context)
                             .bottomNavigationBarTheme
