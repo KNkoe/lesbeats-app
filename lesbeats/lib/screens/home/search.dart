@@ -175,22 +175,26 @@ class _MySearchScreenState extends State<MySearchScreen> {
                               physics: const BouncingScrollPhysics(),
                               itemCount: snapshot.data!.size,
                               itemBuilder: ((context, index) {
-                                return ListTile(
-                                  onTap: () {
-                                    setState(() {
-                                      query =
-                                          snapshot.data!.docs[index]["query"];
-                                    });
-                                  },
-                                  title:
-                                      Text(snapshot.data!.docs[index]["query"]),
-                                  trailing: IconButton(
-                                      onPressed: () {
-                                        snapshot.data!.docs[index].reference
-                                            .delete();
-                                      },
-                                      icon: const Icon(Icons.clear)),
-                                );
+                                try {
+                                  return ListTile(
+                                    onTap: () {
+                                      setState(() {
+                                        query =
+                                            snapshot.data!.docs[index]["query"];
+                                      });
+                                    },
+                                    title: Text(
+                                        snapshot.data!.docs[index]["query"]),
+                                    trailing: IconButton(
+                                        onPressed: () {
+                                          snapshot.data!.docs[index].reference
+                                              .delete();
+                                        },
+                                        icon: const Icon(Icons.clear)),
+                                  );
+                                } catch (e) {
+                                  debugPrint("ERROR WITH QUERY");
+                                }
                               }),
                             ),
                           );
@@ -218,12 +222,16 @@ class _MySearchScreenState extends State<MySearchScreen> {
 
                           final trackMap = tracks.asMap();
 
-                          tracks = tracks
-                              .where((track) => track
-                                  .get("title")
-                                  .toLowerCase()
-                                  .contains(query.toLowerCase()))
-                              .toList();
+                          try {
+                            tracks = tracks
+                                .where((track) => track
+                                    .get("title")
+                                    .toLowerCase()
+                                    .contains(query.toLowerCase()))
+                                .toList();
+                          } catch (e) {
+                            debugPrint("CAN'T GET TITLE");
+                          }
 
                           if (tracks.isEmpty) {
                             return Center(
@@ -269,12 +277,16 @@ class _MySearchScreenState extends State<MySearchScreen> {
 
                           final userMap = users.asMap();
 
-                          users = users
-                              .where((user) => user
-                                  .get("username")
-                                  .toLowerCase()
-                                  .contains(query.toLowerCase()))
-                              .toList();
+                          try {
+                            users = users
+                                .where((user) => user
+                                    .get("username")
+                                    .toLowerCase()
+                                    .contains(query.toLowerCase()))
+                                .toList();
+                          } catch (e) {
+                            debugPrint("CAN'T GET USERNAME");
+                          }
 
                           if (users.isEmpty) {
                             return Center(
@@ -293,8 +305,6 @@ class _MySearchScreenState extends State<MySearchScreen> {
                                 (element) => users[index] == userMap[element],
                               );
 
-                              debugPrint(
-                                  "UID: ${snapshot.data!.docs[indexofUser]}");
                               return MyProducerTile(
                                   doc: snapshot.data!.docs[indexofUser]);
                             },

@@ -7,7 +7,7 @@ import 'package:wc_form_validators/wc_form_validators.dart';
 
 showcheckout(BuildContext context, String title, double price, String id,
     String uid, String producer) {
-  showBottomSheet(
+  showModalBottomSheet(
       context: context,
       builder: ((context) => CheckOutScreen(
             id: id,
@@ -46,238 +46,209 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-          child: (!_isCollapsed)
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                      const Text("Payment method"),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _isCollapsed = true;
-                          });
-                        },
-                        child: Container(
-                            height: 60,
-                            width: screenSize(context).width * 0.8,
-                            decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                    transform: GradientRotation(2.53073),
-                                    colors: [
-                                      Color(0xffcacaca),
-                                      Color(0xfff0f0f0)
-                                    ]),
-                                borderRadius: BorderRadius.circular(50),
-                                boxShadow: const [
-                                  BoxShadow(
-                                      color: Color(0xffbebebe),
-                                      offset: Offset(20, 20),
-                                      blurRadius: 60),
-                                  BoxShadow(
-                                      color: Color(0xffffffff),
-                                      offset: Offset(-20, -20),
-                                      blurRadius: 60)
-                                ]),
-                            child: Image.asset("assets/images/chapreone.png")),
-                      ),
-                      const SizedBox(),
-                    ])
-              : Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: SingleChildScrollView(
+        child: Center(
+            child: (!_isCollapsed)
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(Icons.clear))
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          const Text("Payment information"),
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Title: ",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    widget.title,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 6,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Producer: ",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    widget.producer,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 6,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Price: ",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    "M ${widget.price}",
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          (!_isOTPsent)
-                              ? SizedBox(
-                                  height: 50,
-                                  width: screenSize(context).width * 0.8,
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.phone,
-                                    validator: Validators.compose([
-                                      Validators.required(
-                                          "Please enter your mobile number"),
-                                      (value) => value!.length < 8
-                                          ? "Please enter a valid phone numer"
-                                          : null
-                                    ]),
-                                    controller: _phoneNumberController,
-                                    decoration: const InputDecoration(
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.never,
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.black12),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10))),
-                                      label: Text("Enter your phone number"),
-                                    ),
-                                  ),
-                                )
-                              : SizedBox(
-                                  height: 50,
-                                  width: screenSize(context).width * 0.8,
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.phone,
-                                    validator: Validators.compose([
-                                      Validators.required("Please enter OTP"),
-                                    ]),
-                                    controller: _otpController,
-                                    decoration: const InputDecoration(
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.never,
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.black12),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10))),
-                                      label: Text("Enter OTP"),
-                                    ),
-                                  ),
-                                ),
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          if (_isOTPsent)
-                            OutlinedButton.icon(
-                                style: OutlinedButton.styleFrom(
-                                    foregroundColor:
-                                        Theme.of(context).primaryColor,
-                                    shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))),
-                                    fixedSize: Size(
-                                        screenSize(context).width * 0.8, 50)),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text("Payment method"),
+                        SizedBox(
+                          height: screenSize(context).height * 0.2,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _isCollapsed = true;
+                            });
+                          },
+                          child: Container(
+                              height: 60,
+                              width: screenSize(context).width * 0.8,
+                              decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                      transform: GradientRotation(2.53073),
+                                      colors: [
+                                        Color(0xffcacaca),
+                                        Color(0xfff0f0f0)
+                                      ]),
+                                  borderRadius: BorderRadius.circular(50),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color: Color(0xffbebebe),
+                                        offset: Offset(20, 20),
+                                        blurRadius: 60),
+                                    BoxShadow(
+                                        color: Color(0xffffffff),
+                                        offset: Offset(-20, -20),
+                                        blurRadius: 60)
+                                  ]),
+                              child:
+                                  Image.asset("assets/images/chapreone.png")),
+                        ),
+                        const SizedBox(),
+                      ])
+                : Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
                                 onPressed: () {
-                                  setState(() {
-                                    _isOTPsent = false;
-                                  });
+                                  Navigator.pop(context);
                                 },
-                                icon: const Icon(Icons.arrow_back),
-                                label: const Text("Back")),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor,
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  fixedSize: Size(
-                                      screenSize(context).width * 0.8, 50)),
-                              onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  try {
-                                    String apiKey = "";
-                                    String clientSecret = "";
-                                    await db
-                                        .collection("miscellaneous")
-                                        .doc("AQmd8k0dJdqDmliNYBa1")
-                                        .get()
-                                        .then((value) {
-                                      apiKey = value.get("api_key");
-                                      clientSecret = value.get("client_secret");
+                                icon: const Icon(Icons.clear))
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            const Text("Payment information"),
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Title: ",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      widget.title,
+                                      style:
+                                          Theme.of(context).textTheme.bodyText1,
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 6,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Producer: ",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      widget.producer,
+                                      style:
+                                          Theme.of(context).textTheme.bodyText1,
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 6,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Price: ",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      "M ${widget.price}",
+                                      style:
+                                          Theme.of(context).textTheme.bodyText1,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            (!_isOTPsent)
+                                ? SizedBox(
+                                    height: 50,
+                                    width: screenSize(context).width * 0.8,
+                                    child: TextFormField(
+                                      keyboardType: TextInputType.phone,
+                                      validator: Validators.compose([
+                                        Validators.required(
+                                            "Please enter your mobile number"),
+                                        (value) => value!.length < 8
+                                            ? "Please enter a valid phone numer"
+                                            : null
+                                      ]),
+                                      controller: _phoneNumberController,
+                                      decoration: const InputDecoration(
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.black12),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        label: Text("Enter your phone number"),
+                                      ),
+                                    ),
+                                  )
+                                : SizedBox(
+                                    height: 50,
+                                    width: screenSize(context).width * 0.8,
+                                    child: TextFormField(
+                                      keyboardType: TextInputType.phone,
+                                      validator: Validators.compose([
+                                        Validators.required("Please enter OTP"),
+                                      ]),
+                                      controller: _otpController,
+                                      decoration: const InputDecoration(
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.black12),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        label: Text("Enter OTP"),
+                                      ),
+                                    ),
+                                  ),
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            if (_isOTPsent)
+                              OutlinedButton.icon(
+                                  style: OutlinedButton.styleFrom(
+                                      foregroundColor:
+                                          Theme.of(context).primaryColor,
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      fixedSize: Size(
+                                          screenSize(context).width * 0.8, 50)),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isOTPsent = false;
                                     });
-
-                                    PaymentAPI paymentAPI =
-                                        PaymentAPI(apiKey, clientSecret);
-
-                                    paymentAPI
-                                        .generateChecksum(
-                                            generateRandomString(8),
-                                            auth.currentUser!.uid,
-                                            widget.price,
-                                            _phoneNumberController.text)
-                                        .then((value) => debugPrint(value));
-                                  } catch (e) {
-                                    debugPrint(e.toString());
-                                  }
-                                }
-                              },
-                              child: const Text("Send OTP")),
-                          if (_isOTPsent)
+                                  },
+                                  icon: const Icon(Icons.arrow_back),
+                                  label: const Text("Back")),
+                            const SizedBox(
+                              height: 20,
+                            ),
                             ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor:
@@ -287,18 +258,70 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                             Radius.circular(10))),
                                     fixedSize: Size(
                                         screenSize(context).width * 0.8, 50)),
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {}
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    try {
+                                      String apiKey = "";
+                                      String clientSecret = "";
+                                      await db
+                                          .collection("miscellaneous")
+                                          .doc("AQmd8k0dJdqDmliNYBa1")
+                                          .get()
+                                          .then((value) {
+                                        apiKey = value.get("api_key");
+                                        clientSecret =
+                                            value.get("client_secret");
+                                      });
+
+                                      PaymentAPI paymentAPI =
+                                          PaymentAPI(apiKey, clientSecret);
+
+                                      paymentAPI.makePayment(
+                                          generateRandomString(8),
+                                          "clientCode",
+                                          "58527536",
+                                          "",
+                                          10,
+                                          "",
+                                          "M",
+                                          "SMS",
+                                          "",
+                                          1,
+                                          0,
+                                          "",
+                                          false,
+                                          "",
+                                          "katleholnkoe@gmail.com",
+                                          false);
+                                    } catch (e) {
+                                      debugPrint(e.toString());
+                                    }
+                                  }
                                 },
-                                child: const Text("Checkout"))
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ),
-                )),
+                                child: const Text("Send OTP")),
+                            if (_isOTPsent)
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      fixedSize: Size(
+                                          screenSize(context).width * 0.8, 50)),
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {}
+                                  },
+                                  child: const Text("Checkout"))
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    ),
+                  )),
+      ),
     );
   }
 }

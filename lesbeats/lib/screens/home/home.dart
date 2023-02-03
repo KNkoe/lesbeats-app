@@ -26,6 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (index) {
       case 0:
         return const Dashboard();
+
       case 1:
         return const MyLibrary();
 

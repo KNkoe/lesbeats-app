@@ -22,23 +22,6 @@ class _MyArtistsState extends State<MyProducers> {
   void initState() {
     _usersStream = db.collection('users').snapshots();
 
-    _usersStream.listen((element) async {
-      for (var element in element.docs) {
-        try {
-          if (element.id == element.get("uid")) {
-            int followers = 0;
-            await element.reference.collection("followers").get().then((value) {
-              followers += value.size;
-            });
-            element.reference
-                .set({"followers": followers}, SetOptions(merge: true));
-          }
-        } catch (e) {
-          debugPrint(e.toString());
-        }
-      }
-    });
-
     _mostFollowedStream = db
         .collection("users")
         .orderBy("followers", descending: true)
@@ -130,103 +113,96 @@ class _MyProducerTileState extends State<MyProducerTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: OpenContainer(
-          closedColor: Colors.transparent,
-          closedElevation: 0,
-          closedBuilder: ((context, action) => Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+    return OpenContainer(
+        closedColor: Colors.transparent,
+        closedElevation: 0,
+        closedBuilder: ((context, action) => Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: FadeInImage(
+                            height: 70,
+                            width: 70,
+                            fit: BoxFit.cover,
+                            placeholder: const AssetImage(
+                                "assets/images/placeholder.jpg"),
+                            image: NetworkImage(widget.doc["photoUrl"])),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(widget.doc["username"]),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              if (widget.doc["isVerified"])
+                                const Icon(
+                                  Icons.verified_sharp,
+                                  size: 18,
+                                  color: Colors.green,
+                                )
+                            ],
+                          ),
+                          Text(
+                            "$followers Followers",
+                            style: Theme.of(context).textTheme.subtitle2,
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  if (widget.doc["uid"] != auth.currentUser!.uid)
                     Row(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: FadeInImage(
-                              height: 70,
-                              width: 70,
-                              fit: BoxFit.cover,
-                              placeholder: const AssetImage(
-                                  "assets/images/placeholder.jpg"),
-                              image: NetworkImage(widget.doc["photoUrl"])),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(widget.doc["username"]),
-                                const SizedBox(
-                                  width: 4,
-                                ),
-                                if (widget.doc["isVerified"])
-                                  const Icon(
-                                    Icons.verified_sharp,
-                                    size: 18,
-                                    color: Colors.white,
-                                  )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              "$followers Followers",
-                              style: Theme.of(context).textTheme.subtitle2,
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                    if (widget.doc["uid"] != auth.currentUser!.uid)
-                      Row(
-                        children: [
-                          OpenContainer(
-                              closedElevation: 0,
-                              closedColor: Colors.transparent,
-                              closedBuilder: ((context, action) => Icon(
-                                    Icons.message,
-                                    color: Theme.of(context).primaryColor,
-                                  )),
-                              openBuilder: ((context, action) =>
-                                  MyChat(userId: widget.doc["uid"]))),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                  foregroundColor: (following)
-                                      ? Colors.grey
-                                      : Theme.of(context).primaryColor),
-                              onPressed: () {
-                                if (following) {
-                                  unfollow(
-                                      auth.currentUser!.uid, widget.doc["uid"]);
+                        // OpenContainer(
+                        //     closedElevation: 0,
+                        //     closedColor: Colors.transparent,
+                        //     closedBuilder: ((context, action) => Icon(
+                        //           Icons.message,
+                        //           color: Theme.of(context).primaryColor,
+                        //         )),
+                        //     openBuilder: ((context, action) =>
+                        //         MyChat(userId: widget.doc["uid"]))),
+                        // const SizedBox(
+                        //   width: 20,
+                        // ),
+                        OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                                foregroundColor: (following)
+                                    ? Colors.grey
+                                    : Theme.of(context).primaryColor),
+                            onPressed: () {
+                              if (following) {
+                                unfollow(
+                                    auth.currentUser!.uid, widget.doc["uid"]);
 
-                                  setState(() {
-                                    following = false;
-                                  });
-                                } else {
-                                  follow(
-                                      auth.currentUser!.uid, widget.doc["uid"]);
-                                  setState(() {
-                                    following = true;
-                                  });
-                                }
-                              },
-                              child:
-                                  Text((following) ? "Following" : "Follow")),
-                        ],
-                      )
-                  ],
-                ),
-              )),
-          openBuilder: ((context, action) => MyProfilePage(widget.doc["uid"]))),
-    );
+                                setState(() {
+                                  following = false;
+                                });
+                              } else {
+                                follow(
+                                    auth.currentUser!.uid, widget.doc["uid"]);
+                                setState(() {
+                                  following = true;
+                                });
+                              }
+                            },
+                            child: Text((following) ? "Following" : "Follow")),
+                      ],
+                    )
+                ],
+              ),
+            )),
+        openBuilder: ((context, action) => MyProfilePage(widget.doc["uid"])));
   }
 }

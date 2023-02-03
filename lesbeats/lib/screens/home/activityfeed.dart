@@ -31,7 +31,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(
-          height: 20,
+          height: 10,
         ),
         Expanded(child: MyAudioStream(stream: _audioStream)),
       ],

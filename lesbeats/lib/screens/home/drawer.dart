@@ -144,7 +144,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         if (snapshot.data!["isVerified"])
                                           const Icon(
                                             Icons.verified,
-                                            color: Colors.green,
+                                            color: Colors.white,
                                           )
                                       ],
                                     ),
@@ -202,47 +202,45 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       title: const Text("Genres"),
                     ),
-                    const Divider(),
-                    ListTile(
-                      onTap: () {
-                        Get.to(() => const MyChatList());
-                        widget._scaffoldKey.currentState!.closeDrawer();
-                      },
-                      title: const Text("Messages"),
-                      leading: StreamBuilder<QuerySnapshot>(
-                          stream: db
-                              .collection("messages")
-                              .where("recipient",
-                                  isEqualTo: auth.currentUser!.uid)
-                              .where("chatId", isEqualTo: "last message")
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return Badge(
-                                  isLabelVisible: snapshot.data!.size != 0,
-                                  backgroundColor:
-                                      Theme.of(context).indicatorColor,
-                                  label: Text(
-                                    snapshot.data!.size.toString(),
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                  child: Iconify(
-                                    Ri.chat_1_fill,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .headline1!
-                                        .color,
-                                  ));
-                            }
+                    // ListTile(
+                    //   onTap: () {
+                    //     Get.to(() => const MyChatList());
+                    //     widget._scaffoldKey.currentState!.closeDrawer();
+                    //   },
+                    //   title: const Text("Messages"),
+                    //   leading: StreamBuilder<QuerySnapshot>(
+                    //       stream: db
+                    //           .collection("messages")
+                    //           .where("recipient",
+                    //               isEqualTo: auth.currentUser!.uid)
+                    //           .where("chatId", isEqualTo: "last message")
+                    //           .snapshots(),
+                    //       builder: (context, snapshot) {
+                    //         if (snapshot.hasData) {
+                    //           return Badge(
+                    //               isLabelVisible: snapshot.data!.size != 0,
+                    //               backgroundColor:
+                    //                   Theme.of(context).indicatorColor,
+                    //               label: Text(
+                    //                 snapshot.data!.size.toString(),
+                    //                 style: const TextStyle(color: Colors.white),
+                    //               ),
+                    //               child: Iconify(
+                    //                 Ri.chat_1_fill,
+                    //                 color: Theme.of(context)
+                    //                     .textTheme
+                    //                     .headline1!
+                    //                     .color,
+                    //               ));
+                    //         }
 
-                            return Iconify(
-                              Ri.chat_1_fill,
-                              color:
-                                  Theme.of(context).textTheme.headline1!.color,
-                            );
-                          }),
-                    ),
-                    const Divider(),
+                    //         return Iconify(
+                    //           Ri.chat_1_fill,
+                    //           color:
+                    //               Theme.of(context).textTheme.headline1!.color,
+                    //         );
+                    //       }),
+                    // ),
                     ListTile(
                       onTap: () {
                         Get.to(() => const MyUploads());

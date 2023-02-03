@@ -1,4 +1,3 @@
-import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
@@ -50,20 +49,23 @@ class _MyGenresState extends State<MyGenres> {
           return Expanded(
               child: ListView(
             children: genres
-                .map((genre) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: OpenContainer(
-                          closedColor: Colors.transparent,
-                          closedBuilder: ((context, action) => ListTile(
-                                leading: const Icon(Icons.folder),
-                                title: Text(genre),
-                              )),
-                          openBuilder: ((context, action) {
-                            return MyTracks(
-                              genre: genre,
-                              uid: widget.uid,
-                            );
-                          })),
+                .map((genre) => ListTile(
+                      leading: Icon(
+                        Icons.folder,
+                        size: 32,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      title: Text(genre),
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: ((context) {
+                              return MyTracks(
+                                genre: genre,
+                                uid: widget.uid,
+                              );
+                            }));
+                      },
                     ))
                 .toList(),
           ));

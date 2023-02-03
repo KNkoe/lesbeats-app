@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -167,274 +166,265 @@ class _EditProfileState extends State<EditProfile> {
             }
 
             if (snapshot.hasData) {
-              BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                child: Center(
-                  child: SingleChildScrollView(
-                    child: AlertDialog(
-                      title: Column(
-                        children: [
-                          const Text("Edit profile"),
-                          SizedBox(
-                            height: 30,
-                            width: screenSize(context).width * 0.9,
-                          ),
-                          _isImageChanged
-                              ? GestureDetector(
-                                  onTap: pickImage,
-                                  child: ClipOval(
-                                    child: Image.file(
-                                      _imagePath!,
-                                      fit: BoxFit.fill,
-                                      width: 100,
-                                      height: 100,
-                                    ),
-                                  ),
-                                )
-                              : GestureDetector(
-                                  onTap: pickImage,
-                                  child: Container(
-                                    alignment: Alignment.bottomRight,
-                                    width: 100,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(
-                                              auth.currentUser!.photoURL!)),
-                                    ),
-                                    child: Icon(Icons.camera_alt,
-                                        color: Theme.of(context).primaryColor),
-                                  ),
-                                ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Full Name",
-                                style: TextStyle(fontSize: 14),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _isnameEnabled = true;
-                                  });
-                                },
-                                child: SizedBox(
-                                  height: 50,
-                                  width: screenSize(context).width,
-                                  child: TextFormField(
-                                    enabled: _isnameEnabled,
-                                    keyboardType: TextInputType.name,
-                                    controller: _nameController,
-                                    decoration: InputDecoration(
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.never,
-                                      enabledBorder: const OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.black12),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10))),
-                                      label: Text(snapshot.data!["full name"]
-                                          .toString()),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "username",
-                                style: TextStyle(fontSize: 14),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _isUsernameEnabled = true;
-                                  });
-                                },
-                                child: SizedBox(
-                                  height: 50,
-                                  width: screenSize(context).width,
-                                  child: TextFormField(
-                                    enabled: _isUsernameEnabled,
-                                    keyboardType: TextInputType.name,
-                                    controller: _usernameController,
-                                    decoration: InputDecoration(
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.never,
-                                      enabledBorder: const OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.black12),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10))),
-                                      label: Text(snapshot.data!["username"]),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Password",
-                                style: TextStyle(fontSize: 14),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _ispasswordEnabled = true;
-                                  });
-                                },
-                                child: SizedBox(
-                                  height: 50,
-                                  width: screenSize(context).width,
-                                  child: TextFormField(
-                                      enabled: _ispasswordEnabled,
-                                      keyboardType: TextInputType.name,
-                                      controller: _passwordController,
-                                      obscureText: _obscurePassword,
-                                      decoration: InputDecoration(
-                                          floatingLabelBehavior:
-                                              FloatingLabelBehavior.never,
-                                          enabledBorder: const OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.black12),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10))),
-                                          label: const Text("Change Password"),
-                                          hintText: "New Password",
-                                          suffix: IconButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  _obscurePassword =
-                                                      !_obscurePassword;
-                                                });
-                                              },
-                                              icon: Icon(
-                                                _obscurePassword
-                                                    ? Icons
-                                                        .remove_red_eye_outlined
-                                                    : Icons.remove_red_eye,
-                                                color: Colors.black38,
-                                              )))),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          if (_ispasswordEnabled)
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  _ispasswordEnabled = true;
-                                });
-                              },
-                              child: SizedBox(
-                                height: 50,
-                                width: screenSize(context).width,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.name,
-                                  controller: _confirmPasswordController,
-                                  obscureText: _obscureConfirm,
-                                  validator: (value) =>
-                                      value != _passwordController.text
-                                          ? "Passwords do not match"
-                                          : null,
-                                  decoration: InputDecoration(
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.never,
-                                      enabledBorder: const OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.black12),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10))),
-                                      label: const Text("Confirm Password"),
-                                      suffix: IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              _obscureConfirm =
-                                                  !_obscureConfirm;
-                                            });
-                                          },
-                                          icon: Icon(
-                                            _obscureConfirm
-                                                ? Icons.remove_red_eye_outlined
-                                                : Icons.remove_red_eye,
-                                            color: Colors.black38,
-                                          ))),
-                                ),
+              AlertDialog(
+                title: Column(
+                  children: [
+                    const Text("Edit profile"),
+                    SizedBox(
+                      height: 30,
+                      width: screenSize(context).width * 0.9,
+                    ),
+                    _isImageChanged
+                        ? GestureDetector(
+                            onTap: pickImage,
+                            child: ClipOval(
+                              child: Image.file(
+                                _imagePath!,
+                                fit: BoxFit.fill,
+                                width: 100,
+                                height: 100,
                               ),
                             ),
-                          const SizedBox(
-                            height: 20,
+                          )
+                        : GestureDetector(
+                            onTap: pickImage,
+                            child: Container(
+                              alignment: Alignment.bottomRight,
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        auth.currentUser!.photoURL!)),
+                              ),
+                              child: Icon(Icons.camera_alt,
+                                  color: Theme.of(context).primaryColor),
+                            ),
                           ),
-                        ],
-                      ),
-                      actionsAlignment: MainAxisAlignment.spaceAround,
-                      actions: [
-                        OutlinedButton(
-                            style: cancelButtonStyle,
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text("Cancel")),
-                        ElevatedButton(
-                            style: confirmButtonStyle,
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                updateProfileInfo().then((value) {
-                                  if (value == "Success") {
-                                    Navigator.of(context).pop();
-                                    Get.showSnackbar(const GetSnackBar(
-                                      duration: Duration(seconds: 3),
-                                      backgroundColor: Color(0xff264653),
-                                      borderRadius: 30,
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 30),
-                                      icon: Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                      ),
-                                      message: "Profile updated successfully",
-                                    ));
-                                  }
-                                });
-                              }
-                            },
-                            child: _isSaving
-                                ? const SizedBox(
-                                    height: 16,
-                                    width: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                : const Text("Save"))
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Full Name",
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isnameEnabled = true;
+                            });
+                          },
+                          child: SizedBox(
+                            height: 50,
+                            width: screenSize(context).width,
+                            child: TextFormField(
+                              enabled: _isnameEnabled,
+                              keyboardType: TextInputType.name,
+                              controller: _nameController,
+                              decoration: InputDecoration(
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.never,
+                                enabledBorder: const OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.black12),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                label: Text(
+                                    snapshot.data!["full name"].toString()),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "username",
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isUsernameEnabled = true;
+                            });
+                          },
+                          child: SizedBox(
+                            height: 50,
+                            width: screenSize(context).width,
+                            child: TextFormField(
+                              enabled: _isUsernameEnabled,
+                              keyboardType: TextInputType.name,
+                              controller: _usernameController,
+                              decoration: InputDecoration(
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.never,
+                                enabledBorder: const OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.black12),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                label: Text(snapshot.data!["username"]),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Password",
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _ispasswordEnabled = true;
+                            });
+                          },
+                          child: SizedBox(
+                            height: 50,
+                            width: screenSize(context).width,
+                            child: TextFormField(
+                                enabled: _ispasswordEnabled,
+                                keyboardType: TextInputType.name,
+                                controller: _passwordController,
+                                obscureText: _obscurePassword,
+                                decoration: InputDecoration(
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.never,
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.black12),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    label: const Text("Change Password"),
+                                    hintText: "New Password",
+                                    suffix: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _obscurePassword =
+                                                !_obscurePassword;
+                                          });
+                                        },
+                                        icon: Icon(
+                                          _obscurePassword
+                                              ? Icons.remove_red_eye_outlined
+                                              : Icons.remove_red_eye,
+                                          color: Colors.black38,
+                                        )))),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    if (_ispasswordEnabled)
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            _ispasswordEnabled = true;
+                          });
+                        },
+                        child: SizedBox(
+                          height: 50,
+                          width: screenSize(context).width,
+                          child: TextFormField(
+                            keyboardType: TextInputType.name,
+                            controller: _confirmPasswordController,
+                            obscureText: _obscureConfirm,
+                            validator: (value) =>
+                                value != _passwordController.text
+                                    ? "Passwords do not match"
+                                    : null,
+                            decoration: InputDecoration(
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.never,
+                                enabledBorder: const OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.black12),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                label: const Text("Confirm Password"),
+                                suffix: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureConfirm = !_obscureConfirm;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      _obscureConfirm
+                                          ? Icons.remove_red_eye_outlined
+                                          : Icons.remove_red_eye,
+                                      color: Colors.black38,
+                                    ))),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
                 ),
+                actionsAlignment: MainAxisAlignment.spaceAround,
+                actions: [
+                  OutlinedButton(
+                      style: cancelButtonStyle,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Cancel")),
+                  ElevatedButton(
+                      style: confirmButtonStyle,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          updateProfileInfo().then((value) {
+                            if (value == "Success") {
+                              Navigator.of(context).pop();
+                              Get.showSnackbar(const GetSnackBar(
+                                duration: Duration(seconds: 3),
+                                backgroundColor: Color(0xff264653),
+                                borderRadius: 30,
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 30),
+                                icon: Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                ),
+                                message: "Profile updated successfully",
+                              ));
+                            }
+                          });
+                        }
+                      },
+                      child: _isSaving
+                          ? const SizedBox(
+                              height: 16,
+                              width: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
+                          : const Text("Save"))
+                ],
               );
             }
 

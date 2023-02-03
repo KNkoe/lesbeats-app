@@ -177,18 +177,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                             style: confirmButtonStyle,
                                             onPressed: () async {
                                               try {
-                                                db
-                                                    .collection("users")
-                                                    .doc(auth.currentUser!.uid)
-                                                    .set(
-                                                        {
-                                                      "online": false,
-                                                      "late seen":
-                                                          DateTime.now()
-                                                    },
-                                                        SetOptions(
-                                                            merge: true)).then(
-                                                        (value) {
+                                                auth.signOut().then((value) {
                                                   Navigator.popUntil(context,
                                                       (route) => false);
 
@@ -198,7 +187,6 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                                           builder: ((context) =>
                                                               const Wrapper())));
                                                 });
-                                                auth.signOut();
 
                                                 final GoogleSignIn
                                                     googleSignIn =
@@ -290,8 +278,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                             image: snapshot
                                                 .snapshot1.data!["photoUrl"]),
                                       ),
-                                      if (snapshot.snapshot1.data!['online'])
-                                        online(context)
+                                      // if (snapshot.snapshot1.data!['online'])
+                                      //   online(context)
                                     ],
                                   ),
                                   Column(
@@ -477,22 +465,33 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                         width: 20,
                                       ),
                                       if (widget.uid != auth.currentUser!.uid)
-                                        OpenContainer(
-                                            closedElevation: 0,
-                                            closedColor: Colors.transparent,
-                                            closedBuilder: ((context, action) =>
-                                                OutlinedButton.icon(
-                                                    onPressed: null,
-                                                    style: OutlinedButton.styleFrom(
-                                                        disabledForegroundColor:
-                                                            Theme.of(context)
-                                                                .primaryColor),
-                                                    icon: const Icon(
-                                                        Icons.message),
-                                                    label:
-                                                        const Text("Message"))),
-                                            openBuilder: ((context, action) =>
-                                                MyChat(userId: widget.uid)))
+                                        OutlinedButton(
+                                            style: OutlinedButton.styleFrom(
+                                                foregroundColor:
+                                                    Theme.of(context)
+                                                        .primaryColor),
+                                            onPressed: () {
+                                              if (following) {}
+                                            },
+                                            child: const Text("Contact info")),
+
+                                      // if (widget.uid != auth.currentUser!.uid)
+                                      //   OpenContainer(
+                                      //       closedElevation: 0,
+                                      //       closedColor: Colors.transparent,
+                                      //       closedBuilder: ((context, action) =>
+                                      //           OutlinedButton.icon(
+                                      //               onPressed: null,
+                                      //               style: OutlinedButton.styleFrom(
+                                      //                   disabledForegroundColor:
+                                      //                       Theme.of(context)
+                                      //                           .primaryColor),
+                                      //               icon: const Icon(
+                                      //                   Icons.message),
+                                      //               label:
+                                      //                   const Text("Message"))),
+                                      //       openBuilder: ((context, action) =>
+                                      //           MyChat(userId: widget.uid)))
                                     ],
                                   ),
                                 ],

@@ -9,8 +9,6 @@ import 'package:lesbeats/screens/home/edit_track.dart';
 import 'package:lesbeats/services/stream/follow.dart';
 import 'package:lesbeats/services/stream/like.dart';
 import 'package:lesbeats/services/stream/report.dart';
-import 'package:lesbeats/widgets/format.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 import '../../main.dart';
 import '../../screens/profile/profile.dart';
@@ -44,9 +42,6 @@ class _MyAudioTileState extends State<MyAudioTile> {
   late String artistId;
   late String id;
   late bool download;
-  int downloads = 0;
-  int plays = 0;
-  int likes = 0;
   late String producer = "";
 
   bool liked = false;
@@ -89,46 +84,10 @@ class _MyAudioTileState extends State<MyAudioTile> {
       artistId = widget.snapshot.data!.docs[widget.index]["artistId"];
       id = widget.snapshot.data!.docs[widget.index]["id"];
       download = widget.snapshot.data!.docs[widget.index]["download"];
-      downloads = widget.snapshot.data!.docs[widget.index]["downloads"];
-      plays = widget.snapshot.data!.docs[widget.index]["plays"];
-      likes = widget.snapshot.data!.docs[widget.index]["likes"];
       producer = widget.snapshot.data!.docs[widget.index]["producer"];
     } catch (e) {
       debugPrint(e.toString());
     }
-
-    final DocumentReference producerStream =
-        db.collection("users").doc(artistId);
-    final DocumentReference trackStream = db.collection("tracks").doc(id);
-    final Stream<QuerySnapshot> playStream =
-        trackStream.collection("plays").snapshots();
-    final Stream<QuerySnapshot> likeStream =
-        trackStream.collection("likes").snapshots();
-    final Stream<QuerySnapshot> downloadStream =
-        trackStream.collection("likes").snapshots();
-
-    producerStream.snapshots().listen((event) {
-      trackStream.set(
-          {"producer": event.get("username")},
-          SetOptions(
-              merge: true)).then((value) => debugPrint("UPDATED PRODUCER"));
-    });
-
-    playStream.listen((element) async {
-      trackStream.set({"plays": element.size}, SetOptions(merge: true)).then(
-          (value) => debugPrint("UPDATED PLAYS"));
-    });
-
-    likeStream.listen((element) async {
-      trackStream.set({"likes": element.size}, SetOptions(merge: true)).then(
-          (value) => debugPrint("UPDATED LIKES"));
-    });
-
-    downloadStream.listen((element) async {
-      trackStream
-          .set({"downloads": element.size}, SetOptions(merge: true)).then(
-              (value) => debugPrint("UPDATED DOWNLOADS"));
-    });
 
     play = {"uid": auth.currentUser!.uid, "timestamp": DateTime.now()};
     tags = {
@@ -190,7 +149,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
         playOnline(context, path, tags);
       },
       child: Padding(
-        padding: const EdgeInsets.only(left: 8),
+        padding: const EdgeInsets.only(left: 5, bottom: 10),
         child: Column(
           children: [
             ListTile(
@@ -199,7 +158,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                   height: 70,
                   width: 70,
                   decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                      BoxDecoration(borderRadius: BorderRadius.circular(4)),
                   clipBehavior: Clip.hardEdge,
                   child: FadeInImage.assetNetwork(
                       fit: BoxFit.cover,
@@ -248,29 +207,26 @@ class _MyAudioTileState extends State<MyAudioTile> {
                   )
                 ],
               ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Row(
-                  children: [
-                    OpenContainer(
-                      closedElevation: 0,
-                      tappable: !widget.isProfileOpened,
-                      closedColor: Colors.transparent,
-                      closedBuilder: ((context, action) => Text(
-                            feature.toString().isEmpty
-                                ? producer
-                                : "${producer} ft $feature",
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor),
-                          )),
-                      openBuilder: (context, action) => MyProfilePage(artistId),
-                    ),
-                    Text(
-                      " | $genre",
-                      style: Theme.of(context).textTheme.bodyText2,
-                    )
-                  ],
-                ),
+              subtitle: Row(
+                children: [
+                  OpenContainer(
+                    closedElevation: 0,
+                    tappable: !widget.isProfileOpened,
+                    closedColor: Colors.transparent,
+                    closedBuilder: ((context, action) => Text(
+                          feature.toString().isEmpty
+                              ? producer
+                              : "${producer} ft $feature",
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
+                        )),
+                    openBuilder: (context, action) => MyProfilePage(artistId),
+                  ),
+                  Text(
+                    " | $genre",
+                    style: Theme.of(context).textTheme.bodyText2,
+                  )
+                ],
               ),
               trailing: PopupMenuButton(
                   icon: Icon(
@@ -452,119 +408,119 @@ class _MyAudioTileState extends State<MyAudioTile> {
                               )),
                       ])),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    timeago.format(timeAgo),
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.play_arrow,
-                          size: 18,
-                          color: Colors.grey,
-                        ),
-                        Text(
-                          numberFormat(plays),
-                          style: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                        )
-                      ],
-                    ),
-                    if (download)
-                      const SizedBox(
-                        width: 20,
-                      ),
-                    if (download)
-                      GestureDetector(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              barrierColor: Colors.transparent,
-                              builder: ((context) {
-                                return MyDownload(
-                                    id: id,
-                                    title: title,
-                                    producerId: artistId,
-                                    producer: producer,
-                                    downloadUrl: path);
-                              }));
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.download_rounded,
-                                size: 18,
-                                color: Colors.grey,
-                              ),
-                              Text(
-                                numberFormat(downloads),
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        if (!liked) {
-                          likeTrack(id);
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Padding(
+            //       padding: const EdgeInsets.only(left: 10),
+            //       child: Text(
+            //         timeago.format(timeAgo),
+            //         style: Theme.of(context).textTheme.bodyText2,
+            //       ),
+            //     ),
+            //     const SizedBox(),
+            //     Row(
+            //       children: [
+            //         Row(
+            //           children: [
+            //             const Icon(
+            //               Icons.play_arrow,
+            //               size: 18,
+            //               color: Colors.grey,
+            //             ),
+            //             Text(
+            //               numberFormat(plays),
+            //               style: const TextStyle(
+            //                 color: Colors.grey,
+            //               ),
+            //             )
+            //           ],
+            //         ),
+            //         if (download)
+            //           const SizedBox(
+            //             width: 20,
+            //           ),
+            //         if (download)
+            //           GestureDetector(
+            //             onTap: () {
+            //               showDialog(
+            //                   context: context,
+            //                   barrierColor: Colors.transparent,
+            //                   builder: ((context) {
+            //                     return MyDownload(
+            //                         id: id,
+            //                         title: title,
+            //                         producerId: artistId,
+            //                         producer: producer,
+            //                         downloadUrl: path);
+            //                   }));
+            //             },
+            //             child: Padding(
+            //               padding: const EdgeInsets.all(8.0),
+            //               child: Row(
+            //                 children: [
+            //                   const Icon(
+            //                     Icons.download_rounded,
+            //                     size: 18,
+            //                     color: Colors.grey,
+            //                   ),
+            //                   Text(
+            //                     numberFormat(downloads),
+            //                     style: const TextStyle(
+            //                       color: Colors.grey,
+            //                     ),
+            //                   )
+            //                 ],
+            //               ),
+            //             ),
+            //           ),
+            //         const SizedBox(
+            //           width: 20,
+            //         ),
+            //         GestureDetector(
+            //           onTap: () {
+            //             if (!liked) {
+            //               likeTrack(id);
 
-                          setState(() {
-                            liked = true;
-                          });
-                        } else {
-                          unlikeTrack(id);
+            //               setState(() {
+            //                 liked = true;
+            //               });
+            //             } else {
+            //               unlikeTrack(id);
 
-                          setState(() {
-                            liked = false;
-                          });
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.favorite,
-                              size: 18,
-                              color: liked
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.grey,
-                            ),
-                            Text(
-                              numberFormat(likes),
-                              style: const TextStyle(
-                                color: Colors.grey,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                  ],
-                )
-              ],
-            ),
-            const Divider()
+            //               setState(() {
+            //                 liked = false;
+            //               });
+            //             }
+            //           },
+            //           child: Padding(
+            //             padding: const EdgeInsets.all(8.0),
+            //             child: Row(
+            //               children: [
+            //                 Icon(
+            //                   Icons.favorite,
+            //                   size: 18,
+            //                   color: liked
+            //                       ? Theme.of(context).primaryColor
+            //                       : Colors.grey,
+            //                 ),
+            //                 Text(
+            //                   numberFormat(likes),
+            //                   style: const TextStyle(
+            //                     color: Colors.grey,
+            //                   ),
+            //                 )
+            //               ],
+            //             ),
+            //           ),
+            //         ),
+            //         const SizedBox(
+            //           width: 20,
+            //         ),
+            //       ],
+            //     )
+            //   ],
+            // ),
           ],
         ),
       ),

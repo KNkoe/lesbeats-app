@@ -134,7 +134,7 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         SizedBox(
                             height: 140,
@@ -251,9 +251,6 @@ class _DashboardState extends State<Dashboard> {
 
                                   return const SizedBox();
                                 })),
-                        const SizedBox(
-                          height: 10,
-                        ),
                         if (!_viewAllArtists)
                           Padding(
                             padding: const EdgeInsets.only(
