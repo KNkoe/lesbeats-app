@@ -20,29 +20,37 @@ class _MyNotificationsState extends State<MyNotifications> {
   @override
   void initState() {
     super.initState();
-    _notificationsStream = db
-        .collection("users")
-        .doc(auth.currentUser!.uid)
-        .collection("notifications")
-        .orderBy("timestamp", descending: true)
-        .snapshots();
+    try {
+      _notificationsStream = db
+          .collection("users")
+          .doc(auth.currentUser!.uid)
+          .collection("notifications")
+          .orderBy("timestamp", descending: true)
+          .snapshots();
+    } catch (e) {
+      debugPrint("NOTIFICATION: $e");
+    }
   }
 
   @override
   void didChangeDependencies() {
-    db
-        .collection("users")
-        .doc(auth.currentUser!.uid)
-        .collection("notifications")
-        .where("read", isEqualTo: false)
-        .snapshots()
-        .listen(
-      (event) {
-        setState(() {
-          unread = event.size;
-        });
-      },
-    );
+    try {
+      db
+          .collection("users")
+          .doc(auth.currentUser!.uid)
+          .collection("notifications")
+          .where("read", isEqualTo: false)
+          .snapshots()
+          .listen(
+        (event) {
+          setState(() {
+            unread = event.size;
+          });
+        },
+      );
+    } catch (e) {
+      debugPrint("NOTIFICATION: $e");
+    }
     listenForNotifications();
     super.didChangeDependencies();
   }
@@ -100,13 +108,10 @@ class _MyNotificationsState extends State<MyNotifications> {
                 child: Badge(
                     padding: const EdgeInsets.all(7),
                     isLabelVisible: unread != 0,
-                    backgroundColor: Theme.of(context).indicatorColor,
-                    label: unread == 0
-                        ? const SizedBox()
-                        : Text(
-                            numberFormat(unread),
-                            style: const TextStyle(color: Colors.white),
-                          ),
+                    label: Text(
+                      numberFormat(unread),
+                      style: const TextStyle(color: Colors.white),
+                    ),
                     child: const Icon(Icons.notifications)),
                 itemBuilder: (context) =>
                     snapshot.data!.docs.map((notification) {

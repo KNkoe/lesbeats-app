@@ -226,15 +226,18 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                 FilteringTextInputFormatter.deny(
                                     RegExp(r"\s\b|\b\s"))
                               ],
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.never,
-                                enabledBorder: OutlineInputBorder(
+                                enabledBorder: const OutlineInputBorder(
                                     borderSide:
                                         BorderSide(color: Colors.black12),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
-                                label: Text("Enter your email"),
+                                label: Text(
+                                  "Enter your email",
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
                               ),
                             ),
                           )
@@ -265,9 +268,12 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                         _obscureText = !_obscureText;
                                       });
                                     },
-                                    icon: Icon(_obscureText
-                                        ? Icons.remove_red_eye_rounded
-                                        : Icons.remove_red_eye_outlined)),
+                                    icon: Icon(
+                                      _obscureText
+                                          ? Icons.remove_red_eye_rounded
+                                          : Icons.remove_red_eye_outlined,
+                                      color: Theme.of(context).primaryColor,
+                                    )),
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.never,
                                 enabledBorder: const OutlineInputBorder(
@@ -275,7 +281,10 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                         BorderSide(color: Colors.black12),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
-                                label: const Text("Enter your password"),
+                                label: Text(
+                                  "Enter your password",
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
                               ),
                             ),
                           )
