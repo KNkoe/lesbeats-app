@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lesbeats/screens/chats/chat.dart';
 import 'package:lesbeats/services/stream/report.dart';
 import 'package:lesbeats/widgets/format.dart';
 import 'package:lesbeats/wrapper.dart';
@@ -17,6 +16,7 @@ import '../../services/stream/audio_stream.dart';
 import '../../services/stream/follow.dart';
 import '../../widgets/decoration.dart';
 import 'editprofile.dart';
+import 'folders.dart';
 import 'followers.dart';
 import 'genres.dart';
 
@@ -38,6 +38,10 @@ class _MyProfilePageState extends State<MyProfilePage> {
             child: MyAudioStream(stream: _audioStream, isProfileOpened: true));
       case 1:
         return MyGenres(
+          uid: widget.uid,
+        );
+      case 2:
+        return MyFolders(
           uid: widget.uid,
         );
       default:
@@ -125,9 +129,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
                           onTap: () {
                             Navigator.pop(context);
                             showDialog(
-                                    context: context,
-                                    builder: ((context) => const EditProfile()))
-                                .then((_) => setState(() {}));
+                                builder: (context) => const EditProfile(),
+                                context: context);
                           },
                           title: const Text("Edit profile"),
                           leading: Icon(
@@ -506,7 +509,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                           height: 20,
                         ),
                         DefaultTabController(
-                          length: 2,
+                          length: 3,
                           child: TabBar(
                               onTap: (index) {
                                 setState(() {
@@ -545,6 +548,22 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                           MainAxisAlignment.center,
                                       children: const [
                                         Text("Genres"),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Tab(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(4))),
+                                    padding: const EdgeInsets.all(10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Text("Folders"),
                                       ],
                                     ),
                                   ),

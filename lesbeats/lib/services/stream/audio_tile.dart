@@ -373,6 +373,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                   Text(following ? "Unfollow" : "Follow"),
                                 ],
                               )),
+
                         const PopupMenuItem(height: 2, child: Divider()),
                         // PopupMenuItem(
                         //     child: Row(
@@ -384,6 +385,27 @@ class _MyAudioTileState extends State<MyAudioTile> {
                         //     Text("Share"),
                         //   ],
                         // )),
+                        if (artistId == auth.currentUser!.uid)
+                          PopupMenuItem(
+                              onTap: () {
+                                Future.delayed(Duration.zero, () {});
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .color,
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Text("Move"),
+                                ],
+                              )), 
+
                         if (artistId != auth.currentUser!.uid)
                           PopupMenuItem(
                               onTap: () {
