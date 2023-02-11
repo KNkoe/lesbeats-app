@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:lesbeats/screens/home/dashboard.dart';
 import 'package:lesbeats/screens/home/library.dart';
 import 'package:lesbeats/screens/home/search.dart';
 import 'package:lesbeats/screens/profile/profile.dart';
-import 'package:iconify_flutter/icons/bx.dart';
-import 'package:iconify_flutter/icons/ph.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 
 import '../../main.dart';
@@ -92,8 +89,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   label: "Library"),
               BottomNavigationBarItem(
-                  icon: Iconify(
-                    selectedIndex == 2 ? Bx.bxs_search : Bx.search,
+                  icon: Icon(
+                    selectedIndex == 2
+                        ? FluentSystemIcons.ic_fluent_search_filled
+                        : FluentSystemIcons.ic_fluent_search_regular,
                     color: selectedIndex == 2
                         ? Theme.of(context)
                             .bottomNavigationBarTheme
@@ -104,8 +103,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   label: "Search"),
               BottomNavigationBarItem(
-                  icon: Iconify(
-                    selectedIndex == 3 ? Ph.user_fill : Ph.user,
+                  icon: Icon(
+                    selectedIndex == 3
+                        ? FluentSystemIcons.ic_fluent_person_accounts_filled
+                        : FluentSystemIcons.ic_fluent_person_accounts_regular,
                     color: selectedIndex == 3
                         ? Theme.of(context)
                             .bottomNavigationBarTheme

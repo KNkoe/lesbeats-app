@@ -15,6 +15,7 @@ import '../../screens/profile/profile.dart';
 import '../player/player.dart';
 import 'delete.dart';
 import 'download.dart';
+import 'move.dart';
 
 class MyAudioTile extends StatefulWidget {
   const MyAudioTile(
@@ -388,7 +389,9 @@ class _MyAudioTileState extends State<MyAudioTile> {
                         if (artistId == auth.currentUser!.uid)
                           PopupMenuItem(
                               onTap: () {
-                                Future.delayed(Duration.zero, () {});
+                                Future.delayed(Duration.zero, () {
+                                  moveTracks(context, id);
+                                });
                               },
                               child: Row(
                                 children: [
@@ -404,7 +407,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                   ),
                                   const Text("Move"),
                                 ],
-                              )), 
+                              )),
 
                         if (artistId != auth.currentUser!.uid)
                           PopupMenuItem(
