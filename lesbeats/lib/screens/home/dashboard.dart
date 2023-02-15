@@ -10,7 +10,7 @@ import 'package:lesbeats/widgets/responsive.dart';
 
 import 'activityfeed.dart';
 import 'enddrawer.dart';
-import 'loadScreen.dart';
+import 'load_screen.dart';
 import 'producers.dart';
 import 'drawer.dart';
 
@@ -91,6 +91,10 @@ class _DashboardState extends State<Dashboard> {
             child: StreamBuilder<QuerySnapshot>(
                 stream: _mostFollowedStream,
                 builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Load();
+                  }
+
                   if (snapshot.hasData) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,10 +286,6 @@ class _DashboardState extends State<Dashboard> {
                                   )),
                       ],
                     );
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Load();
                   }
 
                   return const Center(

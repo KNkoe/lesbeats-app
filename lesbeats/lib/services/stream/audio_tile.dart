@@ -101,6 +101,8 @@ class _MyAudioTileState extends State<MyAudioTile> {
 
     final timeDifference = DateTime.now().difference(date.toDate());
     timeAgo = DateTime.now().subtract(timeDifference);
+
+    checkIfLiked(id);
   }
 
   getFollow() {
@@ -123,7 +125,6 @@ class _MyAudioTileState extends State<MyAudioTile> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     getFollow();
-    checkIfLiked(id);
   }
 
   @override
@@ -340,6 +341,33 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                   const Text("Buy"),
                                 ],
                               )),
+                        PopupMenuItem(
+                            onTap: () {
+                              if (liked) {
+                                unlikeTrack(id);
+
+                                checkIfLiked(id);
+                              } else {
+                                likeTrack(id);
+                                checkIfLiked(id);
+                              }
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  liked ? Icons.thumb_down : Icons.thumb_up,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .color,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(liked ? "Unlike" : "Like"),
+                              ],
+                            )),
                         if (artistId != auth.currentUser!.uid)
                           PopupMenuItem(
                               onTap: () {
@@ -361,8 +389,8 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                 children: [
                                   Icon(
                                     following
-                                        ? Icons.thumb_down
-                                        : Icons.thumb_up,
+                                        ? Icons.favorite
+                                        : Icons.favorite_outline,
                                     color: Theme.of(context)
                                         .textTheme
                                         .bodyText1!

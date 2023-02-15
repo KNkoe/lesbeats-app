@@ -130,6 +130,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                             Navigator.pop(context);
                             showDialog(
                                 builder: (context) => const EditProfile(),
+                                barrierColor: Colors.transparent,
                                 context: context);
                           },
                           title: const Text("Edit profile"),

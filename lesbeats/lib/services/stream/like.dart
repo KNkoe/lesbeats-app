@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
 import '../../main.dart';
 
 likeTrack(String id) async {
@@ -43,6 +46,19 @@ likeTrack(String id) async {
         .doc("${auth.currentUser!.uid}-liked-$id")
         .set(likeNotification);
   }
+
+  Get.showSnackbar(const GetSnackBar(
+    isDismissible: true,
+    duration: Duration(seconds: 2),
+    backgroundColor: Color(0xff264653),
+    borderRadius: 30,
+    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+    icon: Icon(
+      Icons.check,
+      color: Colors.white,
+    ),
+    message: "Liked",
+  ));
 }
 
 unlikeTrack(String id) {
@@ -59,4 +75,17 @@ unlikeTrack(String id) {
       .collection("favorites")
       .doc(id)
       .delete();
+
+  Get.showSnackbar(const GetSnackBar(
+    isDismissible: true,
+    duration: Duration(seconds: 2),
+    backgroundColor: Color(0xff264653),
+    borderRadius: 30,
+    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+    icon: Icon(
+      Icons.check,
+      color: Colors.white,
+    ),
+    message: "Unliked",
+  ));
 }
