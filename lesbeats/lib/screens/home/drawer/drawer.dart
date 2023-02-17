@@ -12,7 +12,7 @@ import '../../../main.dart';
 import 'downloads.dart';
 import 'genre/genre.dart';
 import 'trending.dart';
-import '../upload/uploads.dart';
+import 'upload/uploads.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({
