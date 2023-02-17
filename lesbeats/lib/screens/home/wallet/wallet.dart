@@ -1,4 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lesbeats/main.dart';
+
+import 'deposit.dart';
+import 'withdrawal.dart';
 
 class MyWallet extends StatefulWidget {
   const MyWallet({super.key});
@@ -18,129 +23,174 @@ class _MyTransactionsState extends State<MyWallet> {
           "My Wallet",
           style: Theme.of(context).textTheme.titleLarge!,
         ),
+        automaticallyImplyLeading: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Balance",
-                  style: Theme.of(context).textTheme.subtitle1,
+      body: StreamBuilder<DocumentSnapshot>(
+          stream: db.collection("users").doc(auth.currentUser!.uid).snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: Image.asset(
+                  "assets/images/loading.gif",
+                  height: 70,
+                  width: 70,
                 ),
-                Row(
+              );
+            }
+
+            if (snapshot.hasData) {
+              double balance = 0.00;
+
+              try {
+                balance = snapshot.data!.get("balance");
+              } catch (e) {
+                debugPrint(e.toString());
+              }
+
+              return Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.add,
-                      color: Theme.of(context).primaryColor,
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Balance",
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) => const DepositScreen());
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.add,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Topup",
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                     const SizedBox(
-                      width: 10,
+                      height: 10,
                     ),
                     Text(
-                      "Topup",
-                      style: TextStyle(color: Theme.of(context).primaryColor),
-                    )
+                      "R $balance",
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) => const DepositScreen());
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                fixedSize: const Size.fromWidth(100)),
+                            child: const Text("Deposit")),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        OutlinedButton(
+                            onPressed: () {
+                              showBottomSheet(
+                                  context: context,
+                                  builder: (context) =>
+                                      const WithdrawalScreen());
+                            },
+                            style: OutlinedButton.styleFrom(
+                                foregroundColor: Theme.of(context).primaryColor,
+                                fixedSize: const Size.fromWidth(100)),
+                            child: const Text("Withdraw"))
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Divider(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Transactions",
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Expanded(
+                        child: ListView(
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        ListTile(
+                          leading: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.grey[100]),
+                            child: const Icon(
+                              Icons.attach_money,
+                              color: Colors.green,
+                            ),
+                          ),
+                          title: const Text("Vicious_Kadd bought Lerato"),
+                          subtitle: const Text("20/02/2022 - 21:00"),
+                          trailing: const Text(
+                            "+R 150",
+                            style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        ListTile(
+                          leading: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.grey[100]),
+                            child: const Icon(
+                              Icons.attach_money,
+                              color: Colors.red,
+                            ),
+                          ),
+                          title: const Text("Withdrawal"),
+                          subtitle: const Text("20/02/2022 - 20:00"),
+                          trailing: const Text(
+                            "-R 150",
+                            style: TextStyle(
+                                color: Colors.red, fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      ],
+                    ))
                   ],
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              "R 167.00",
-              style: Theme.of(context).textTheme.headline5,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        fixedSize: const Size.fromWidth(100)),
-                    child: const Text("Deposit")),
-                const SizedBox(
-                  width: 20,
                 ),
-                OutlinedButton(
-                    onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                        foregroundColor: Theme.of(context).primaryColor,
-                        fixedSize: const Size.fromWidth(100)),
-                    child: const Text("Withdraw"))
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Divider(),
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Transactions",
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Expanded(
-                child: ListView(
-              physics: const BouncingScrollPhysics(),
-              children: [
-                ListTile(
-                  leading: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[100]),
-                    child: const Icon(
-                      Icons.attach_money,
-                      color: Colors.green,
-                    ),
-                  ),
-                  title: const Text("Vicious_Kadd bought Lerato"),
-                  subtitle: const Text("20/02/2022 - 21:00"),
-                  trailing: const Text(
-                    "+R 150",
-                    style: TextStyle(
-                        color: Colors.green, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                ListTile(
-                  leading: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[100]),
-                    child: const Icon(
-                      Icons.attach_money,
-                      color: Colors.red,
-                    ),
-                  ),
-                  title: const Text("Withdrawal"),
-                  subtitle: const Text("20/02/2022 - 20:00"),
-                  trailing: const Text(
-                    "-R 150",
-                    style: TextStyle(
-                        color: Colors.red, fontWeight: FontWeight.bold),
-                  ),
-                )
-              ],
-            ))
-          ],
-        ),
-      ),
+              );
+            }
+
+            return const SizedBox();
+          }),
     );
   }
 }

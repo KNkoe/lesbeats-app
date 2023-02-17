@@ -42,6 +42,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   late final Uri emailLaunchUri;
   late final Uri helpAndFeedback;
+  late final Uri termsAndConditions;
 
   Future<void> _launchEmail() async {
     if (!await launchUrl(emailLaunchUri)) {
@@ -51,6 +52,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   Future<void> _launchUrl() async {
     if (!await launchUrl(helpAndFeedback)) {
+      throw 'Could not launch $helpAndFeedback';
+    }
+  }
+
+  Future<void> _launchTerms() async {
+    if (!await launchUrl(termsAndConditions)) {
       throw 'Could not launch $helpAndFeedback';
     }
   }
@@ -68,6 +75,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     helpAndFeedback =
         Uri.parse("http://lesbeats.nicepage.io/Lesbeats.html#sec-8ab1");
+    termsAndConditions =
+        Uri.parse("http://lesbeats.nicepage.io/Terms-and-conditions.html");
   }
 
   @override
@@ -294,12 +303,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     //   title: const Text("Settings"),
                     // ),
                     ListTile(
-                      onTap: () {},
+                      onTap: _launchTerms,
                       leading: Icon(
-                        Icons.share,
+                        Icons.info_outline,
                         color: Theme.of(context).textTheme.subtitle1!.color,
                       ),
-                      title: const Text("Tell a friend"),
+                      title: const Text("Terms and Conditions"),
                     ),
                     ListTile(
                       onTap: _launchUrl,

@@ -14,24 +14,13 @@ class MyProducers extends StatefulWidget {
 }
 
 class _MyArtistsState extends State<MyProducers> {
-  late final Stream<QuerySnapshot> _usersStream;
-  late final Stream<QuerySnapshot> _mostFollowedStream;
-
-  @override
-  void initState() {
-    _usersStream = db.collection('users').snapshots();
-
-    _mostFollowedStream = db
-        .collection("users")
-        .orderBy("followers", descending: true)
-        .snapshots();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: _mostFollowedStream,
+        stream: db
+            .collection("users")
+            .orderBy("followers", descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
@@ -40,6 +29,12 @@ class _MyArtistsState extends State<MyProducers> {
                 physics: const BouncingScrollPhysics(),
                 itemCount: snapshot.data!.size,
                 itemBuilder: (context, index) {
+                  try {
+                    snapshot.data!.docs[index]["balance"];
+                  } catch (e) {
+                    snapshot.data!.docs[index].reference
+                        .set({"balance": 0.00}, SetOptions(merge: true));
+                  }
                   try {
                     if (snapshot.data!.docs[index]["uid"] !=
                         auth.currentUser!.uid) {
