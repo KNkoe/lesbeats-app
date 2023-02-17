@@ -2,7 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
-import 'package:lesbeats/screens/profile/profile.dart';
+import 'package:lesbeats/screens/home/profile/profile.dart';
 
 class MyFollowingPage extends StatefulWidget {
   const MyFollowingPage({super.key});

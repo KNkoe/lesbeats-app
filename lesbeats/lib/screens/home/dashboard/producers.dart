@@ -2,10 +2,9 @@ import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
-import 'package:lesbeats/screens/chats/chat.dart';
-import 'package:lesbeats/screens/profile/profile.dart';
+import 'package:lesbeats/screens/home/profile/profile.dart';
 
-import '../../services/stream/follow.dart';
+import '../../../widgets/audio/follow.dart';
 
 class MyProducers extends StatefulWidget {
   const MyProducers({super.key});

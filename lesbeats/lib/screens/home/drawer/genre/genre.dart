@@ -1,9 +1,9 @@
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:lesbeats/screens/home/genre/tracks.dart';
+import 'package:lesbeats/screens/home/drawer/genre/tracks.dart';
 
-import '../../../main.dart';
+import '../../../../main.dart';
 
 class MyGenre extends StatefulWidget {
   const MyGenre({super.key});
@@ -69,7 +69,7 @@ class _MyGenreState extends State<MyGenre> {
                                   color: Color.fromRGBO(0, 0, 0, 0.2),
                                 )
                               ],
-                              color: Theme.of(context).colorScheme.background,
+                              color: Theme.of(context).backgroundColor,
                               borderRadius: BorderRadius.circular(10)),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

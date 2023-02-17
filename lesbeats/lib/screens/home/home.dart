@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lesbeats/screens/home/dashboard.dart';
-import 'package:lesbeats/screens/home/library.dart';
+import 'package:lesbeats/screens/home/dashboard/dashboard.dart';
+import 'package:lesbeats/screens/home/library/library.dart';
 import 'package:lesbeats/screens/home/search.dart';
-import 'package:lesbeats/screens/profile/profile.dart';
+import 'package:lesbeats/screens/home/wallet/wallet.dart';
+import 'package:lesbeats/screens/home/profile/profile.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 
 import '../../main.dart';
@@ -31,6 +32,9 @@ class _MyHomePageState extends State<MyHomePage> {
         return const MySearchScreen();
 
       case 3:
+        return const MyWallet();
+
+      case 4:
         return MyProfilePage(auth.currentUser!.uid);
       default:
         return Container();
@@ -103,11 +107,26 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   label: "Search"),
               BottomNavigationBarItem(
+                icon: Icon(
+                  selectedIndex == 3
+                      ? FluentSystemIcons.ic_fluent_payment_filled
+                      : FluentSystemIcons.ic_fluent_payment_regular,
+                  color: selectedIndex == 3
+                      ? Theme.of(context)
+                          .bottomNavigationBarTheme
+                          .selectedItemColor
+                      : Theme.of(context)
+                          .bottomNavigationBarTheme
+                          .unselectedItemColor,
+                ),
+                label: "Wallet",
+              ),
+              BottomNavigationBarItem(
                   icon: Icon(
-                    selectedIndex == 3
+                    selectedIndex == 4
                         ? FluentSystemIcons.ic_fluent_person_accounts_filled
                         : FluentSystemIcons.ic_fluent_person_accounts_regular,
-                    color: selectedIndex == 3
+                    color: selectedIndex == 4
                         ? Theme.of(context)
                             .bottomNavigationBarTheme
                             .selectedItemColor

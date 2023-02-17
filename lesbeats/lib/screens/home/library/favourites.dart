@@ -4,7 +4,7 @@ import 'package:lesbeats/main.dart';
 import 'package:lottie/lottie.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 
-import '../../../services/stream/audio_tile.dart';
+import '../../../widgets/audio/audio_tile.dart';
 
 class MyFavourites extends StatefulWidget {
   const MyFavourites({super.key});

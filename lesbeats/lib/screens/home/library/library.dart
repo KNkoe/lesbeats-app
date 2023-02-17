@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lesbeats/screens/home/library/following.dart';
 import 'package:lesbeats/widgets/decoration.dart';
 
-import 'library/favourites.dart';
+import 'favourites.dart';
 
 class MyLibrary extends StatefulWidget {
   const MyLibrary({super.key});

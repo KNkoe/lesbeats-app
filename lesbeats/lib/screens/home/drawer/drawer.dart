@@ -7,14 +7,12 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/bx.dart';
-import 'package:iconify_flutter/icons/ri.dart';
 
-import '../../main.dart';
-import '../chats/chat_list.dart';
+import '../../../main.dart';
 import 'downloads.dart';
 import 'genre/genre.dart';
 import 'trending.dart';
-import 'upload/uploads.dart';
+import '../upload/uploads.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({
@@ -274,6 +272,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       title: const Text("Downloads"),
                     ),
                     const Divider(),
+                    // ListTile(
+                    //   onTap: () {
+                    //     Get.to(() => const MyWallet());
+                    //     widget._scaffoldKey.currentState!.closeDrawer();
+                    //   },
+                    //   leading: Icon(
+                    //     FluentSystemIcons.ic_fluent_payment_filled,
+                    //     color: Theme.of(context).textTheme.headline1!.color,
+                    //   ),
+                    //   title: const Text("Wallet"),
+                    // ),
+                    // const Divider(),
+
                     // ListTile(
                     //   onTap: () {
                     //     Get.to(() => const MySettings());

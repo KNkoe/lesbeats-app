@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:lesbeats/services/stream/audio_tile.dart';
 import 'package:lottie/lottie.dart';
+
+import '../../widgets/audio/audio_tile.dart';
 
 class MyAudioStream extends StatefulWidget {
   const MyAudioStream(

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
-import 'package:lesbeats/screens/home/producers.dart';
+import 'package:lesbeats/screens/home/dashboard/producers.dart';
 import 'package:lesbeats/widgets/load.dart';
 
 class MyFollowers extends StatelessWidget {

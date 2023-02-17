@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/jam.dart';
 import 'package:lesbeats/main.dart';
-import 'package:lesbeats/screens/home/notifications.dart';
-import 'package:lesbeats/screens/profile/profile.dart';
+import 'package:lesbeats/screens/home/dashboard/notifications.dart';
+import 'package:lesbeats/screens/home/profile/profile.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 
 import 'activityfeed.dart';
 import 'enddrawer.dart';
-import 'load_screen.dart';
+import 'load.dart';
 import 'producers.dart';
-import 'drawer.dart';
+import '../drawer/drawer.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});

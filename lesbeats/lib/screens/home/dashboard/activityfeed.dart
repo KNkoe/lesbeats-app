@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
 
-import '../../services/stream/audio_stream.dart';
+import '../../../services/stream/audio_stream.dart';
 
 class ActivityFeed extends StatefulWidget {
   const ActivityFeed({Key? key, required this.scaffoldKey}) : super(key: key);

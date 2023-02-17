@@ -4,10 +4,10 @@ import 'package:get/get.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/ri.dart';
 import 'package:lesbeats/main.dart';
-import 'package:lesbeats/screens/home/producers.dart';
-import 'package:lesbeats/services/stream/audio_tile.dart';
+import 'package:lesbeats/screens/home/dashboard/producers.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../widgets/audio/audio_tile.dart';
 import '../../widgets/decoration.dart';
 
 class MySearchScreen extends StatefulWidget {

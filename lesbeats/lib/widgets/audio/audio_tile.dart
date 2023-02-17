@@ -3,16 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
-import 'package:lesbeats/screens/home/checkout.dart';
-import 'package:lesbeats/screens/home/features.dart';
-import 'package:lesbeats/screens/home/edit_track.dart';
-import 'package:lesbeats/services/stream/follow.dart';
-import 'package:lesbeats/services/stream/like.dart';
-import 'package:lesbeats/services/stream/report.dart';
+import '../../services/player/player.dart';
+import 'features.dart';
+import 'edit_track.dart';
+import 'follow.dart';
+import 'like.dart';
+import 'report.dart';
 
 import '../../main.dart';
-import '../../screens/profile/profile.dart';
-import '../player/player.dart';
+import '../../screens/home/profile/profile.dart';
 import 'delete.dart';
 import 'download.dart';
 import 'move.dart';
@@ -321,9 +320,8 @@ class _MyAudioTileState extends State<MyAudioTile> {
                           PopupMenuItem(
                               onTap: () {
                                 Future.delayed(
-                                    Duration.zero,
-                                    () => showcheckout(context, title, price,
-                                        id, artistId, producer));
+                                  Duration.zero,
+                                );
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,

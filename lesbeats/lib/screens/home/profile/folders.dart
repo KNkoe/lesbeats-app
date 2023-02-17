@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
-import 'package:lesbeats/screens/home/genre/tracks.dart';
+import 'package:lesbeats/screens/home/drawer/genre/tracks.dart';
 
 class MyFolders extends StatefulWidget {
   const MyFolders({super.key, required this.uid});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../widgets/responsive.dart';
+import '../../../widgets/responsive.dart';
 
 class Load extends StatelessWidget {
   const Load({super.key});

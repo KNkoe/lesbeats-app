@@ -11,13 +11,13 @@ import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:lesbeats/services/player/common.dart';
-import 'package:lesbeats/screens/profile/profile.dart';
-import 'package:lesbeats/services/stream/report.dart';
+import 'package:lesbeats/screens/home/profile/profile.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../main.dart';
-import '../stream/like.dart';
+import '../../widgets/audio/like.dart';
+import '../../widgets/audio/report.dart';
 
 playOffline(BuildContext context, PlatformFile audio) {
   Scaffold.of(context).showBottomSheet(
