@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lesbeats/main.dart';
+import 'package:lesbeats/widgets/load.dart';
+import 'package:lottie/lottie.dart';
 
 import 'deposit.dart';
 import 'withdrawal.dart';
@@ -27,8 +29,8 @@ class _MyTransactionsState extends State<MyWallet> {
       ),
       body: StreamBuilder<DocumentSnapshot>(
           stream: db.collection("users").doc(auth.currentUser!.uid).snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+          builder: (context, userSnapshot) {
+            if (userSnapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 child: Image.asset(
                   "assets/images/loading.gif",
@@ -38,11 +40,11 @@ class _MyTransactionsState extends State<MyWallet> {
               );
             }
 
-            if (snapshot.hasData) {
+            if (userSnapshot.hasData) {
               double balance = 0.00;
 
               try {
-                balance = snapshot.data!.get("balance");
+                balance = userSnapshot.data!.get("balance");
               } catch (e) {
                 debugPrint(e.toString());
               }
@@ -133,57 +135,142 @@ class _MyTransactionsState extends State<MyWallet> {
                       height: 20,
                     ),
                     Text(
-                      "Transactions",
+                      "Transaction history",
                       style: Theme.of(context).textTheme.headline6,
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-                    Expanded(
-                        child: ListView(
-                      physics: const BouncingScrollPhysics(),
-                      children: [
-                        ListTile(
-                          leading: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.grey[100]),
-                            child: const Icon(
-                              Icons.attach_money,
-                              color: Colors.green,
-                            ),
-                          ),
-                          title: const Text("Vicious_Kadd bought Lerato"),
-                          subtitle: const Text("20/02/2022 - 21:00"),
-                          trailing: const Text(
-                            "+R 150",
-                            style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        ListTile(
-                          leading: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.grey[100]),
-                            child: const Icon(
-                              Icons.attach_money,
-                              color: Colors.red,
-                            ),
-                          ),
-                          title: const Text("Withdrawal"),
-                          subtitle: const Text("20/02/2022 - 20:00"),
-                          trailing: const Text(
-                            "-R 150",
-                            style: TextStyle(
-                                color: Colors.red, fontWeight: FontWeight.bold),
-                          ),
-                        )
-                      ],
-                    ))
+                    StreamBuilder<QuerySnapshot>(
+                        stream: db
+                            .collection("users")
+                            .doc(auth.currentUser!.uid)
+                            .collection("transactions")
+                            .orderBy("timestamp", descending: true)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const TransactionLoading();
+                          }
+
+                          if (snapshot.hasData) {
+                            if (snapshot.data!.docs.isEmpty) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Lottie.network(
+                                      "https://assets7.lottiefiles.com/packages/lf20_rc6CDU.json",
+                                    ),
+                                    const Text("No transactions")
+                                  ],
+                                ),
+                              );
+                            }
+
+                            return Expanded(
+                                child: ListView.builder(
+                              itemCount: snapshot.data!.docs.length,
+                              physics: const BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                String title = "";
+                                Timestamp timestamp = Timestamp.now();
+                                String type = "";
+                                String status = "";
+                                double amount = 0.0;
+                                bool processed = false;
+
+                                try {
+                                  title =
+                                      snapshot.data!.docs[index].get("title");
+                                  timestamp = snapshot.data!.docs[index]
+                                      .get("timestamp");
+                                  type = snapshot.data!.docs[index].get("type");
+                                  status =
+                                      snapshot.data!.docs[index].get("status");
+                                  amount =
+                                      snapshot.data!.docs[index].get("amount");
+                                  processed = snapshot.data!.docs[index]
+                                      .get("processed");
+
+                                  if (status == "approved" &&
+                                      processed == false) {
+                                    if (type == "deposit" || type == "sale") {
+                                      userSnapshot.data!.reference.set({
+                                        "balance": balance + amount,
+                                      }, SetOptions(merge: true));
+
+                                      snapshot.data!.docs[index].reference.set(
+                                          {"processed": true},
+                                          SetOptions(merge: true));
+                                    }
+                                    if (type == "withdrawal" ||
+                                        type == "purchase") {
+                                      userSnapshot.data!.reference.set({
+                                        "balance": balance - amount,
+                                      }, SetOptions(merge: true));
+
+                                      snapshot.data!.docs[index].reference.set(
+                                          {"processed": true},
+                                          SetOptions(merge: true));
+                                    }
+                                  }
+                                } catch (e) {
+                                  debugPrint(e.toString());
+                                }
+
+                                final date =
+                                    timestamp.toDate().toString().split(" ")[0];
+                                final time = timestamp
+                                    .toDate()
+                                    .toString()
+                                    .split(" ")[1]
+                                    .substring(0, 5);
+
+                                return ListTile(
+                                  leading: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.grey[100]),
+                                    child: Icon(
+                                      Icons.attach_money,
+                                      color:
+                                          (type == "deposit" || type == "sale")
+                                              ? Colors.green
+                                              : Colors.red,
+                                    ),
+                                  ),
+                                  title: Text(title),
+                                  subtitle: Text("$date | $time"),
+                                  trailing: (status == "pending" ||
+                                          status == "declined")
+                                      ? Text(
+                                          status,
+                                          style: TextStyle(
+                                              color: status == "declined"
+                                                  ? Colors.red
+                                                  : Theme.of(context)
+                                                      .primaryColor),
+                                        )
+                                      : Text(
+                                          (type == "deposit" || type == "sale")
+                                              ? "+R $amount"
+                                              : "-R $amount",
+                                          style: TextStyle(
+                                              color: (type == "deposit" ||
+                                                      type == "sale")
+                                                  ? Colors.green
+                                                  : Colors.red,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                );
+                              },
+                            ));
+                          }
+                          return const SizedBox();
+                        })
                   ],
                 ),
               );

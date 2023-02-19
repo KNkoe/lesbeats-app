@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 import 'package:lesbeats/widgets/decoration.dart';
 import 'package:lesbeats/widgets/responsive.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../main.dart';
 
 class WithdrawalScreen extends StatefulWidget {
   const WithdrawalScreen({
@@ -147,20 +150,30 @@ class _MyMethodState extends State<MyMethod> {
   final TextEditingController _names = TextEditingController();
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  bool loading = false;
 
   Future<void> _launchUrl(
       String amount, String number, String names, String method) async {
     String url =
-        "https://wa.me/266$number?text=${Uri.encodeFull("LESBEATS WITHDRAWAL\n\nMethod: $method\nAmount: $amount\nNames: $names")}";
+        "https://wa.me/26669050596?text=${Uri.encodeFull("LESBEATS WITHDRAWAL\n\nNumber: $number\nMethod: $method\nAmount: $amount\nNames: $names")}";
     if (!await launchUrl(Uri.parse(url),
         mode: LaunchMode.externalApplication)) {
       throw 'Could not launch this Url';
     }
   }
 
+  double balance = 0;
+
+  Future updateBalance() async {
+    await db.collection("users").doc(auth.currentUser!.uid).get().then((value) {
+      balance = value.get("balance");
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    updateBalance();
   }
 
   @override
@@ -200,6 +213,10 @@ class _MyMethodState extends State<MyMethod> {
                       try {
                         if (double.parse(value) < 30) {
                           return "Minimum withdrawal is R30";
+                        }
+
+                        if (balance < double.parse(value) || balance == 0) {
+                          return "You have unsufficient funds. Balance: R$balance";
                         }
                       } catch (e) {
                         return "Invalid amount";
@@ -281,15 +298,44 @@ class _MyMethodState extends State<MyMethod> {
                 const SizedBox(
                   height: 40,
                 ),
-                ElevatedButton(
-                    style: confirmButtonStyle,
-                    onPressed: () {
-                      if (_formkey.currentState!.validate()) {
-                        _launchUrl(_amount.text, _number.text, _names.text,
-                            widget.method);
-                      }
-                    },
-                    child: const Text("Withdraw")),
+                loading
+                    ? Image.asset(
+                        "assets/images/loading.gif",
+                        height: 70,
+                        width: 70,
+                      )
+                    : ElevatedButton(
+                        style: confirmButtonStyle,
+                        onPressed: () async {
+                          if (_formkey.currentState!.validate()) {
+                            setState(() {
+                              loading = true;
+                            });
+
+                            _launchUrl(_amount.text, _number.text, _names.text,
+                                widget.method);
+
+                            db
+                                .collection("users")
+                                .doc(auth.currentUser!.uid)
+                                .set({}, SetOptions(merge: true));
+
+                            db
+                                .collection("users")
+                                .doc(auth.currentUser!.uid)
+                                .collection("transactions")
+                                .add({
+                              "title": "withdrawal (${widget.method})",
+                              "type": "withdrawal",
+                              "timestamp": DateTime.now(),
+                              "amount": double.parse(_amount.text),
+                              "status": "pending",
+                              "method": widget.method,
+                              "processed": false
+                            }).then((value) => Navigator.pop(context));
+                          }
+                        },
+                        child: const Text("Withdraw")),
                 const SizedBox(
                   height: 40,
                 ),

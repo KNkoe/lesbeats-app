@@ -45,8 +45,8 @@ class LoadTrack extends StatelessWidget {
   }
 }
 
-class ChatLoading extends StatelessWidget {
-  const ChatLoading({
+class TransactionLoading extends StatelessWidget {
+  const TransactionLoading({
     Key? key,
   }) : super(key: key);
 
@@ -62,39 +62,47 @@ class ChatLoading extends StatelessWidget {
           }),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 20,
-                    width: 20,
-                    decoration: const BoxDecoration(
-                        color: Colors.black12, shape: BoxShape.circle),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    height: 20,
-                    width: screenSize(context).width * 0.8,
-                    decoration: BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.circular(20)),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                height: 8,
-                width: screenSize(context).width * 0.3,
-                decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(20)),
-              )
-            ],
+            children: [1, 1, 1, 1, 1]
+                .map((e) => Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                height: 20,
+                                width: 20,
+                                decoration: const BoxDecoration(
+                                    color: Colors.black12,
+                                    shape: BoxShape.circle),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Container(
+                                height: 20,
+                                width: screenSize(context).width * 0.7,
+                                decoration: BoxDecoration(
+                                    color: Colors.black12,
+                                    borderRadius: BorderRadius.circular(20)),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            height: 8,
+                            width: screenSize(context).width * 0.3,
+                            decoration: BoxDecoration(
+                                color: Colors.black12,
+                                borderRadius: BorderRadius.circular(20)),
+                          )
+                        ],
+                      ),
+                    ))
+                .toList(),
           ),
         ),
       ),
