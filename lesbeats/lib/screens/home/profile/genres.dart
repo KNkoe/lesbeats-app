@@ -12,22 +12,15 @@ class MyGenres extends StatefulWidget {
 }
 
 class _MyGenresState extends State<MyGenres> {
-  late Stream<QuerySnapshot> _myGenresStream;
   List<String> genres = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _myGenresStream = db
-        .collection("tracks")
-        .where("artistId", isEqualTo: widget.uid)
-        .snapshots();
-  }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _myGenresStream,
+      stream: db
+          .collection("tracks")
+          .where("artistId", isEqualTo: widget.uid)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(

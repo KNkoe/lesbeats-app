@@ -59,39 +59,47 @@ class _MyProfilePageState extends State<MyProfilePage> {
   @override
   void initState() {
     super.initState();
-    _usersStream = db.collection('users').doc(widget.uid).snapshots();
-    _audioStream = db
-        .collection("tracks")
-        .where("artistId", isEqualTo: widget.uid)
-        .orderBy("uploadedAt", descending: true)
-        .snapshots();
-    _uploadsStream = db
-        .collection("tracks")
-        .where("artistId", isEqualTo: widget.uid)
-        .orderBy("uploadedAt", descending: true)
-        .snapshots();
+    try {
+      _usersStream = db.collection('users').doc(widget.uid).snapshots();
+      _audioStream = db
+          .collection("tracks")
+          .where("artistId", isEqualTo: widget.uid)
+          .orderBy("uploadedAt", descending: true)
+          .snapshots();
+      _uploadsStream = db
+          .collection("tracks")
+          .where("artistId", isEqualTo: widget.uid)
+          .orderBy("uploadedAt", descending: true)
+          .snapshots();
 
-    _followersStream = db
-        .collection("users")
-        .doc(widget.uid)
-        .collection("followers")
-        .snapshots();
+      _followersStream = db
+          .collection("users")
+          .doc(widget.uid)
+          .collection("followers")
+          .snapshots();
 
-    _followingStream = db
-        .collection("users")
-        .doc(widget.uid)
-        .collection("following")
-        .snapshots();
+      _followingStream = db
+          .collection("users")
+          .doc(widget.uid)
+          .collection("following")
+          .snapshots();
 
-    db
-        .collection("users")
-        .doc(auth.currentUser!.uid)
-        .collection("following")
-        .doc(widget.uid)
-        .get()
-        .then((doc) {
-      following = doc.exists;
-    });
+      db
+          .collection("users")
+          .doc(auth.currentUser!.uid)
+          .collection("following")
+          .doc(widget.uid)
+          .get()
+          .then((doc) {
+        if (mounted) {
+          setState(() {
+            following = doc.exists;
+          });
+        }
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
@@ -261,6 +269,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                       Flex(
                         direction: Axis.horizontal,
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Expanded(
                             flex: 3,

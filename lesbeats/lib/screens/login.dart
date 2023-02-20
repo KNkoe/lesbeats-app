@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,7 @@ import 'package:wc_form_validators/wc_form_validators.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../main.dart';
+import '../widgets/decoration.dart';
 
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key});
@@ -337,9 +340,52 @@ class _MyLoginPageState extends State<MyLoginPage> {
                             if (_formKey.currentState!.validate()) {
                               login().then((value) {
                                 if (value == "Success") {
-                                  Get.off(
-                                    (() => const MyHomePage()),
-                                  );
+                                  if (auth.currentUser != null &&
+                                      !auth.currentUser!.emailVerified) {
+                                    auth.currentUser!.sendEmailVerification();
+                                    showDialog(
+                                        context: context,
+                                        builder: ((context) => BackdropFilter(
+                                              filter: ImageFilter.blur(
+                                                  sigmaX: 3, sigmaY: 3),
+                                              child: AlertDialog(
+                                                title: Column(
+                                                  children: [
+                                                    Text(
+                                                      "A verification link was send to your email.",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline6,
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Text(
+                                                      "Verify email and login",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .subtitle1,
+                                                    ),
+                                                  ],
+                                                ),
+                                                actionsAlignment:
+                                                    MainAxisAlignment.center,
+                                                actions: [
+                                                  OutlinedButton(
+                                                      style: cancelButtonStyle,
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child:
+                                                          const Text("Close"))
+                                                ],
+                                              ),
+                                            )));
+                                  } else {
+                                    Get.off(
+                                      (() => const MyHomePage()),
+                                    );
+                                  }
                                 }
                               });
                             }

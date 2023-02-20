@@ -1,15 +1,19 @@
+import 'dart:ui';
+
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
+
 import '../../services/player/player.dart';
-import 'features.dart';
-import 'edit_track.dart';
+import '../decoration.dart';
+import '../responsive.dart';
+import 'checkout.dart';
+import 'edit.dart';
 import 'follow.dart';
 import 'like.dart';
 import 'report.dart';
-
 import '../../main.dart';
 import '../../screens/home/profile/profile.dart';
 import 'delete.dart';
@@ -42,7 +46,9 @@ class _MyAudioTileState extends State<MyAudioTile> {
   late String artistId;
   late String id;
   late bool download;
-  late String producer = "";
+  String producer = "";
+  late bool sold;
+  String purchasedBy = "";
 
   bool liked = false;
   bool following = false;
@@ -85,6 +91,11 @@ class _MyAudioTileState extends State<MyAudioTile> {
       id = widget.snapshot.data!.docs[widget.index]["id"];
       download = widget.snapshot.data!.docs[widget.index]["download"];
       producer = widget.snapshot.data!.docs[widget.index]["producer"];
+      sold = widget.snapshot.data!.docs[widget.index]["sold"];
+
+      if (sold) {
+        purchasedBy = widget.snapshot.data!.docs[widget.index]["purchasedBy"];
+      }
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -162,9 +173,12 @@ class _MyAudioTileState extends State<MyAudioTile> {
                       BoxDecoration(borderRadius: BorderRadius.circular(4)),
                   clipBehavior: Clip.hardEdge,
                   child: FadeInImage.assetNetwork(
-                      fit: BoxFit.cover,
-                      placeholder: "assets/images/cover.jpg",
-                      image: cover)),
+                    fit: BoxFit.cover,
+                    placeholder: "assets/images/cover.jpg",
+                    image: cover,
+                    imageErrorBuilder: (context, error, stackTrace) =>
+                        const Icon(Icons.broken_image_outlined),
+                  )),
               title: Flex(
                 direction: Axis.horizontal,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -182,7 +196,72 @@ class _MyAudioTileState extends State<MyAudioTile> {
                     flex: 4,
                     child: GestureDetector(
                       onTap: () {
-                        showFeatureNotAvail(context);
+                        if (price == 0) {
+                          showDialog(
+                              context: context,
+                              barrierColor: Colors.transparent,
+                              builder: ((context) => BackdropFilter(
+                                    filter:
+                                        ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                                    child: AlertDialog(
+                                      title: Text(
+                                        "This beat is free and not available for purchase. You may download this beat if the producer enabled download for this beat.",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1,
+                                      ),
+                                      actionsAlignment:
+                                          MainAxisAlignment.center,
+                                      actions: [
+                                        OutlinedButton(
+                                            style: cancelButtonStyle,
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("Close"))
+                                      ],
+                                    ),
+                                  )));
+                        }
+                        if (sold) {
+                          showDialog(
+                              context: context,
+                              barrierColor: Colors.transparent,
+                              builder: ((context) => BackdropFilter(
+                                    filter:
+                                        ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                                    child: AlertDialog(
+                                      title: Text(
+                                        "This beat has already been sold to someone else",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1,
+                                      ),
+                                      actionsAlignment:
+                                          MainAxisAlignment.center,
+                                      actions: [
+                                        OutlinedButton(
+                                            style: cancelButtonStyle,
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("Close"))
+                                      ],
+                                    ),
+                                  )));
+                        }
+
+                        if (!sold && price != 0) {
+                          showModalBottomSheet(
+                              context: context,
+                              builder: ((context) => Checkout(
+                                    id: id,
+                                    price: price,
+                                    producer: producer,
+                                    producerID: artistId,
+                                    title: title,
+                                  )));
+                        }
                       },
                       child: Row(
                         children: [
@@ -200,7 +279,11 @@ class _MyAudioTileState extends State<MyAudioTile> {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1!
-                                .copyWith(decoration: TextDecoration.none),
+                                .copyWith(
+                                    color: sold ? Colors.red : Colors.black87,
+                                    decoration: sold
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none),
                           )
                         ],
                       ),
@@ -238,7 +321,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                       borderRadius: BorderRadius.circular(10)
                           .copyWith(topRight: const Radius.circular(0))),
                   itemBuilder: ((context) => [
-                        if (download)
+                        if (download || (purchasedBy == auth.currentUser!.uid))
                           PopupMenuItem(
                               onTap: () {
                                 Future.delayed(
@@ -316,12 +399,22 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                   const Text("Delete"),
                                 ],
                               )),
-                        if (artistId != auth.currentUser!.uid && price != 0)
+                        if (artistId != auth.currentUser!.uid &&
+                            price != 0 &&
+                            !sold)
                           PopupMenuItem(
                               onTap: () {
                                 Future.delayed(
-                                  Duration.zero,
-                                );
+                                    Duration.zero,
+                                    () => showModalBottomSheet(
+                                        context: context,
+                                        builder: ((context) => Checkout(
+                                              id: id,
+                                              title: title,
+                                              price: price,
+                                              producer: producer,
+                                              producerID: artistId,
+                                            ))));
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -401,7 +494,11 @@ class _MyAudioTileState extends State<MyAudioTile> {
                                 ],
                               )),
 
-                        const PopupMenuItem(height: 2, child: Divider()),
+                        PopupMenuItem(
+                            height: 2,
+                            child: SizedBox(
+                                width: screenSize(context).width * 0.4,
+                                child: const Divider())),
                         // PopupMenuItem(
                         //     child: Row(
                         //   children: const [

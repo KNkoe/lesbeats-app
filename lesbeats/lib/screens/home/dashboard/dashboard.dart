@@ -206,6 +206,11 @@ class _DashboardState extends State<Dashboard> {
                                                         child: ClipOval(
                                                           child: FadeInImage.assetNetwork(
                                                               fit: BoxFit.cover,
+                                                              imageErrorBuilder: (context,
+                                                                      error,
+                                                                      stackTrace) =>
+                                                                  const Icon(Icons
+                                                                      .broken_image_outlined),
                                                               placeholder:
                                                                   "assets/images/placeholder.jpg",
                                                               image: snapshot

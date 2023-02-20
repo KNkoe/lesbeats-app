@@ -1,13 +1,17 @@
+import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'package:lesbeats/screens/home/home.dart';
+import 'package:lesbeats/screens/login.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 
 import '../main.dart';
+import '../widgets/decoration.dart';
 
 class MySignupPage extends StatefulWidget {
   const MySignupPage({super.key});
@@ -406,21 +410,50 @@ class _MySignupPageState extends State<MySignupPage> {
                                 } else if (_currentPage == 1) {
                                   register().then((value) {
                                     if (value == "Success") {
-                                      Get.showSnackbar(GetSnackBar(
-                                        duration: const Duration(seconds: 3),
-                                        backgroundColor:
-                                            const Color(0xff264653),
-                                        borderRadius: 30,
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 30),
-                                        icon: const Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                        ),
-                                        message:
-                                            "Welcome ${auth.currentUser!.displayName}",
-                                      ));
-                                      Get.to(() => const MyHomePage());
+                                      if (auth.currentUser != null &&
+                                          !auth.currentUser!.emailVerified) {
+                                        Get.to(() => const MyLoginPage());
+                                        auth.currentUser!
+                                            .sendEmailVerification();
+                                        showDialog(
+                                            context: context,
+                                            builder: ((context) =>
+                                                BackdropFilter(
+                                                  filter: ImageFilter.blur(
+                                                      sigmaX: 3, sigmaY: 3),
+                                                  child: AlertDialog(
+                                                    title: Column(
+                                                      children: [
+                                                        Text(
+                                                          "A verification link was send to your email.",
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .headline6,
+                                                        ),
+                                                        Text(
+                                                          "Verify email and login",
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .subtitle1,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    actionsAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    actions: [
+                                                      OutlinedButton(
+                                                          style:
+                                                              cancelButtonStyle,
+                                                          onPressed: () {},
+                                                          child: const Text(
+                                                              "Close"))
+                                                    ],
+                                                  ),
+                                                )));
+                                      }
                                     }
                                   });
                                 }

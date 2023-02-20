@@ -45,18 +45,10 @@ class MyFollowerTile extends StatefulWidget {
 }
 
 class _MyFollowerTileState extends State<MyFollowerTile> {
-  late final Stream<DocumentSnapshot> _followerStream;
-
-  @override
-  void initState() {
-    super.initState();
-    _followerStream = db.collection("users").doc(widget.doc["uid"]).snapshots();
-  }
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: _followerStream,
+        stream: db.collection("users").doc(widget.doc["uid"]).snapshots(),
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const LoadTrack();

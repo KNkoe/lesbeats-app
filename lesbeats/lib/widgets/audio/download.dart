@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -82,102 +83,109 @@ class _MyDownloadState extends State<MyDownload> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: _isDownloading
-          ? Column(
-              children: [
-                if (_progress != 100)
-                  Lottie.network(
-                      "https://assets3.lottiefiles.com/packages/lf20_pr5y4md7.json"),
-                if (_progress == 100)
-                  Lottie.network(
-                      "https://assets10.lottiefiles.com/packages/lf20_qckmbbyi.json"),
-                const SizedBox(
-                  height: 20,
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+      child: AlertDialog(
+        title: _isDownloading
+            ? Column(
+                children: [
+                  if (_progress != 100)
+                    Lottie.network(
+                        "https://assets3.lottiefiles.com/packages/lf20_pr5y4md7.json"),
+                  if (_progress == 100)
+                    Lottie.network(
+                        "https://assets10.lottiefiles.com/packages/lf20_qckmbbyi.json"),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "${_progress.toInt().toString()}%",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: _progress != 100
+                            ? Theme.of(context).primaryColor
+                            : Colors.green),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  LinearProgressIndicator(
+                    value: _progress * 0.01,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ],
+              )
+            : Center(
+                child: Text(
+                  "Download ${widget.title} by ${widget.producer}?",
+                  style: const TextStyle(
+                    fontSize: 18,
+                  ),
                 ),
-                Text(
-                  "${_progress.toInt().toString()}%",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: _progress != 100
-                          ? Theme.of(context).primaryColor
-                          : Colors.green),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                LinearProgressIndicator(
-                  value: _progress * 0.01,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ],
-            )
-          : Text(
-              "Download - ${widget.title}",
-              style: const TextStyle(
-                fontSize: 18,
               ),
-            ),
-      actionsAlignment: MainAxisAlignment.spaceAround,
-      actions: [
-        if (_progress != 100)
-          OutlinedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              style: cancelButtonStyle,
-              child: const Text("Cancel")),
-        if (_progress == 100)
-          ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              style: confirmButtonStyle,
-              child: const Text("Close")),
-        if (!_isDownloading)
-          ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _isDownloading = true;
-                });
+        actionsAlignment: MainAxisAlignment.spaceAround,
+        actions: [
+          if (_progress != 100)
+            OutlinedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: cancelButtonStyle,
+                child: const Text("Cancel")),
+          if (_progress == 100)
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: confirmButtonStyle,
+                child: const Text("Close")),
+          if (!_isDownloading)
+            ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _isDownloading = true;
+                  });
 
-                downloadAudio().whenComplete(() async {
-                  db
-                      .collection("tracks")
-                      .doc(widget.id)
-                      .collection("downloads")
-                      .doc(auth.currentUser!.uid)
-                      .set(download);
-
-                  if (widget.producerId != auth.currentUser!.uid) {
-                    final track = db.collection("tracks").doc(widget.id).get();
-                    String producerId = "";
-
-                    await track.then((value) {
-                      producerId = value.get("artistId");
-                    });
-
-                    final downloadNotification = {
-                      "title": "New download",
-                      "message":
-                          "${auth.currentUser!.displayName} downloaded your beat ${widget.title}",
-                      "timestamp": DateTime.now(),
-                      "read": false,
-                      "type": "Download"
-                    };
-
+                  downloadAudio().whenComplete(() async {
                     db
-                        .collection("users")
-                        .doc(producerId)
-                        .collection("notifications")
-                        .doc("${auth.currentUser!.uid}-downloaded-${widget.id}")
-                        .set(downloadNotification);
-                  }
-                });
-              },
-              style: confirmButtonStyle,
-              child: const Text("Download"))
-      ],
+                        .collection("tracks")
+                        .doc(widget.id)
+                        .collection("downloads")
+                        .doc(auth.currentUser!.uid)
+                        .set(download);
+
+                    if (widget.producerId != auth.currentUser!.uid) {
+                      final track =
+                          db.collection("tracks").doc(widget.id).get();
+                      String producerId = "";
+
+                      await track.then((value) {
+                        producerId = value.get("artistId");
+                      });
+
+                      final downloadNotification = {
+                        "title": "New download",
+                        "message":
+                            "${auth.currentUser!.displayName} downloaded your beat ${widget.title}",
+                        "timestamp": DateTime.now(),
+                        "read": false,
+                        "type": "Download"
+                      };
+
+                      db
+                          .collection("users")
+                          .doc(producerId)
+                          .collection("notifications")
+                          .doc(
+                              "${auth.currentUser!.uid}-downloaded-${widget.id}")
+                          .set(downloadNotification);
+                    }
+                  });
+                },
+                style: confirmButtonStyle,
+                child: const Text("Download"))
+        ],
+      ),
     );
   }
 }

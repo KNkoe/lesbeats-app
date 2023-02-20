@@ -123,6 +123,8 @@ class _MyProducerTileState extends State<MyProducerTile> {
                             height: 70,
                             width: 70,
                             fit: BoxFit.cover,
+                            imageErrorBuilder: (context, error, stackTrace) =>
+                                const Icon(Icons.broken_image_outlined),
                             placeholder: const AssetImage(
                                 "assets/images/placeholder.jpg"),
                             image: NetworkImage(widget.doc["photoUrl"])),

@@ -253,6 +253,7 @@ class _UploadBeatState extends State<UploadBeat> {
             "genre": selectedGenre,
             "path": url,
             "cover": cover,
+            "sold": false,
             "uploadedAt": DateTime.now(),
             "price": price,
             "download": _enableDownload,

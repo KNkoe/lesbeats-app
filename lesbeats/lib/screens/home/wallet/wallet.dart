@@ -179,7 +179,7 @@ class _MyTransactionsState extends State<MyWallet> {
                                 Timestamp timestamp = Timestamp.now();
                                 String type = "";
                                 String status = "";
-                                double amount = 0.0;
+                                double amount = 0.00;
                                 bool processed = false;
 
                                 try {

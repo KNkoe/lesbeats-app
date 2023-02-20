@@ -13,7 +13,7 @@ class Wrapper extends StatefulWidget {
 class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
-    if (auth.currentUser == null) {
+    if (auth.currentUser == null || !auth.currentUser!.emailVerified) {
       return const MyLoginPage();
     } else {
       return const MyHomePage();

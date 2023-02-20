@@ -14,23 +14,7 @@ class MyNotifications extends StatefulWidget {
 }
 
 class _MyNotificationsState extends State<MyNotifications> {
-  late Stream<QuerySnapshot> _notificationsStream;
   int unread = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    try {
-      _notificationsStream = db
-          .collection("users")
-          .doc(auth.currentUser!.uid)
-          .collection("notifications")
-          .orderBy("timestamp", descending: true)
-          .snapshots();
-    } catch (e) {
-      debugPrint("NOTIFICATION: $e");
-    }
-  }
 
   @override
   void didChangeDependencies() {
@@ -43,9 +27,11 @@ class _MyNotificationsState extends State<MyNotifications> {
           .snapshots()
           .listen(
         (event) {
-          setState(() {
-            unread = event.size;
-          });
+          if (mounted) {
+            setState(() {
+              unread = event.size;
+            });
+          }
         },
       );
     } catch (e) {
@@ -89,7 +75,12 @@ class _MyNotificationsState extends State<MyNotifications> {
   Widget build(BuildContext context) {
     debugPrint(unread.toString());
     return StreamBuilder(
-      stream: _notificationsStream,
+      stream: db
+          .collection("users")
+          .doc(auth.currentUser!.uid)
+          .collection("notifications")
+          .orderBy("timestamp", descending: true)
+          .snapshots(),
       builder: ((context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -108,9 +99,10 @@ class _MyNotificationsState extends State<MyNotifications> {
                 child: Badge(
                     padding: const EdgeInsets.all(7),
                     isLabelVisible: unread != 0,
+                    backgroundColor: Colors.orange,
+                    textColor: Colors.white,
                     label: Text(
                       numberFormat(unread),
-                      style: const TextStyle(color: Colors.white),
                     ),
                     child: const Icon(Icons.notifications)),
                 itemBuilder: (context) =>
