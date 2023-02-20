@@ -44,7 +44,8 @@ class _MyTransactionsState extends State<MyWallet> {
               double balance = 0.00;
 
               try {
-                balance = userSnapshot.data!.get("balance");
+                balance =
+                    double.parse(userSnapshot.data!.get("balance").toString());
               } catch (e) {
                 debugPrint(e.toString());
               }
@@ -93,7 +94,7 @@ class _MyTransactionsState extends State<MyWallet> {
                       height: 10,
                     ),
                     Text(
-                      "R $balance",
+                      "R ${balance.toStringAsFixed(2)}",
                       style: Theme.of(context).textTheme.headline5,
                     ),
                     const SizedBox(
@@ -256,8 +257,8 @@ class _MyTransactionsState extends State<MyWallet> {
                                         )
                                       : Text(
                                           (type == "deposit" || type == "sale")
-                                              ? "+R $amount"
-                                              : "-R $amount",
+                                              ? "+R ${amount.toStringAsFixed(2)}"
+                                              : "-R ${amount.toStringAsFixed(2)}",
                                           style: TextStyle(
                                               color: (type == "deposit" ||
                                                       type == "sale")

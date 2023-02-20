@@ -90,7 +90,7 @@ class TransactionLoading extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(
-                            height: 10,
+                            height: 30,
                           ),
                           Container(
                             height: 8,

@@ -260,7 +260,9 @@ class _MyMethodState extends State<MyMethod> {
                             "title": "deposit (${widget.method})",
                             "type": "deposit",
                             "timestamp": DateTime.now(),
-                            "amount": double.parse(_amountController.text),
+                            "amount": double.parse(
+                                double.parse(_amountController.text)
+                                    .toStringAsFixed(2)),
                             "status": "pending",
                             "method": widget.method,
                             "processed": false

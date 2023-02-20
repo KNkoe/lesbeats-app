@@ -328,7 +328,8 @@ class _MyMethodState extends State<MyMethod> {
                               "title": "withdrawal (${widget.method})",
                               "type": "withdrawal",
                               "timestamp": DateTime.now(),
-                              "amount": double.parse(_amount.text),
+                              "amount": double.parse(double.parse(_amount.text)
+                                  .toStringAsFixed(2)),
                               "status": "pending",
                               "method": widget.method,
                               "processed": false

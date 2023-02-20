@@ -195,7 +195,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                             width: 6,
                           ),
                           Text(
-                            price == 0 ? "Free" : "R $price",
+                            price == 0 ? "Free" : "R ${price.round()}",
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context)
                                 .textTheme
@@ -217,7 +217,7 @@ class _MyAudioTileState extends State<MyAudioTile> {
                     closedBuilder: ((context, action) => Text(
                           feature.toString().isEmpty
                               ? producer
-                              : "${producer} ft $feature",
+                              : "$producer ft $feature",
                           style:
                               TextStyle(color: Theme.of(context).primaryColor),
                         )),
